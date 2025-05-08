@@ -10,7 +10,7 @@ The application is designed for home cooks, culinary enthusiasts, individuals wi
 
 ## Integration of Generative AI
 
-Generative AI is integrated meaningfully through a dedicated LLM microservice developed in Python. This service processes user inputs in natural language, generates new recipes, modifies existing recipes according to user constraints (e.g., dietary preferences), and provides personalized meal suggestions. The use of GenAI enhances the user experience by offering creative, context-aware, and highly adaptable culinary solutions.
+Generative AI is integrated meaningfully through a dedicated LLM microservice developed in Python. This service processes user inputs in natural language, generates recipes based on the provided ingredients, modifies existing recipes according to user needs, and provides meal suggestions. The use of GenAI enhances the user experience by offering creative, context-aware, and highly adaptable culinary solutions.
 
 ## Functional Scenarios
 
