@@ -10,15 +10,11 @@ jobs:
   build-and-test:
     if: startsWith(github.ref, 'refs/heads/feature/')
     runs-on: ubuntu-latest
+    container:
+      image: eclipse-temurin:21-jdk
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: 21
 
       - name: Cache Gradle packages
         uses: actions/cache@v4
@@ -26,20 +22,20 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          key: gradle-${{ runner.os }}-${{ hashFiles('server/**/*.gradle*', 'server/**/gradle-wrapper.properties') }}
           restore-keys: |
             gradle-${{ runner.os }}-
 
-      - name: Change to server directory
-        run: cd server
-
       - name: Grant execute permission for gradlew
+        working-directory: ./server
         run: chmod +x gradlew
 
       - name: Build with Gradle
+        working-directory: ./server
         run: ./gradlew build
 
       - name: Run tests
+        working-directory: ./server
         run: ./gradlew test
 
   docker-release:
