@@ -1,13 +1,19 @@
-# Weekly Report: 05.05.2025 - 11.05.2025
+**Team Name:** Continuous Disappointment  
+**Date:** May 12, 2025  
+**Participants:** Ege Dogu Kaya, Esad Burak Altınyazar, Mehmed Esad Akçam  
+**Minute Taker:** Ege Dogu Kaya
 
-## Team Activities [Ege Dogu Kaya, Esad Burak Altınyazar, Mehmed Esad Akcam]
+| Student Name          | Weekly Progress                                                                     | Impediments | Promises (Next Week)                                           | Comments |
+| :-------------------- | :---------------------------------------------------------------------------------- | :---------- | :------------------------------------------------------------- | :------- |
+| Ege Dogu Kaya         | Collaborated in brainstorming project ideas; contributed to writing the description | None        | Create backlog and system architecture for the GenAI subsystem | —        |
+| Esad Burak Altınyazar | Participated in idea selection discussions; helped refine the project description   | None        | Create backlog and system architecture for the client software | —        |
+| Mehmed Esad Akçam     | Took part in evaluating ideas; helped write the final project description           | None        | Create backlog and system architecture for the server software | —        |
 
-This week, our team of three collaborated to brainstorm potential ideas for our project. After thorough discussion and evaluation, we collectively selected the most promising idea.
+---
 
-Following the selection, we worked together to create and write a detailed project description. This process involved input from all team members, ensuring that the description accurately reflects our shared vision for the project.
+## Discussion
 
-## Summary
+\- **Requester:** Ege Dogu Kaya
 
-- Brainstormed project ideas as a team.
-- Discussed and selected the final project idea.
-- Collaboratively wrote the project description.
+- **Topic:** Finalizing the project idea and drafting the initial description
+- **Decision:** Agreed on the project concept and collaborated to complete the description document.
