@@ -1,20 +1,14 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import HeroSection from './components/HeroSection';
 import HowItWorks from './components/HowItWorks';
 import Features from './components/Features';
 import About from './components/About';
-import FAQ from './components/FAQ';
 import Contact from './components/Contact';
 import Navigation from './components/Navigation';
 import ChatPage from './components/ChatPage';
 import Footer from './components/Footer';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
       <Navigation />
@@ -27,7 +21,6 @@ function App() {
       </section>
       <Features />
       <About />
-      <FAQ />
       <Contact />
       <Footer />
     </>

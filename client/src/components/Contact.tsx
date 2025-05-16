@@ -6,7 +6,6 @@ const Contact = () => {
       <h2>Contact / Feedback</h2>
       <p>We'd love to hear from you! Submit your feedback or get in touch with us:</p>
       <a href="mailto:feedback@recipai.com" className="cta-button">Send Feedback</a>
-      {/* You can add a contact form here later if needed */}
     </section>
   );
 };
