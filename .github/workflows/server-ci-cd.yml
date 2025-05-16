@@ -79,7 +79,7 @@ jobs:
 
       - name: Build Docker image
         working-directory: server
-        run: docker build -t ghcr.io/AET-DevOps25/team-continuous-disappointment/server:latest .
+        run: docker build -t ghcr.io/aet-devops25/team-continuous-disappointment/server:latest .
 
       - name: Push Docker image
-        run: docker push ghcr.io/AET-DevOps25/team-continuous-disappointment/server:latest
+        run: docker push ghcr.io/aet-devops25/team-continuous-disappointment/server:latest
