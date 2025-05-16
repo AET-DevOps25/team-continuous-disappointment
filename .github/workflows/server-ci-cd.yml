@@ -79,15 +79,14 @@ jobs:
 
       - name: Build Docker image
         working-directory: server
-        # run: docker build -t ghcr.io/aet-devops25/team-continuous-disappointment/server:latest .
-        run: docker build -t ghcr.io/${{ github.repository }}/server:latest .
+        run: docker build -t ghcr.io/aet-devops25/team-continuous-disappointment/server:latest .
 
       - name: Push Docker image
         run: docker push ghcr.io/aet-devops25/team-continuous-disappointment/server:latest
 
       - name: Make image public
         run: |
-          curl -X PATCH https://api.github.com/user/packages/container/${{ github.repository }}/server/visibility \
+          curl -X PATCH https://api.github.com/user/packages/container/aet-devops25/team-continuous-disappointment/server/visibility \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
             -d '{"visibility":"public"}'
