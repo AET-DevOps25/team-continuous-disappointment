@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: server
+  security:
+    oauth2:
+      resourceserver:
+        opaquetoken:
+          client-id: ${gitlab.client-id}
+          client-secret: ${gitlab.client-secret}
+          introspection-uri: ${gitlab.introspection-uri}
+
+gitlab:
+  client-id: 60a9e442420a386f2ddff0f60ed0801dd7e826f0710507e982d5afe6aa054334
+  client-secret: ${GITLAB_CLIENT_SECRET:test-secret}
+  introspection-uri: https://gitlab.lrz.de/oauth/introspect
