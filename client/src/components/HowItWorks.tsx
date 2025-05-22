@@ -1,5 +1,3 @@
-import React from 'react';
-
 const HowItWorks = () => {
   return (
     <section id="how-it-works" className="how-it-works">

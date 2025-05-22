@@ -1,5 +1,3 @@
-import React from 'react';
-
 const HeroSection = () => {
   const scrollToTryItOut = () => {
     document.getElementById('try-it-out')?.scrollIntoView({ behavior: 'smooth' });
