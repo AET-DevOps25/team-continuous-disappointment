@@ -3,11 +3,11 @@ name: Client CI/CD
 on:
   push:
     paths:
-      - 'client/**'
-      - '.github/workflows/client-ci-cd.yml'
+      - "client/**"
+      - ".github/workflows/client-ci-cd.yml"
     branches:
-      - 'main'
-      - 'feature/**'
+      - "main"
+      - "feature/**"
 
 jobs:
   build-and-test:
@@ -17,8 +17,8 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm' # or 'yarn' if you use yarn
+          node-version: "20"
+          cache: "npm" # or 'yarn' if you use yarn
 
       - name: Build with Gradle
         run: ./npm run build
@@ -33,13 +33,13 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write  # Needed for pushing to GHCR
+      packages: write # Needed for pushing to GHCR
     steps:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm' # or 'yarn' if you use yarn
+          node-version: "20"
+          cache: "npm" # or 'yarn' if you use yarn
 
       - name: Build with Node
         run: ./npm run build
