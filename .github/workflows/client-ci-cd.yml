@@ -20,15 +20,15 @@ jobs:
           node-version: "22"
 
       - name: Install Packages
-        run: ./npm install
+        run: npm install
         working-directory: client
 
       - name: Build with Node
-        run: ./npm run build
+        run: npm run build
         working-directory: client
 
       - name: Run tests
-        run: ./npm test
+        run: npm test
         working-directory: client
 
   docker-release:
@@ -44,15 +44,15 @@ jobs:
           node-version: "22"
 
       - name: Install Packages
-        run: ./npm install
+        run: npm install
         working-directory: client
 
       - name: Build with Node
-        run: ./npm run build
+        run: npm run build
         working-directory: client
 
       - name: Run tests
-        run: ./npm test
+        run: npm test
         working-directory: client
 
       - name: Log in to GitHub Container Registry
