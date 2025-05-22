@@ -8,7 +8,7 @@
     "build": "npm i && tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "npm i && jest"
+    "test": "npm i && npx jest"
   },
   "dependencies": {
     "react": "^19.1.0",
