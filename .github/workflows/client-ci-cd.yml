@@ -14,7 +14,6 @@ jobs:
     if: startsWith(github.ref, 'refs/heads/feature/')
     runs-on: ubuntu-latest
     steps:
-
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -25,56 +24,56 @@ jobs:
           cache: "npm"
 
       - name: Install Packages
-        run: npm install
+        run: pwd && npm install
         working-directory: client
 
-      # - name: Build with Node
-      #   run: npm run build
-      #   working-directory: client
+      - name: Build with Node
+        run: pwd && npm run build
+        working-directory: client
 
       - name: Run tests
         run: npm test
         working-directory: client
 
-  docker-release:
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write # Needed for pushing to GHCR
-    steps:
+  # docker-release:
+  #   if: github.ref == 'refs/heads/main'
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: read
+  #     packages: write # Needed for pushing to GHCR
+  #   steps:
 
-      - name: Checkout code
-        uses: actions/checkout@v4
-        
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: "npm"
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
 
-      - name: Install Packages
-        run: npm install
-        working-directory: client
+  #     - name: Set up Node.js
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: "22"
+  #         cache: "npm"
 
-      # - name: Build with Node
-      #   run: npm run build
-      #   working-directory: client
+  #     - name: Install Packages
+  #       run: npm install
+  #       working-directory: client
 
-      - name: Run tests
-        run: npm test
-        working-directory: client
+  #     # - name: Build with Node
+  #     #   run: npm run build
+  #     #   working-directory: client
 
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+  #     - name: Run tests
+  #       run: npm test
+  #       working-directory: client
 
-      - name: Build Docker image
-        working-directory: client
-        run: docker build -t ghcr.io/aet-devops25/team-continuous-disappointment/client:latest .
+  #     - name: Log in to GitHub Container Registry
+  #       uses: docker/login-action@v3
+  #       with:
+  #         registry: ghcr.io
+  #         username: ${{ github.actor }}
+  #         password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Push Docker image
-        run: docker push ghcr.io/aet-devops25/team-continuous-disappointment/client:latest
+  #     - name: Build Docker image
+  #       working-directory: client
+  #       run: docker build -t ghcr.io/aet-devops25/team-continuous-disappointment/client:latest .
+
+  #     - name: Push Docker image
+  #       run: docker push ghcr.io/aet-devops25/team-continuous-disappointment/client:latest
