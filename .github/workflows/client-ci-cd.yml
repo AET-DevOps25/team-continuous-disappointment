@@ -14,6 +14,10 @@ jobs:
     if: startsWith(github.ref, 'refs/heads/feature/')
     runs-on: ubuntu-latest
     steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -38,6 +42,10 @@ jobs:
       contents: read
       packages: write # Needed for pushing to GHCR
     steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
