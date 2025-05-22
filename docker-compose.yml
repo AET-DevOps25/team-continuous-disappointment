@@ -1,0 +1,31 @@
+services:
+  server:
+    build: ./server
+    container_name: server
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    env_file:
+      - ./server/.env
+
+  genai:
+    build: ./genai
+    container_name: genai
+    ports:
+      - "8000:8000"
+    depends_on:
+      - server
+    restart: unless-stopped
+    env_file:
+      - ./genai/.env
+
+  client:
+    build: ./client
+    container_name: client
+    ports:
+      - "3000:80"
+    depends_on:
+      - server
+    restart: unless-stopped
+    env_file:
+      - ./client/.env.development
