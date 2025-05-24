@@ -33,20 +33,21 @@ jobs:
           python -m pip install --upgrade pip
           pip install ansible
 
-      - name: Mask vault password
-        run: echo "::add-mask::${{ github.event.inputs.vault_password }}"
-
       - name: Mask SSH private key
         run: echo "::add-mask::${{ github.event.inputs.ssh_private_key }}"
 
       - name: Create vault password file
         run: |
-          echo "${{ github.event.inputs.vault_password }}" > .vault_pass 2>/dev/null
+          VAULT_PASSWORD=$(jq -r '.inputs.vault_password' ${GITHUB_EVENT_PATH})
+          echo "::add-mask::${VAULT_PASSWORD}"
+          echo $VAULT_PASSWORD > .vault_pass 2>/dev/null
 
       - name: Setup SSH key
         run: |
+          SSH_PRIVATE_KEY=$(jq -r '.inputs.ssh_private_key' ${GITHUB_EVENT_PATH})
+          echo "::add-mask::${SSH_PRIVATE_KEY}"
           mkdir -p ~/.ssh
-          echo "${{ github.event.inputs.ssh_private_key }}" > ~/.ssh/id_rsa 2>/dev/null
+          echo $SSH_PRIVATE_KEY > ~/.ssh/id_rsa 2>/dev/null
           chmod 600 ~/.ssh/id_rsa
 
       - name: Configure SSH host # TODO: Change ip and Username according to aws vm
