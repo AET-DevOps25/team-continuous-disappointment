@@ -54,7 +54,7 @@ jobs:
       - name: Configure SSH host
         run: |
           echo "Host $SERVER_IP" >> ~/.ssh/config
-          echo "  HostName $SERVER_IP:" >> ~/.ssh/config
+          echo "  HostName $SERVER_IP" >> ~/.ssh/config
           echo "  User $SERVER_USERNAME" >> ~/.ssh/config
           echo "  IdentityFile ~/.ssh/id_rsa" >> ~/.ssh/config
           chmod 600 ~/.ssh/config
