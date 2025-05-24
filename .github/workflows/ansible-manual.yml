@@ -16,6 +16,10 @@ on:
         required: true
         type: string
 
+env:
+  SERVER_IP: 13.60.81.149 # TODO: Change ip and Username according to aws vm
+  SERVER_USERNAME: ubuntu
+
 jobs:
   run-ansible:
     runs-on: ubuntu-latest
@@ -47,13 +51,16 @@ jobs:
           echo $SSH_PRIVATE_KEY > ~/.ssh/id_rsa 2>/dev/null
           chmod 600 ~/.ssh/id_rsa
 
-      - name: Configure SSH host # TODO: Change ip and Username according to aws vm
+      - name: Configure SSH host
         run: |
-          echo "Host 13.60.81.149" >> ~/.ssh/config
-          echo "  HostName 13.60.81.149" >> ~/.ssh/config
-          echo "  User ubuntu" >> ~/.ssh/config
+          echo "Host $SERVER_IP" >> ~/.ssh/config
+          echo "  HostName $SERVER_IP:" >> ~/.ssh/config
+          echo "  User $SERVER_USERNAME" >> ~/.ssh/config
           echo "  IdentityFile ~/.ssh/id_rsa" >> ~/.ssh/config
           chmod 600 ~/.ssh/config
+
+      - name: Add server to known_hosts
+        run: ssh-keyscan -H "$SERVER_IP" >> ~/.ssh/known_hosts
 
       - name: Run Ansible playbook
         run: |
