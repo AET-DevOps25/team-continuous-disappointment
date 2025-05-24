@@ -1,0 +1,49 @@
+---
+- name: Install Docker Compose and run services
+  hosts: all
+  vars:
+    project_dir: "/home/recipai"
+
+  tasks:
+    - name: Ensure .env directory exists
+      file:
+        path: "{{ project_dir }}/.env"
+        state: directory
+        mode: "0700"
+
+    - name: Copy server secrets
+      copy:
+        src: secrets/{{ item }}
+        dest: "{{ project_dir }}/server/{{ item }}"
+      with_items:
+        - server.env
+
+    - name: Copy project files
+      copy:
+        src: ../
+        dest: "{{ project_dir }}"
+        mode: "0644"
+
+    - name: Stop any running containers
+      command: docker-compose down
+      args:
+        chdir: "{{ project_dir }}"
+      ignore_errors: yes
+
+    - name: Run docker-compose up
+      command: docker-compose up -d
+      args:
+        chdir: "{{ project_dir }}"
+      environment:
+        COMPOSE_DOCKER_CLI_BUILD: 1
+        DOCKER_BUILDKIT: 1
+
+    - name: Check if containers are running
+      command: docker-compose ps
+      args:
+        chdir: "{{ project_dir }}"
+      register: container_status
+
+    - name: Show containers status
+      debug:
+        var: container_status.stdout_lines
