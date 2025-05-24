@@ -7,7 +7,6 @@
       apt:
         update_cache: yes
         cache_valid_time: 3600
-      when: ansible_os_family == "Debian"
 
     - name: Install required system packages (Ubuntu)
       apt:
@@ -25,13 +24,11 @@
       apt_key:
         url: https://download.docker.com/linux/ubuntu/gpg
         state: present
-      when: ansible_os_family == "Debian"
 
     - name: Add Docker repository (Ubuntu)
       apt_repository:
         repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
         state: present
-      when: ansible_os_family == "Debian"
 
     - name: Install Docker (Ubuntu)
       apt:
@@ -40,7 +37,6 @@
           - docker-ce-cli
           - containerd.io
         state: latest
-      when: ansible_os_family == "Debian"
 
     - name: Install Docker Python module
       pip:
