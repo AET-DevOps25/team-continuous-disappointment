@@ -62,6 +62,10 @@ jobs:
       - name: Add server to known_hosts
         run: ssh-keyscan -H "$SERVER_IP" >> ~/.ssh/known_hosts
 
+      - name: Test SSH connection
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa $SERVER_USERNAME@$SERVER_IP 'echo "SSH connection successful"'
+
       - name: Run Ansible playbook
         run: |
           ansible-playbook --vault-password-file .vault_pass -i ansible/inventory.ini ansible/playbooks/${{ github.event.inputs.playbook }}
