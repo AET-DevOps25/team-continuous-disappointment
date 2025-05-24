@@ -49,6 +49,7 @@ jobs:
           echo "::add-mask::${SSH_PRIVATE_KEY}"
           mkdir -p ~/.ssh
           echo $SSH_PRIVATE_KEY > ~/.ssh/id_rsa 2>/dev/null
+          cat ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
       - name: Configure SSH host
