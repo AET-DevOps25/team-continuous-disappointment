@@ -49,6 +49,14 @@ jobs:
           echo "${{ github.event.inputs.ssh_private_key }}" > ~/.ssh/id_rsa 2>/dev/null
           chmod 600 ~/.ssh/id_rsa
 
+      - name: Configure SSH host
+        run: |
+          echo "Host 13.60.81.149" >> ~/.ssh/config
+          echo "  HostName 13.60.81.149" >> ~/.ssh/config
+          echo "  User ubuntu" >> ~/.ssh/config
+          echo "  IdentityFile ~/.ssh/id_rsa" >> ~/.ssh/config
+          chmod 600 ~/.ssh/config
+
       - name: Run Ansible playbook
         run: |
           ansible-playbook --vault-password-file .vault_pass -i ansible/inventory.ini ansible/playbooks/${{ github.event.inputs.playbook }}
