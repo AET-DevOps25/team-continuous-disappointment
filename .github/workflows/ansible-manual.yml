@@ -33,14 +33,18 @@ jobs:
           python -m pip install --upgrade pip
           pip install ansible
 
+      - name: Mask vault password
+        run: echo "::add-mask::${{ github.event.inputs.vault_password }}"
+
+      - name: Mask SSH private key
+        run: echo "::add-mask::${{ github.event.inputs.ssh_private_key }}"
+
       - name: Create vault password file
         run: |
-          echo "::add-mask::${{ github.event.inputs.vault_password }}"
           echo "${{ github.event.inputs.vault_password }}" > .vault_pass 2>/dev/null
 
       - name: Setup SSH key
         run: |
-          echo "::add-mask::${{ github.event.inputs.ssh_private_key }}"
           mkdir -p ~/.ssh
           echo "${{ github.event.inputs.ssh_private_key }}" > ~/.ssh/id_rsa 2>/dev/null
           chmod 600 ~/.ssh/id_rsa
