@@ -16,6 +16,11 @@ on:
         required: true
         type: string
 
+env:
+  SERVER_IP: 13.60.81.149 # TODO: Change ip and Username according to aws vm
+  DEBUG: true
+  SERVER_USERNAME: ubuntu
+
 jobs:
   run-ansible:
     runs-on: ubuntu-latest
@@ -35,15 +40,32 @@ jobs:
 
       - name: Create vault password file
         run: |
-          echo "::add-mask::${{ github.event.inputs.vault_password }}"
-          echo "${{ github.event.inputs.vault_password }}" > .vault_pass 2>/dev/null
+          VAULT_PASSWORD="$(jq -r '.inputs.vault_password' ${GITHUB_EVENT_PATH})"
+          echo "::add-mask::${VAULT_PASSWORD}"
+          echo $VAULT_PASSWORD > .vault_pass 2>/dev/null
 
       - name: Setup SSH key
         run: |
-          echo "::add-mask::${{ github.event.inputs.ssh_private_key }}"
+          SSH_PRIVATE_KEY="$(jq -r '.inputs.ssh_private_key' ${GITHUB_EVENT_PATH})"
+          echo "::add-mask::${SSH_PRIVATE_KEY}"
           mkdir -p ~/.ssh
-          echo "${{ github.event.inputs.ssh_private_key }}" > ~/.ssh/id_rsa 2>/dev/null
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa 2>/dev/null
           chmod 600 ~/.ssh/id_rsa
+
+      - name: Configure SSH host
+        run: |
+          echo "Host $SERVER_IP" >> ~/.ssh/config
+          echo "  HostName $SERVER_IP" >> ~/.ssh/config
+          echo "  User $SERVER_USERNAME" >> ~/.ssh/config
+          echo "  IdentityFile ~/.ssh/id_rsa" >> ~/.ssh/config
+          chmod 600 ~/.ssh/config
+
+      - name: Add server to known_hosts
+        run: ssh-keyscan -H "$SERVER_IP" >> ~/.ssh/known_hosts
+
+      - name: Test SSH connection
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa $SERVER_USERNAME@$SERVER_IP 'echo "SSH connection successful"'
 
       - name: Run Ansible playbook
         run: |
