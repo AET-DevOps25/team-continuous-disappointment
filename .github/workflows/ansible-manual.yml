@@ -1,0 +1,55 @@
+name: Manual Ansible Playbook Execution
+
+on:
+  workflow_dispatch:
+    inputs:
+      playbook:
+        description: 'Ansible playbook to run'
+        required: true
+        type: string
+      vault_password:
+        description: 'Ansible Vault password'
+        required: true
+        type: string
+      ssh_private_key:
+        description: 'SSH private key for connecting to servers'
+        required: true
+        type: string
+        
+jobs:
+  run-ansible:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install Ansible
+        run: |
+          python -m pip install --upgrade pip
+          pip install ansible
+
+      - name: Create vault password file
+        run: echo "${{ github.event.inputs.vault_password }}" > .vault_pass
+        
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ github.event.inputs.ssh_private_key }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+        
+      - name: Run Ansible playbook
+        run: |
+          ansible-playbook \
+            --vault-password-file .vault_pass \
+            ${{ github.event.inputs.playbook }}
+
+      - name: Clean up sensitive files
+        if: always()
+        run: |
+          rm -f .vault_pass
+          rm -f ~/.ssh/id_rsa
