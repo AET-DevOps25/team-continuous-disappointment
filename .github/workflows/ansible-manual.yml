@@ -44,10 +44,7 @@ jobs:
 
       - name: Run Ansible playbook
         run: |
-          ansible-playbook \
-            --vault-password-file .vault_pass \
-            -i ansible/inventory.ini
-            ansible/${{ github.event.inputs.playbook }}
+          ansible-playbook --vault-password-file .vault_pass -i ansible/inventory.ini ansible/${{ github.event.inputs.playbook }}
 
       - name: Clean up sensitive files
         if: always()
