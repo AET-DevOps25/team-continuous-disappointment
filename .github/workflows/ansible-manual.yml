@@ -18,6 +18,7 @@ on:
 
 env:
   SERVER_IP: 13.60.81.149 # TODO: Change ip and Username according to aws vm
+  DEBUG: true
   SERVER_USERNAME: ubuntu
 
 jobs:
