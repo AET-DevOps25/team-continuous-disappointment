@@ -2,44 +2,48 @@
 - name: Install Docker Compose and run services
   hosts: all
   vars:
-    project_dir: "/home/recipai"
+    project_dir: "{{ ansible_env.HOME }}/recipai"
+    folders_to_copy:
+      - server
+      - client
+      - genai
 
   tasks:
-    - name: Ensure .env directory exists
-      file:
-        path: "{{ project_dir }}/.env"
-        state: directory
-        mode: "0700"
+    - name: Copy project folders
+      copy:
+        src: "../../{{ item }}/"
+        dest: "{{ project_dir }}/{{ item }}/"
+      loop: "{{ folders_to_copy }}"
+
+    - name: Copy docker-compose.yml
+      copy:
+        src: "../../docker-compose.yml"
+        dest: "{{ project_dir }}/docker-compose.yml"
 
     - name: Copy server secrets
       copy:
-        src: secrets/{{ item }}
-        dest: "{{ project_dir }}/server/{{ item }}"
-      with_items:
-        - server.env
-
-    - name: Copy project files
-      copy:
-        src: ../
-        dest: "{{ project_dir }}"
-        mode: "0644"
+        src: ../secrets/server.env
+        dest: "{{ project_dir }}/server/.env"
 
     - name: Stop any running containers
-      command: docker-compose down
+      command: docker compose down
+      become: true
       args:
         chdir: "{{ project_dir }}"
-      ignore_errors: yes
+      ignore_errors: true
 
-    - name: Run docker-compose up
-      command: docker-compose up -d
+    - name: Run docker compose up
+      command: docker compose up -d
+      become: true
       args:
         chdir: "{{ project_dir }}"
       environment:
-        COMPOSE_DOCKER_CLI_BUILD: 1
-        DOCKER_BUILDKIT: 1
+        COMPOSE_DOCKER_CLI_BUILD: "1"
+        DOCKER_BUILDKIT: "1"
 
     - name: Check if containers are running
-      command: docker-compose ps
+      command: docker compose ps
+      become: true
       args:
         chdir: "{{ project_dir }}"
       register: container_status

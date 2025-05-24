@@ -38,22 +38,22 @@
           - containerd.io
         state: latest
 
-    - name: Install Docker Python module
-      pip:
-        name: docker
-        state: latest
-
     - name: Start Docker service
       service:
         name: docker
         state: started
         enabled: yes
 
+    - name: Ensure docker group exists
+      group:
+        name: docker
+        state: present
+
     - name: Add user to docker group
       user:
-        name: "{{ ansible_user }}"
+        name: recipai
         groups: docker
         append: yes
 
     - name: Reset connection to allow user changes to affect ansible user
-      meta: reset_connection 
+      meta: reset_connection
