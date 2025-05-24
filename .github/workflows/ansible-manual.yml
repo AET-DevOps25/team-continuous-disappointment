@@ -49,7 +49,7 @@ jobs:
           echo "${{ github.event.inputs.ssh_private_key }}" > ~/.ssh/id_rsa 2>/dev/null
           chmod 600 ~/.ssh/id_rsa
 
-      - name: Configure SSH host
+      - name: Configure SSH host # TODO: Change ip and Username according to aws vm
         run: |
           echo "Host 13.60.81.149" >> ~/.ssh/config
           echo "  HostName 13.60.81.149" >> ~/.ssh/config
