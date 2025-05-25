@@ -7,17 +7,9 @@ on:
         description: "Ansible playbook to run"
         required: true
         type: string
-      vault_password:
-        description: "Ansible Vault password"
-        required: true
-        type: string
-      ssh_private_key:
-        description: "SSH private key for connecting to servers"
-        required: true
-        type: string
 
 env:
-  SERVER_IP: 13.60.81.149 # TODO: Change ip and Username according to aws vm
+  SERVER_DN: ec2-18-212-178-250.compute-1.amazonaws.com # TODO: Change ip and Username according to aws vm
   DEBUG: true
   SERVER_USERNAME: ubuntu
 
@@ -38,34 +30,26 @@ jobs:
           python -m pip install --upgrade pip
           pip install ansible
 
-      - name: Create vault password file
-        run: |
-          VAULT_PASSWORD="$(jq -r '.inputs.vault_password' ${GITHUB_EVENT_PATH})"
-          echo "::add-mask::${VAULT_PASSWORD}"
-          echo $VAULT_PASSWORD > .vault_pass 2>/dev/null
-
       - name: Setup SSH key
         run: |
-          SSH_PRIVATE_KEY="$(jq -r '.inputs.ssh_private_key' ${GITHUB_EVENT_PATH})"
-          echo "::add-mask::${SSH_PRIVATE_KEY}"
           mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa 2>/dev/null
+          echo "${{ secrets.AWS_VM_KEY }}" > ~/.ssh/sshkey.pem 2>/dev/null
           chmod 600 ~/.ssh/id_rsa
 
       - name: Configure SSH host
         run: |
-          echo "Host $SERVER_IP" >> ~/.ssh/config
-          echo "  HostName $SERVER_IP" >> ~/.ssh/config
+          echo "Host $SERVER_DN" >> ~/.ssh/config
+          echo "  HostName $SERVER_DN" >> ~/.ssh/config
           echo "  User $SERVER_USERNAME" >> ~/.ssh/config
-          echo "  IdentityFile ~/.ssh/id_rsa" >> ~/.ssh/config
+          echo "  IdentityFile ~/.ssh/sshkey.pem" >> ~/.ssh/config
           chmod 600 ~/.ssh/config
 
       - name: Add server to known_hosts
-        run: ssh-keyscan -H "$SERVER_IP" >> ~/.ssh/known_hosts
+        run: ssh-keyscan -H "$SERVER_DN" >> ~/.ssh/known_hosts
 
       - name: Test SSH connection
         run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa $SERVER_USERNAME@$SERVER_IP 'echo "SSH connection successful"'
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/sshkey.pem $SERVER_USERNAME@$SERVER_DN 'echo "SSH connection successful"'
 
       - name: Run Ansible playbook
         run: |
