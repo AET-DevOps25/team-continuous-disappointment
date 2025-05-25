@@ -34,7 +34,7 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.AWS_VM_KEY }}" > ~/.ssh/sshkey.pem 2>/dev/null
-          chmod 600 ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/sshkey.pem
 
       - name: Configure SSH host
         run: |
@@ -59,4 +59,4 @@ jobs:
         if: always()
         run: |
           rm -f .vault_pass
-          rm -f ~/.ssh/id_rsa
+          rm -f ~/.ssh/sshkey.pem
