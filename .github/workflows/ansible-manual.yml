@@ -51,6 +51,10 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/sshkey.pem $SERVER_USERNAME@$SERVER_DN 'echo "SSH connection successful"'
 
+      - name: Create vault password file
+        run: |
+          echo "${{ secrets.ANSIBLE_VAULT_KEY }}" > .vault_pass 2>/dev/null
+
       - name: Run Ansible playbook
         run: |
           ansible-playbook --vault-password-file .vault_pass -i ansible/inventory.ini ansible/playbooks/${{ github.event.inputs.playbook }}
