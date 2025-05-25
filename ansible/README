@@ -1,0 +1,4 @@
+To encrypt or decrypt files using Ansible Vault:
+
+- Create a vault file under ansible folder `.vault_pass`
+- Run `ansible-vault decrypt secrets/server.env --vault-password-file .vault_pass` or `ansible-vault encrypt secrets/server.env --vault-password-file .vault_pass` based on the operation.

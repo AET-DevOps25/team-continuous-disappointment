@@ -25,6 +25,16 @@
         src: ../secrets/server.env
         dest: "{{ project_dir }}/server/.env"
 
+    - name: Copy client secrets
+      copy:
+        src: ../secrets/client.env
+        dest: "{{ project_dir }}/client/.env"
+
+    - name: Copy genai secrets
+      copy:
+        src: ../secrets/genai.env
+        dest: "{{ project_dir }}/genai/.env"
+
     - name: Stop any running containers
       command: docker compose down
       become: true
