@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: client
-        image: docker.io/edkaya/client:latest
+        image: docker.io/edkaya/client:latest # todo: change this to the github registry
         ports:
           - containerPort: 80
             name: client-api

@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: server
-        image: docker.io/edkaya/server:latest
+        image: docker.io/edkaya/server:latest # todo: change this to the github registry
         ports:
           - containerPort: 8080
             name: server-api

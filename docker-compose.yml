@@ -1,6 +1,7 @@
 services:
   server:
     build: ./server
+    image: edkaya/server:latest # todo: change this to the github registry
     container_name: server
     ports:
       - "8080:8080"
@@ -10,6 +11,7 @@ services:
 
   genai:
     build: ./genai
+    image: edkaya/genai:latest # todo: change this to the github registry
     container_name: genai
     ports:
       - "8000:8000"
@@ -21,6 +23,7 @@ services:
 
   client:
     build: ./client
+    image: edkaya/client:latest # todo: change this to the github registry
     container_name: client
     ports:
       - "3000:80"
