@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: genai
+  namespace: team-disappointment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: genai
+  template:
+    metadata:
+      labels:
+        app: genai
+    spec:
+      containers:
+      - name: genai
+        image: docker.io/edkaya/genai:latest
+        ports:
+          - containerPort: 8000
+            name: genai-api
+
+        resources:
+          limits:
+            cpu: "1"
+            memory: "512Mi"

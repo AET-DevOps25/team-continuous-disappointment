@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client
+  namespace: team-disappointment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: client
+  template:
+    metadata:
+      labels:
+        app: client
+    spec:
+      containers:
+      - name: client
+        image: docker.io/edkaya/client:latest
+        ports:
+          - containerPort: 80
+            name: client-api
+        resources:
+          limits:
+            cpu: "1"
+            memory: "512Mi"
