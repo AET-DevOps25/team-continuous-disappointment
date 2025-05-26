@@ -2,9 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: genai
-  namespace: team-disappointment
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount.genai }}
   selector:
     matchLabels:
       app: genai
@@ -15,12 +14,11 @@ spec:
     spec:
       containers:
       - name: genai
-        image: docker.io/edkaya/genai:latest # todo: change this to the github registry
+        image: "{{ .Values.image.repository }}/genai:{{ .Values.image.tag }}"
         ports:
-          - containerPort: 8000
+          - containerPort: {{ .Values.ports.genai }}
             name: genai-api
-
         resources:
           limits:
-            cpu: "1"
-            memory: "512Mi"
+            cpu: {{ .Values.resources.limits.cpu }}
+            memory: {{ .Values.resources.limits.memory }}

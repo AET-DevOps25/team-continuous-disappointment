@@ -1,12 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: server-service
-  namespace: team-disappointment
+  name: {{ .Values.services.client }}
 spec:
   selector:
-    app: server
+    app: client
   ports:
     - protocol: TCP
       port: 80
-      targetPort: server-api
+      targetPort: client-api

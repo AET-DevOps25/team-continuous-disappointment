@@ -2,12 +2,11 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: recipai-ingress
-  namespace: team-disappointment
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-    - host: recip-ai.k8s.ase.cit.tum.de
+    - host: {{ .Values.host }}
       http:
         paths:
           - pathType: Prefix

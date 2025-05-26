@@ -2,9 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: client
-  namespace: team-disappointment
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount.client }}
   selector:
     matchLabels:
       app: client
@@ -15,11 +14,11 @@ spec:
     spec:
       containers:
       - name: client
-        image: docker.io/edkaya/client:latest # todo: change this to the github registry
+        image: "{{ .Values.image.repository }}/client:{{ .Values.image.tag }}"
         ports:
-          - containerPort: 80
+          - containerPort: {{ .Values.ports.client }}
             name: client-api
         resources:
           limits:
-            cpu: "1"
-            memory: "512Mi"
+            cpu: {{ .Values.resources.limits.cpu }}
+            memory: {{ .Values.resources.limits.memory }}

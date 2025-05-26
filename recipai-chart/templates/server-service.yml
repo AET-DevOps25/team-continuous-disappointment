@@ -1,12 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: genai-service
-  namespace: team-disappointment
+  name: {{ .Values.services.server }}
 spec:
   selector:
-    app: genai
+    app: server
   ports:
     - protocol: TCP
       port: 80
-      targetPort: genai-api
+      targetPort: server-api
