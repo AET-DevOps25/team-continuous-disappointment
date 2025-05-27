@@ -1,6 +1,6 @@
 # Docker image settings
 image:
-  repository: ghcr.io/aet-devops25/team-continuous-disappointment/
+  repository: ghcr.io/aet-devops25/team-continuous-disappointment
   tag: latest
 
 # Hostname for Ingress
