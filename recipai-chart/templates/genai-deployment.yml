@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: genai
+spec:
+  replicas: {{ .Values.replicaCount.genai }}
+  selector:
+    matchLabels:
+      app: genai
+  template:
+    metadata:
+      labels:
+        app: genai
+    spec:
+      containers:
+      - name: genai
+        image: "{{ .Values.image.repository }}/genai:{{ .Values.image.tag }}"
+        ports:
+          - containerPort: {{ .Values.ports.genai }}
+            name: genai-api
+        resources:
+          limits:
+            cpu: {{ .Values.resources.limits.cpu }}
+            memory: {{ .Values.resources.limits.memory }}

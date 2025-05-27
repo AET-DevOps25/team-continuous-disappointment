@@ -1,0 +1,31 @@
+# Docker image settings
+image:
+  repository: ghcr.io/aet-devops25/team-continuous-disappointment
+  tag: latest
+
+# Hostname for Ingress
+host: recip-ai.k8s.ase.cit.tum.de
+
+# Resource limits
+resources:
+  limits:
+    cpu: "1"
+    memory: "512Mi"
+
+# Replica count for each service
+replicaCount:
+  client: 1
+  server: 1
+  genai: 1
+
+# Port configuration per service
+ports:
+  client: 80
+  server: 8080
+  genai: 8000
+
+# Service names
+services:
+  client: client-service
+  server: server-service
+  genai: genai-service
