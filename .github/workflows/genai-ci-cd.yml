@@ -29,14 +29,29 @@ jobs:
       - name: Lint Python code
         run: |
           pip install flake8
-          flake8 .
+          flake8 . || exit 1
         working-directory: genai
 
-      # Test later on
+  docker-release:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-  # docker-release:
-  #   if: github.ref == 'refs/heads/main'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Docker image
+        working-directory: genai
+        run: docker build -t ghcr.io/aet-devops25/team-continuous-disappointment/genai:latest .
+
+      - name: Push Docker image
+        run: docker push ghcr.io/aet-devops25/team-continuous-disappointment/genai:latest
