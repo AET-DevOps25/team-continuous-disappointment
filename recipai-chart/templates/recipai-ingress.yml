@@ -16,17 +16,3 @@ spec:
                 name: client-service
                 port:
                   number: 80
-          - pathType: Prefix
-            path: "/server"
-            backend:
-              service:
-                name: server-service
-                port:
-                  number: 80
-          - pathType: Prefix
-            path: "/genai"
-            backend:
-              service:
-                name: genai-service
-                port:
-                  number: 80
