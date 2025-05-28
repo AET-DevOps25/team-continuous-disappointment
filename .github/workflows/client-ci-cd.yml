@@ -22,6 +22,7 @@ jobs:
         with:
           node-version: "22"
           cache: "npm"
+          cache-dependency-path: client/package-lock.json
 
       - name: Build with Node
         run: npm run build
@@ -46,6 +47,7 @@ jobs:
         with:
           node-version: "22"
           cache: "npm"
+          cache-dependency-path: client/package-lock.json
 
       - name: Build with Node
         run: npm run build
