@@ -19,20 +19,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: "npm"
-          cache-dependency-path: client/package-lock.json
-
-      - name: Install dependencies # New step
-        run: npm ci
+      - name: Build Docker image
         working-directory: client
-
-      - name: Build with Node
-        run: npm run build
-        working-directory: client
+        run: docker build -t client .
 
   docker-release:
     if: github.ref == 'refs/heads/main'
@@ -45,17 +34,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: "npm"
-          cache-dependency-path: client/package-lock.json
-
-      - name: Build with Node
-        run: npm run build
-        working-directory: client
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
