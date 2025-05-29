@@ -26,6 +26,10 @@ jobs:
           cache: "npm"
           cache-dependency-path: client/package-lock.json
 
+      - name: Install dependencies # New step
+        run: npm ci
+        working-directory: client
+
       - name: Build with Node
         run: npm run build
         working-directory: client
