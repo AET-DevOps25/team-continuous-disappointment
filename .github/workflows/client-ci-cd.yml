@@ -27,6 +27,10 @@ jobs:
           cache-dependency-path: client/package-lock.json
 
       - name: Build with Node
+        run: npm install
+        working-directory: client
+
+      - name: Build with Node
         run: npm run build
         working-directory: client
 
