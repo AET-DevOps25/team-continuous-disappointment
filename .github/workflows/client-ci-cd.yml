@@ -13,6 +13,8 @@ jobs:
   build:
     if: startsWith(github.ref, 'refs/heads/feature/')
     runs-on: ubuntu-latest
+    env:
+      NODE_ENV: production
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -34,6 +36,8 @@ jobs:
     permissions:
       contents: read
       packages: write # Needed for pushing to GHCR
+    env:
+      NODE_ENV: production
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
