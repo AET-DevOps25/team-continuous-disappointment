@@ -1,6 +1,7 @@
 services:
   server:
-    image: ghcr.io/aet-devops25/team-continuous-disappointment/server:latest
+    build:
+      context: ./server
     container_name: server
     ports:
       - "8080:8080"
@@ -9,7 +10,8 @@ services:
       - ./server/.env
 
   genai:
-    image: ghcr.io/aet-devops25/team-continuous-disappointment/genai:latest
+    build:
+      context: ./genai
     container_name: genai
     ports:
       - "8000:8000"
