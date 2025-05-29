@@ -4,7 +4,7 @@ image:
   tag: latest
 
 # Hostname for Ingress
-host: recip-ai.k8s.ase.cit.tum.de
+host: recipai.student.k8s.aet.cit.tum.de
 
 # Resource limits
 resources:
