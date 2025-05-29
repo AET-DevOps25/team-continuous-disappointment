@@ -4,10 +4,10 @@ import { useAuth as useOAuth } from "react-oidc-context";
 export const useAuth = () => {
   const auth = useOAuth();
   const [user, setUser] = useState<User | null>(null);
+
   if (auth.isLoading) {
     return { user, isLoading: auth.isLoading, signout: auth.signoutRedirect };
   }
-
   if (!auth.user || auth.user.expired) {
     auth.signinRedirect();
   }
@@ -32,6 +32,6 @@ export const useAuth = () => {
         console.error("Failed to fetch user data:", error);
       });
   }
-  console.log("User data:", user);
+
   return { user, isLoading: auth.isLoading, signout: auth.signoutRedirect };
 };

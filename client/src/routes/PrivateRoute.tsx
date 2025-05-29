@@ -1,13 +1,12 @@
 import { useAuth } from "../hooks/useAuth";
 
 interface PrivateRouteProps {
-  children: React.ReactNode;
+  component: React.ReactNode;
 }
-
-export const PrivateRoute = ({ children }: PrivateRouteProps) => {
+export const PrivateRoute = ({ component }: PrivateRouteProps) => {
   const { isLoading } = useAuth();
   if (isLoading) {
     return <div>Loading...</div>;
   }
-  return <>{children}</>;
+  return <>{component}</>;
 };

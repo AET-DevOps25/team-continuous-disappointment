@@ -1,33 +1,91 @@
-import "./App.css";
-import HeroSection from "./components/HeroSection";
-import HowItWorks from "./components/HowItWorks";
-import Features from "./components/Features";
-import About from "./components/About";
-import Contact from "./components/Contact";
-import Navigation from "./components/Navigation";
-import ChatPage from "./components/ChatPage";
-import Footer from "./components/Footer";
-import { PrivateRoute } from "./routes/PrivateRoute";
+import { useState, useEffect } from "react";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import { AuthProvider } from "react-oidc-context";
+import Header from "./components/Header";
+import Sidebar from "./components/Sidebar";
+import useChat from "./hooks/useChat";
+import { classNames } from "./utils/helpers";
+import ChatPage from "./pages/ChatPage";
+import { oidcConfig } from "./oidcConfig";
+import "./index.css";
 
 function App() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { conversations, createNewConversation, deleteConversation } =
+    useChat();
+  const navigate = useNavigate();
+
+  // Handle closing sidebar on mobile when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const sidebar = document.getElementById("sidebar");
+      const sidebarButton = document.getElementById("sidebar-button");
+
+      if (
+        isSidebarOpen &&
+        sidebar &&
+        sidebarButton &&
+        !sidebar.contains(event.target as Node) &&
+        !sidebarButton.contains(event.target as Node)
+      ) {
+        setIsSidebarOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isSidebarOpen]);
+
+  const handleNewConversation = () => {
+    const newConversation = createNewConversation();
+    navigate(`/c/${newConversation.id}`);
+  };
+
+  const handleDeleteConversation = (id: string) => {
+    deleteConversation(id);
+    if (conversations.length > 1) {
+      const remainingConversations = conversations.filter((c) => c.id !== id);
+      navigate(`/c/${remainingConversations[0].id}`);
+    } else {
+      handleNewConversation();
+    }
+  };
+
   return (
-    <PrivateRoute>
-      <Navigation />
-      <HeroSection />
-      <HowItWorks />
-      <section id="try-it-out" className="try-it-out-section">
-        <h2>Try It Out</h2>
-        <p>
-          Input your ingredients and preferences to get a real-time AI-generated
-          recipe.
-        </p>
-        <ChatPage />
-      </section>
-      <Features />
-      <About />
-      <Contact />
-      <Footer />
-    </PrivateRoute>
+    <AuthProvider {...oidcConfig}>
+      <div className="flex h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+        <div id="sidebar">
+          <Sidebar
+            conversations={conversations}
+            createNewConversation={handleNewConversation}
+            deleteConversation={handleDeleteConversation}
+            isOpen={isSidebarOpen}
+          />
+        </div>
+
+        <div
+          className={classNames(
+            "flex flex-col flex-1 h-full transition-all duration-300 ease-in-out",
+            isSidebarOpen ? "md:ml-72" : ""
+          )}
+        >
+          <Header
+            isSidebarOpen={isSidebarOpen}
+            toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+          />
+
+          <Routes>
+            <Route path="/c/:conversationId" element={<ChatPage />} />
+            <Route
+              path="/"
+              element={<Navigate to={`/c/${conversations[0].id}`} replace />}
+            />
+          </Routes>
+        </div>
+      </div>
+    </AuthProvider>
   );
 }
 

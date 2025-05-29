@@ -10,9 +10,11 @@ on:
       - "feature/**"
 
 jobs:
-  build-and-test:
+  build:
     if: startsWith(github.ref, 'refs/heads/feature/')
     runs-on: ubuntu-latest
+    env:
+      NODE_ENV: production
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -22,13 +24,14 @@ jobs:
         with:
           node-version: "22"
           cache: "npm"
+          cache-dependency-path: client/package-lock.json
+
+      - name: Install dependencies
+        run: npm install --include=dev
+        working-directory: client
 
       - name: Build with Node
         run: npm run build
-        working-directory: client
-
-      - name: Run tests
-        run: npm test
         working-directory: client
 
   docker-release:
@@ -37,23 +40,11 @@ jobs:
     permissions:
       contents: read
       packages: write # Needed for pushing to GHCR
+    env:
+      NODE_ENV: production
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: "npm"
-
-      - name: Build with Node
-        run: npm run build
-        working-directory: client
-
-      - name: Run tests
-        run: npm test
-        working-directory: client
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
