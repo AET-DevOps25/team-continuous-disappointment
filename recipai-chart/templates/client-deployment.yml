@@ -11,6 +11,8 @@ spec:
     metadata:
       labels:
         app: client
+      annotations:
+        checksum/redeploy: "{{ randAlphaNum 8 }}"
     spec:
       containers:
       - name: client
