@@ -1,5 +1,10 @@
+ARG NODE_ENV=production
 FROM node:22-alpine AS build
 
+ARG NODE_ENV
+ENV NODE_ENV=$NODE_ENV
+
+RUN echo "Building in $NODE_ENV mode"
 WORKDIR /app
 
 COPY package*.json ./

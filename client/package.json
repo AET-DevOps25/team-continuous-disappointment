@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm ci && vite build",
+    "build": "npm ci && vite build --mode $NODE_ENV",
     "lint": "eslint .",
     "preview": "vite preview"
   },

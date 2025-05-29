@@ -20,10 +20,13 @@ services:
       - ./genai/.env
 
   client:
-    image: ghcr.io/aet-devops25/team-continuous-disappointment/client:latest
+    build:
+      context: ./client
+      args:
+        - NODE_ENV=development
     container_name: client
     ports:
-      - "3000:80"
+      - "5173:80"
     depends_on:
       - server
     restart: unless-stopped
