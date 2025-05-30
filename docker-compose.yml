@@ -15,9 +15,20 @@ services:
       - "8000:8000"
     depends_on:
       - server
+      # - qdrant
     restart: unless-stopped
     env_file:
       - ./genai/.env
+
+  # Let's comment out Qdrant for prod, as the embedding model is not yet implemented.
+  # qdrant:
+    # image: qdrant/qdrant
+    # container_name: qdrant
+    # restart: unless-stopped
+    # ports:
+      # - "6333:6333"
+    # volumes:
+      # - qdrant_storage:/qdrant/storage
 
   client:
     image: ghcr.io/aet-devops25/team-continuous-disappointment/client:latest
@@ -27,3 +38,6 @@ services:
     depends_on:
       - server
     restart: unless-stopped
+
+# volumes:
+  # qdrant_storage:
