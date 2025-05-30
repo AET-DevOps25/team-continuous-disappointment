@@ -16,8 +16,8 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - server
-      - qdrant
+      - server-service
+      - qdrant-service
     restart: unless-stopped
     env_file:
       - ./genai/.env
@@ -39,7 +39,7 @@ services:
     ports:
       - "5173:80"
     depends_on:
-      - server
+      - server-service
     restart: unless-stopped
 
 volumes:
