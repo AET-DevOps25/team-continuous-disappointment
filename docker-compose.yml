@@ -1,5 +1,5 @@
 services:
-  server:
+  server-service:
     image: ghcr.io/aet-devops25/team-continuous-disappointment/server:latest
     container_name: server
     ports:
@@ -8,7 +8,7 @@ services:
     env_file:
       - ./server/.env
 
-  genai:
+  genai-service:
     image: ghcr.io/aet-devops25/team-continuous-disappointment/genai:latest
     container_name: genai
     ports:
@@ -21,7 +21,7 @@ services:
       - ./genai/.env
 
   # Let's comment out Qdrant for prod, as the embedding model is not yet implemented.
-  # qdrant:
+  # qdrant-service:
     # image: qdrant/qdrant
     # container_name: qdrant
     # restart: unless-stopped
@@ -30,7 +30,7 @@ services:
     # volumes:
       # - qdrant_storage:/qdrant/storage
 
-  client:
+  client-service:
     image: ghcr.io/aet-devops25/team-continuous-disappointment/client:latest
     container_name: client
     ports:

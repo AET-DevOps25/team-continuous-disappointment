@@ -1,5 +1,5 @@
 services:
-  server:
+  server-service:
     build:
       context: ./server
     container_name: server
@@ -9,7 +9,7 @@ services:
     env_file:
       - ./server/.env
 
-  genai:
+  genai-service:
     build:
       context: ./genai
     container_name: genai
@@ -22,7 +22,7 @@ services:
     env_file:
       - ./genai/.env
 
-  qdrant:
+  qdrant-service:
     image: qdrant/qdrant
     container_name: qdrant
     ports:
@@ -30,7 +30,7 @@ services:
     volumes:
       - qdrant_storage:/qdrant/storage
 
-  client:
+  client-service:
     build:
       context: ./client
       args:

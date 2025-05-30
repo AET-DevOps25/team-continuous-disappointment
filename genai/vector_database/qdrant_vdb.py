@@ -12,7 +12,7 @@ logging.getLogger().setLevel(logging.INFO)
 class QdrantVDB(BaseVDB):
     """Qdrant vector database implementation."""
     def __init__(self):
-        self.host = "http://qdrant:6333"
+        self.host = "http://qdrant-service:6333"
         self.client = self.get_vector_database(self.host)
         logging.info("Qdrant vector database is initialized.")
 
