@@ -45,7 +45,7 @@ class QdrantVDB(BaseVDB):
 
         logging.info("Creating an embedding model for the collection %s",
                      collection_name)
-        embeddings = None # placeholder for embedding model
+        embeddings = None  # placeholder for embedding model
 
         logging.info("An embedding model is created for the collection %s",
                      collection_name)
