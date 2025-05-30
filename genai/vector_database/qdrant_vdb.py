@@ -10,7 +10,7 @@ logging.getLogger().setLevel(logging.INFO)
 
 
 class QdrantVDB(BaseVDB):
-    """Qdrant vector database implementation.""" 
+    """Qdrant vector database implementation."""
     def __init__(self):
         self.host = "http://qdrant:6333"
         self.client = self.get_vector_database(self.host)
@@ -21,33 +21,33 @@ class QdrantVDB(BaseVDB):
         return QdrantClient(host=host)
 
     def create_vector_storage(self, collection_name: str):
-        """Creates a vector storage with the given 
+        """Creates a vector storage with the given
         collection name in Qdrant."""
-        
+
         logging.info(
-            "Checking if vector store exists in collection %s", 
+            "Checking if vector store exists in collection %s",
             collection_name
         )
         if self.client.collection_exists(collection_name):
-            logging.info("Collection %s already exists, using it.", 
+            logging.info("Collection %s already exists, using it.",
                          collection_name)
-        else: 
-            logging.info("Collection %s does not exist, creating it.", 
+        else:
+            logging.info("Collection %s does not exist, creating it.",
                          collection_name)
 
             self.client.create_collection(
                 collection_name=collection_name,
                 vectors_config=VectorParams(
-                    size=3072, 
+                    size=3072,
                     distance=Distance.COSINE
                     ),
             )
- 
-        logging.info("Creating an embedding model for the collection %s", 
+
+        logging.info("Creating an embedding model for the collection %s",
                      collection_name)
-        embeddings = None # will be replaced with actual 
-                          #embedding model after getting an API key
-        logging.info("An embedding model is created for the collection %s", 
+        embeddings = None # placeholder for embedding model
+
+        logging.info("An embedding model is created for the collection %s",
                      collection_name)
 
         vector_store = QdrantVectorStore(
@@ -55,18 +55,18 @@ class QdrantVDB(BaseVDB):
             collection_name=collection_name,
             embedding=embeddings,
         )
-        logging.info("Vector store is created for the collection %s", 
+        logging.info("Vector store is created for the collection %s",
                      collection_name)
 
         return vector_store
-    
+
     def delete_collection(self, collection_name: str):
         """Deletes the given collection in the vector storage."""
         if not self.client.check_collection(collection_name):
-            logging.info("Collection %s does not exist, nothing to delete.", 
+            logging.info("Collection %s does not exist, nothing to delete.",
                          collection_name)
             return
-   
-        logging.info("Deleting the collection %s", 
+
+        logging.info("Deleting the collection %s",
                      collection_name)
         self.client.delete_collection(collection_name)
