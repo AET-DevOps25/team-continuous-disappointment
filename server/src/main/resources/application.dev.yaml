@@ -1,0 +1,7 @@
+gitlab:
+  client-id: 60a9e442420a386f2ddff0f60ed0801dd7e826f0710507e982d5afe6aa054334
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb://admin:admin@localhost:27017/recipai
