@@ -13,7 +13,7 @@ export const router = createBrowserRouter([
       },
 
       {
-        path: "/:conversationId",
+        path: "/c/:conversationId",
         element: <PrivateRoute component={<ChatPage />} />,
       },
 
