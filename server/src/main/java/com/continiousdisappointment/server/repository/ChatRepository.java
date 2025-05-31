@@ -7,12 +7,12 @@ import java.util.UUID;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.lang.NonNull;
 
-import com.continiousdisappointment.server.model.Chat;
+import com.continiousdisappointment.server.model.ChatModel;
 
-public interface ChatRepository extends MongoRepository<Chat, UUID> {
+public interface ChatRepository extends MongoRepository<ChatModel, UUID> {
 
-    List<Chat> findByUserId(int userId);
+    List<ChatModel> findByUserId(int userId);
 
-    Optional<Chat> findById(@NonNull UUID id);
+    Optional<ChatModel> findById(@NonNull UUID id);
 
 }

@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "chats")
-public class Chat {
+public class ChatModel {
     @Id
     public UUID id;
 
@@ -32,14 +32,12 @@ public class Chat {
     @LastModifiedDate
     public Instant updatedAt;
 
-    public List<Message> messages;
+    public List<MessageModel> messages;
 
-    public Chat(UUID id, int userId, String title, Instant createdAt, Instant updatedAt) {
+    public ChatModel(UUID id, int userId, String title) {
         this.id = id;
         this.userId = userId;
         this.title = title;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
         this.messages = new ArrayList<>();
     }
 
