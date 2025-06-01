@@ -6,7 +6,7 @@ import useChat from "../hooks/useChat";
 import { classNames } from "../utils/helpers";
 
 function Layout() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const { conversations, createNewConversation, deleteConversation } =
     useChat();
   const navigate = useNavigate();
@@ -51,13 +51,22 @@ function Layout() {
 
   return (
     <div className="flex h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-      <div id="sidebar">
+      <div id="sidebar" className="relative h-full">
         <Sidebar
           conversations={conversations}
           createNewConversation={handleNewConversation}
           deleteConversation={handleDeleteConversation}
           isOpen={isSidebarOpen}
         />
+        {isSidebarOpen && (
+          <button
+            className="absolute bottom-4 right-4 p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 shadow-md transition-colors"
+            onClick={() => setIsSidebarOpen(false)}
+            aria-label="Collapse sidebar"
+          >
+            <span className="material-icons">chevron_left</span>
+          </button>
+        )}
       </div>
 
       <div
