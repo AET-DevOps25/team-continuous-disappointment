@@ -6,11 +6,11 @@ from werkzeug.utils import secure_filename
 from rag.ingestion_pipeline import IngestionPipeline
 from vector_database.qdrant_vdb import QdrantVDB
 
-from PyPDF2 import PdfReader
-
-generate_bp = Blueprint('generate', __name__)
 # Set Logging
 logging.getLogger().setLevel(logging.INFO)
+
+generate_bp = Blueprint('generate', __name__)
+
 
 @generate_bp.route('/api/upload', methods=['POST'])
 def upload_file():
@@ -28,12 +28,18 @@ def upload_file():
         # Initialize vector database
         qdrant = QdrantVDB()
         # Get vector store
-        vector_store = qdrant.create_and_get_vector_storage("recipes")
+        vector_store = qdrant.create_and_get_vector_storage(
+            "recipes"
+        )
         # Create ingestion pipeline
-        ingestion_pipeline = IngestionPipeline(vector_store=vector_store)
+        ingestion_pipeline = IngestionPipeline(
+            vector_store=vector_store
+        )
         # ingest the file
         ingestion_pipeline.ingest(file_path)
-        return jsonify({"message": "File processed successfully."}), 200
+        return (jsonify(
+            {"message": "File processed successfully."}),
+                200)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500

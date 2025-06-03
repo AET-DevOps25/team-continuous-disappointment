@@ -1,14 +1,11 @@
-import os
 from dotenv import load_dotenv
 from waitress import serve
 from flask import Flask
-from flask_cors import CORS
 from controller.generate_controller import generate_bp
 
 from config import Config
 
 app = Flask(__name__)
-CORS(app)
 app.register_blueprint(generate_bp)
 
 load_dotenv()
