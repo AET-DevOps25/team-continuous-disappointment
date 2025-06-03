@@ -1,5 +1,6 @@
 import React from "react";
-import { Menu, X, Sun, Moon } from "lucide-react";
+import { Menu, X, Sun, Moon, Utensils } from "lucide-react";
+import { Link } from "react-router-dom";
 import useTheme from "../hooks/useTheme";
 import { classNames } from "../utils/helpers";
 
@@ -35,7 +36,14 @@ const Header: React.FC<HeaderProps> = ({ isSidebarOpen, toggleSidebar }) => {
             RecipAI
           </h1>
         </div>
-        <div className="flex items-center">
+        <div className="flex items-center space-x-2">
+          <Link
+            to="/preferences"
+            className="p-2 rounded-md text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none transition-colors"
+            aria-label="Dietary Preferences"
+          >
+            <Utensils className="h-5 w-5" />
+          </Link>
           <button
             onClick={toggleTheme}
             className="p-2 rounded-md text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none transition-colors"
