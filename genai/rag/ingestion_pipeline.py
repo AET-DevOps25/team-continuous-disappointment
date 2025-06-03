@@ -36,6 +36,8 @@ class IngestionPipeline:
     def ingest(self, file_path: str):
         """Ingestion method to load, chunk, and store pdf data"""
         unchunked_docs = self.load_document(file_path)
+        logging.info("Documents are loaded")
         chunked_docs = self.chunk_documents(unchunked_docs)
+        logging.info("Documents are chunked")
         self.store_documents(chunked_docs)
         logging.info("Ingested %s chunks into Qdrant.", len(chunked_docs))
