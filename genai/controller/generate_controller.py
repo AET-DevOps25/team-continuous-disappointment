@@ -14,18 +14,24 @@ logging.getLogger().setLevel(logging.INFO)
 
 @generate_bp.route('/api/upload', methods=['POST'])
 def upload_file():
+    """API endpoint for uploading a file to ingest it"""
     file = request.files.get('file')
     if not file:
         return jsonify({"error": "No file provided"}), 400
 
+    # Store in tmp
     filename = secure_filename(file.filename)
     file_path = os.path.join("/tmp", filename)
     file.save(file_path)
 
     try:
+        # Initialize vector database
         qdrant = QdrantVDB()
-        vector_storage = qdrant.create_and_get_vector_storage("recipes")
-        ingestion_pipeline = IngestionPipeline(vector_store=vector_storage)
+        # Get vector store
+        vector_store = qdrant.create_and_get_vector_storage("recipes")
+        # Create ingestion pipeline
+        ingestion_pipeline = IngestionPipeline(vector_store=vector_store)
+        # ingest the file
         ingestion_pipeline.ingest(file_path)
         return jsonify({"message": "File processed successfully."}), 200
 
@@ -33,6 +39,7 @@ def upload_file():
         return jsonify({"error": str(e)}), 500
 
     finally:
+        # Remove the file after we are done with it
         os.remove(file_path)
 
 
