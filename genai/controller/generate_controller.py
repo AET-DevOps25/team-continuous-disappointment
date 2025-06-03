@@ -1,6 +1,39 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
+import os
+import logging
+from werkzeug.utils import secure_filename
+
+from rag.ingestion_pipeline import IngestionPipeline
+from vector_database.qdrant_vdb import QdrantVDB
+
+from PyPDF2 import PdfReader
 
 generate_bp = Blueprint('generate', __name__)
+# Set Logging
+logging.getLogger().setLevel(logging.INFO)
+
+@generate_bp.route('/api/upload', methods=['POST'])
+def upload_file():
+    file = request.files.get('file')
+    if not file:
+        return jsonify({"error": "No file provided"}), 400
+
+    filename = secure_filename(file.filename)
+    file_path = os.path.join("/tmp", filename)
+    file.save(file_path)
+
+    try:
+        qdrant = QdrantVDB()
+        vector_storage = qdrant.create_and_get_vector_storage("recipes")
+        ingestion_pipeline = IngestionPipeline(vector_store=vector_storage)
+        ingestion_pipeline.ingest(file_path)
+        return jsonify({"message": "File processed successfully."}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+    finally:
+        os.remove(file_path)
 
 
 @generate_bp.route('/api/generate', methods=['POST'])

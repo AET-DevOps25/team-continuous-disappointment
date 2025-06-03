@@ -21,6 +21,8 @@ services:
     restart: unless-stopped
     env_file:
       - ./genai/.env
+    volumes:
+      - ./genai:/app
 
   qdrant-service:
     image: qdrant/qdrant
