@@ -45,7 +45,7 @@ class QdrantVDB(BaseVDB):
                 vectors_config=VectorParams(
                     size=1536,
                     distance=Distance.COSINE
-                    ),
+                    )
             )
 
         logging.info("Creating an embedding model for the collection %s",
@@ -80,13 +80,14 @@ class QdrantVDB(BaseVDB):
         self.client.delete_collection(collection_name)
 
     def collection_contains_file(self, client, collection_name: str, filename: str) -> bool:
-        """Returns true if any document in the collection has the given source_pdf filename."""
+        """Returns true if any document in the collection
+        has the given source_pdf filename."""
         response = client.scroll(
             collection_name=collection_name,
             scroll_filter=Filter(
                 must=[
                     FieldCondition(
-                        key="source_pdf",
+                        key="metadata.source",
                         match=MatchValue(value=filename)
                     )
                 ]
