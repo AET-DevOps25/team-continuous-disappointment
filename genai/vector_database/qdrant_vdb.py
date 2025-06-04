@@ -98,4 +98,3 @@ class QdrantVDB(BaseVDB):
             limit=1
         )
         return len(response[0]) > 0
-
