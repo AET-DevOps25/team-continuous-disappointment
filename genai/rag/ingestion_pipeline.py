@@ -10,6 +10,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 # Set Logging
 logging.getLogger().setLevel(logging.INFO)
 
+
 class IngestionPipeline:
     """Ingestion Pipeline Class for the RAG Orchestrator"""
 
