@@ -15,17 +15,19 @@ class IngestionPipeline:
 
     def __init__(self, vector_store: QdrantVectorStore):
         self.vector_store = vector_store
-        
+
     def load_document(self, file_path: str) -> List[Document]:
         """Load a PDF document from the given file path"""
         loader = PyPDFLoader(file_path)
         docs = loader.load()
         return docs
-    
-    def chunk_documents(self, docs: List[Document], filename: str) -> List[Document]:
-        """Chunk documents into smaller pieces for better processing and storage."""
+
+    def chunk_documents(self, docs: List[Document],
+                        filename: str) -> List[Document]:
+        """Chunk documents into smaller pieces for
+        better processing and storage."""
         text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size= 1000,
+            chunk_size=1000,
             chunk_overlap=100
         )
         chunked_docs = text_splitter.split_documents(docs)
@@ -34,7 +36,7 @@ class IngestionPipeline:
                      metadata={**chunk.metadata, "source": filename})
             for chunk in chunked_docs
         ]
-        
+
     def store_documents(self, docs: List[Document]):
         """Store all chunks in vector database"""
         uuids = [str(uuid4()) for _ in range(len(docs))]

@@ -50,9 +50,10 @@ class QdrantVDB(BaseVDB):
 
         logging.info("Creating an embedding model for the collection %s",
                      collection_name)
-        
+
         embeddings = OpenAIEmbeddings(
-            model="text-embedding-3-small", openai_api_key=Config.api_key_openai
+            model="text-embedding-3-small",
+            openai_api_key=Config.api_key_openai
         )
 
         logging.info("An embedding model is created for the collection %s",
@@ -79,7 +80,9 @@ class QdrantVDB(BaseVDB):
                      collection_name)
         self.client.delete_collection(collection_name)
 
-    def collection_contains_file(self, client, collection_name: str, filename: str) -> bool:
+    def collection_contains_file(self, client,
+                                 collection_name: str,
+                                 filename: str) -> bool:
         """Returns true if any document in the collection
         has the given source_pdf filename."""
         response = client.scroll(
@@ -95,4 +98,4 @@ class QdrantVDB(BaseVDB):
             limit=1
         )
         return len(response[0]) > 0
-    
+
