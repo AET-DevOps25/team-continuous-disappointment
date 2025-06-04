@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useAuth as useOAuth } from "react-oidc-context";
 import { useNavigate } from "react-router-dom";
 
-function LandingPage() {
+function LoginPage() {
   const auth = useOAuth();
   const navigate = useNavigate();
 
@@ -42,4 +42,4 @@ function LandingPage() {
   );
 }
 
-export default LandingPage;
+export default LoginPage;
