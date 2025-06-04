@@ -6,6 +6,8 @@ from qdrant_client.models import VectorParams, Distance
 from langchain_qdrant import QdrantVectorStore
 from langchain_openai import OpenAIEmbeddings
 
+from qdrant_client.http.models import Filter, FieldCondition, MatchValue
+
 from config import Config
 
 # Set Logging
@@ -76,4 +78,20 @@ class QdrantVDB(BaseVDB):
         logging.info("Deleting the collection %s",
                      collection_name)
         self.client.delete_collection(collection_name)
+
+    def collection_contains_file(self, client, collection_name: str, filename: str) -> bool:
+        """Returns true if any document in the collection has the given source_pdf filename."""
+        response = client.scroll(
+            collection_name=collection_name,
+            scroll_filter=Filter(
+                must=[
+                    FieldCondition(
+                        key="source_pdf",
+                        match=MatchValue(value=filename)
+                    )
+                ]
+            ),
+            limit=1
+        )
+        return len(response[0]) > 0
     
