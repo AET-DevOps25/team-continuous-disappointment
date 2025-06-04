@@ -12,7 +12,7 @@ logging.getLogger().setLevel(logging.INFO)
 generate_bp = Blueprint('generate', __name__)
 
 
-@generate_bp.route('/api/upload', methods=['POST'])
+@generate_bp.route('/genai/upload', methods=['POST'])
 def upload_file():
     """API endpoint for uploading a file to ingest it"""
     logging.info("Upload API endpoint is called")

@@ -29,3 +29,6 @@ services:
   client: client-service
   server: server-service
   genai: genai-service
+
+secrets:
+  gitlabClientSecret: "set in CI pipeline"  # will be overridden

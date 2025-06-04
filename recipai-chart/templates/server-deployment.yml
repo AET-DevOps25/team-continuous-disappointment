@@ -21,6 +21,12 @@ spec:
         ports:
           - containerPort:  {{ .Values.ports.server }}
             name: server-api
+        env:
+          - name: GITLAB_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: server-secret
+                key: gitlab-client-secret
         resources:
           limits:
             cpu: {{ .Values.resources.limits.cpu }}

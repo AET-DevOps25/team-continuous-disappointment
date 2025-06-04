@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import { CheckCircle, XCircle, Loader2 } from "lucide-react";
+import { useAuth } from "../hooks/useAuth";
 
 const UploadRecipe: React.FC = () => {
-  const [status, setStatus] = useState<"idle" | "uploading" | "success" | "error">("idle");
+  const [status, setStatus] = useState<
+    "idle" | "uploading" | "success" | "error"
+  >("idle");
 
+  const { user } = useAuth(); // Assuming you have a useAuth hook to get user info
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -14,9 +18,13 @@ const UploadRecipe: React.FC = () => {
     formData.append("file", file);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_GENAI_URL}/api/upload`, {
+      const response = await fetch("/api/genai/upload", {
         method: "POST",
         body: formData,
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${user?.token}`,
+        },
       });
 
       if (!response.ok) throw new Error("Upload failed");
