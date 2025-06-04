@@ -7,7 +7,7 @@ const UploadRecipe: React.FC = () => {
     "idle" | "uploading" | "success" | "error"
   >("idle");
 
-  const { user } = useAuth(); // Assuming you have a useAuth hook to get user info
+  const { user } = useAuth();
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -22,7 +22,6 @@ const UploadRecipe: React.FC = () => {
         method: "POST",
         body: formData,
         headers: {
-          "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${user?.token}`,
         },
       });
