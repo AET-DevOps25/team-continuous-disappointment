@@ -1,15 +1,18 @@
 import { useState } from "react";
 import { useAuth as useOAuth } from "react-oidc-context";
+import { useNavigate } from "react-router-dom";
 
 export const useAuth = () => {
   const auth = useOAuth();
+  const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
 
   if (auth.isLoading) {
     return { user, isLoading: auth.isLoading, signout: auth.signoutRedirect };
   }
+
   if (!auth.user || auth.user.expired) {
-    auth.signinRedirect();
+    navigate("/login");
   }
 
   if (auth.user?.access_token && !user) {

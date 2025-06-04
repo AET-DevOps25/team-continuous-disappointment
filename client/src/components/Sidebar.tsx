@@ -17,7 +17,6 @@ const Sidebar: React.FC<SidebarProps> = ({
   isOpen,
 }) => {
   const { conversationId } = useParams();
-  console.log(isOpen);
 
   return (
     <aside
