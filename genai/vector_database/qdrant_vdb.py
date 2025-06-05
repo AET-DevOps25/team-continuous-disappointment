@@ -4,6 +4,11 @@ from .base_vdb import BaseVDB
 from qdrant_client import QdrantClient
 from qdrant_client.models import VectorParams, Distance
 from langchain_qdrant import QdrantVectorStore
+from langchain_openai import OpenAIEmbeddings
+
+from qdrant_client.http.models import Filter, FieldCondition, MatchValue
+
+from config import Config
 
 # Set Logging
 logging.getLogger().setLevel(logging.INFO)
@@ -18,9 +23,9 @@ class QdrantVDB(BaseVDB):
 
     def get_vector_database(self, host: str):
         """Returns the Qdrant vector database instance."""
-        return QdrantClient(host=host)
+        return QdrantClient(url=host)
 
-    def create_vector_storage(self, collection_name: str):
+    def create_and_get_vector_storage(self, collection_name: str):
         """Creates a vector storage with the given
         collection name in Qdrant."""
 
@@ -38,14 +43,18 @@ class QdrantVDB(BaseVDB):
             self.client.create_collection(
                 collection_name=collection_name,
                 vectors_config=VectorParams(
-                    size=3072,
+                    size=1536,
                     distance=Distance.COSINE
-                    ),
+                    )
             )
 
         logging.info("Creating an embedding model for the collection %s",
                      collection_name)
-        embeddings = None  # placeholder for embedding model
+
+        embeddings = OpenAIEmbeddings(
+            model="text-embedding-3-small",
+            openai_api_key=Config.api_key_openai
+        )
 
         logging.info("An embedding model is created for the collection %s",
                      collection_name)
@@ -70,3 +79,22 @@ class QdrantVDB(BaseVDB):
         logging.info("Deleting the collection %s",
                      collection_name)
         self.client.delete_collection(collection_name)
+
+    def collection_contains_file(self, client,
+                                 collection_name: str,
+                                 filename: str) -> bool:
+        """Returns true if any document in the collection
+        has the given source_pdf filename."""
+        response = client.scroll(
+            collection_name=collection_name,
+            scroll_filter=Filter(
+                must=[
+                    FieldCondition(
+                        key="metadata.source",
+                        match=MatchValue(value=filename)
+                    )
+                ]
+            ),
+            limit=1
+        )
+        return len(response[0]) > 0

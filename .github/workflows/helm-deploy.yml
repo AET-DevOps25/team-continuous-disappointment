@@ -23,5 +23,6 @@ jobs:
           chmod 600 ~/.kube/config
 
       - name: Deploy with Helm
-        run: helm -n team-disappointment upgrade recip-ai ./recipai-chart # assuming there is already a chart in the cluster
+        run: helm -n team-continuous-disappointment upgrade recip-ai ./recipai-chart \
+          --set secrets.gitlabClientSecret="${{ secrets.PROD_CLIENT_SECRET }}"
 

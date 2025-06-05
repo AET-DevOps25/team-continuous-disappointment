@@ -2,6 +2,7 @@ import React from "react";
 import { Plus, MessageSquare, Trash2 } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import { formatTimestamp, classNames } from "../utils/helpers";
+import UploadRecipe from "./UploadRecipe";
 
 interface SidebarProps {
   conversations: Conversation[];
@@ -75,6 +76,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           ))}
         </div>
       </div>
+      <UploadRecipe />
     </aside>
   );
 };
