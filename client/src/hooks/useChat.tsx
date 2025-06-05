@@ -35,7 +35,6 @@ export default function useChat() {
 
   const deleteConversation = useCallback(
     (conversationId: string) => {
-      // Implement deletion logic here if needed
       deleteChat({ conversationId });
     },
     [deleteChat]
