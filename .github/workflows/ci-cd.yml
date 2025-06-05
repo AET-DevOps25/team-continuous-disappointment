@@ -221,7 +221,7 @@ jobs:
   helm-deploy:
     needs: [detect-changes, docker-release-genai, docker-release-server, docker-release-client]
     if: |
-      github.ref == 'refs/heads/main'
+      always() && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
