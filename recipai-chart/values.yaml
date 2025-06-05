@@ -29,6 +29,13 @@ services:
   client: client-service
   server: server-service
   genai: genai-service
+  mongodb: mongodb-service
 
+db:
+  adminUsername: admin
+  storage: 4Gi
+
+# will be overridden
 secrets:
-  gitlabClientSecret: "set in CI pipeline"  # will be overridden
+  gitlabClientSecret: "set in CI pipeline"
+  mongodbAdminPassword: "set in CI pipeline"
