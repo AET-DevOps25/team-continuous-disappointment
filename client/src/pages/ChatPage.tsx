@@ -18,17 +18,18 @@ function ChatPage() {
   useEffect(() => {
     if (conversationId) {
       const conversation = conversations.find((c) => c.id === conversationId);
+      // console.log(conversations);
       if (conversation) {
         setActiveConversationId(conversationId);
       } else {
         // If conversation doesn't exist, redirect to the first conversation
-        navigate(`/c/${conversations[0].id}`);
+        // navigate(`/c/${conversations[0].id}`);
       }
     }
   }, [conversationId, conversations, navigate, setActiveConversationId]);
 
   const handleSendMessage = (content: string) => {
-    addMessage(content, "user");
+    addMessage(content);
   };
 
   if (!activeConversation) {

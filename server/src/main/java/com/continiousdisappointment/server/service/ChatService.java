@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import com.continiousdisappointment.server.domain.chat.Chat;
+import com.continiousdisappointment.server.domain.chat.Message;
 import com.continiousdisappointment.server.domain.chat.Role;
 import com.continiousdisappointment.server.model.ChatModel;
 import com.continiousdisappointment.server.model.MessageModel;
@@ -58,18 +59,18 @@ public class ChatService {
         chatRepository.delete(chatModel);
     }
 
-    public Chat addMessageToChat(int userId, String chatId, String content, String role) {
+    public Message addMessageToChat(int userId, String chatId, String content, Role role) {
         var chatModel = chatRepository.findById(UUID.fromString(chatId))
                 .orElseThrow(() -> new IllegalArgumentException("Chat not found"));
         assertChatBelongsToUser(chatModel, userId);
 
         var messageModel = new MessageModel(
                 content,
-                Role.valueOf(role.toUpperCase()));
+                role);
 
         chatModel.getMessages().add(messageModel);
         chatRepository.save(chatModel);
-        return Chat.fromDom(chatModel);
+        return Message.fromDom(messageModel);
     }
 
     private void assertChatBelongsToUser(ChatModel chatModel, int userId) {

@@ -1,9 +1,9 @@
 import { createBrowserRouter } from "react-router-dom";
 import Layout from "../pages/Layout";
-import { PrivateRoute } from "./PrivateRoute";
 import ChatPage from "../pages/ChatPage";
 import LoginPage from "../pages/LoginPage";
 import PreferencesPage from "../pages/PreferencesPage";
+import { UserContextProvider } from "../contexts/userContext";
 
 export const router = createBrowserRouter([
   {
@@ -12,19 +12,23 @@ export const router = createBrowserRouter([
   },
   {
     path: "/",
-    element: <Layout />,
+    element: (
+      <UserContextProvider>
+        <Layout />
+      </UserContextProvider>
+    ),
     children: [
       {
         path: "",
-        element: <PrivateRoute component={<ChatPage />} />,
+        element: <ChatPage />,
       },
       {
         path: "c/:conversationId",
-        element: <PrivateRoute component={<ChatPage />} />,
+        element: <ChatPage />,
       },
       {
         path: "preferences",
-        element: <PrivateRoute component={<PreferencesPage />} />,
+        element: <PreferencesPage />,
       },
       { path: "*", element: <div>404</div> },
     ],
