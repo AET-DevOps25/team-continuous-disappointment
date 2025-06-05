@@ -7,9 +7,11 @@ import com.continiousdisappointment.server.domain.chat.Role;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class MessageModel {
     public UUID id;
     public String content;

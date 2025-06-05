@@ -38,8 +38,8 @@ function App() {
     };
   }, [isSidebarOpen]);
 
-  const handleNewConversation = () => {
-    const newConversation = createNewConversation();
+  const handleNewConversation = async () => {
+    const newConversation = await createNewConversation();
     navigate(`/c/${newConversation.id}`);
   };
 

@@ -4,7 +4,7 @@ declare global {
     id: string;
     content: string;
     timestamp: Date;
-    role: "user" | "assistant";
+    role: "USER" | "ASSISTANT";
   };
 
   type Conversation = {

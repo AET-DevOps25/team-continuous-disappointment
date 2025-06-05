@@ -39,6 +39,8 @@ public class ChatModel {
         this.userId = userId;
         this.title = title;
         this.messages = new ArrayList<>();
+        this.createdAt = Instant.now();
+        this.updatedAt = Instant.now();
     }
 
 }
