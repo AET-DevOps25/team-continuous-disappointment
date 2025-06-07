@@ -22,6 +22,13 @@ spec:
           - containerPort:  {{ .Values.ports.server }}
             name: server-api
         env:
+          - name: MONGODB_USERNAME
+            value: {{ .Values.db.adminUsername }}
+          - name: MONGODB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: server-secret
+                key: mongodb-password
           - name: GITLAB_CLIENT_SECRET
             valueFrom:
               secretKeyRef:
