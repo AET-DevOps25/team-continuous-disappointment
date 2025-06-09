@@ -1,14 +1,14 @@
 import logging
 
-from .base_vdb import BaseVDB
 from qdrant_client import QdrantClient
 from qdrant_client.models import VectorParams, Distance
+from qdrant_client.http.models import Filter, FieldCondition, MatchValue
+
 from langchain_qdrant import QdrantVectorStore
 from langchain_openai import OpenAIEmbeddings
 
-from qdrant_client.http.models import Filter, FieldCondition, MatchValue
-
-from config import Config
+from genai.config import Config
+from .base_vdb import BaseVDB
 
 # Set Logging
 logging.getLogger().setLevel(logging.INFO)
@@ -71,7 +71,7 @@ class QdrantVDB(BaseVDB):
 
     def delete_collection(self, collection_name: str):
         """Deletes the given collection in the vector storage."""
-        if not self.client.check_collection(collection_name):
+        if not self.client.collection_exists(collection_name):
             logging.info("Collection %s does not exist, nothing to delete.",
                          collection_name)
             return

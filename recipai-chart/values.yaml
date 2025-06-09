@@ -30,10 +30,15 @@ services:
   server: server-service
   genai: genai-service
   mongodb: mongodb-service
+  qdrant: qdrant-service
 
 db:
   adminUsername: admin
   storage: 4Gi
+
+# qdrant vector db
+vdb:
+  storage: 1Gi
 
 # will be overridden
 secrets:
