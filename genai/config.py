@@ -9,11 +9,13 @@ ConfigT = namedtuple(
     "Config",
     [
         "api_key_openai",
-        "waitress"
+        "waitress",
+        "api_openwebui"
     ],
 )
 
 Config = ConfigT(
     api_key_openai=environ.get("API_SECRET_OPENAI_MINE"),
     waitress=environ.get("USE_WAITRESS", "false").lower() == "true",
+    api_openwebui=environ.get("API_OPENWEBUI")
 )

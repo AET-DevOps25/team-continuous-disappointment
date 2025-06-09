@@ -3,11 +3,22 @@ import os
 import logging
 from werkzeug.utils import secure_filename
 
-from rag.ingestion_pipeline import IngestionPipeline
-from vector_database.qdrant_vdb import QdrantVDB
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.messages import HumanMessage
+
+from genai.rag.ingestion_pipeline import IngestionPipeline
+from genai.vector_database.qdrant_vdb import QdrantVDB
+from genai.rag.llm.chat_model import ChatModel
+
 
 # Set Logging
 logging.getLogger().setLevel(logging.INFO)
+
+# Set ChatModel
+llm = ChatModel(model_name="llama3.3:latest")
+
+# Set Vector Database
+qdrant = QdrantVDB()
 
 generate_bp = Blueprint('generate', __name__)
 
@@ -31,8 +42,6 @@ def upload_file():
 
     try:
         collection_name = "recipes"
-        # Initialize vector database
-        qdrant = QdrantVDB()
         # Check if the file already in the collection
         if (qdrant.client.collection_exists(collection_name)
                 and qdrant.collection_contains_file(
@@ -69,6 +78,47 @@ def upload_file():
         os.remove(file_path)
 
 
-@generate_bp.route('/api/generate', methods=['POST'])
+@generate_bp.route('/genai/generate', methods=['POST'])
 def generate():
-    return jsonify({'output': 'Hello World!'})
+    data = request.get_json()
+
+    if not data or "query" not in data or "conversation_id" not in data:
+        return jsonify({"error": "Missing 'query' or 'conversation_id'"}), 400
+
+    query = data["query"]
+    conversation_id = data["conversation_id"] # will be used
+
+    try:
+        collection_name = "recipes"
+
+        if qdrant.client.collection_exists(collection_name):
+            # Get vector store
+            vector_store = qdrant.create_and_get_vector_storage(
+                collection_name
+            )
+
+            # Retrieve 5 similar documents
+            retriever = vector_store.as_retriever(search_kwargs={"k": 5})
+            retrieved_docs = retriever.invoke(query)
+            docs_content = "\n\n".join(doc.page_content for doc in retrieved_docs)
+
+            # Prepare prompt
+            prompt_template = ChatPromptTemplate([
+                ("system", "You are a helpful assistant for recipe generation based on the given ingredients and the following context:\n\n{context}"),
+                MessagesPlaceholder("msgs")
+            ])
+
+            prompt = prompt_template.invoke({
+                "context": docs_content,
+                "msgs": HumanMessage(content=query)
+            })
+            
+            response = llm.invoke(prompt)
+            return jsonify({
+                "response": response.content,
+            }), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
