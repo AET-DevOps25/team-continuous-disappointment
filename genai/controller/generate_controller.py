@@ -112,6 +112,7 @@ def generate():
             prompt = prepare_prompt(query, retrieved_docs, messages)
 
             response = llm.invoke(prompt)
+
             return jsonify({
                 "response": response.content,
             }), 200
