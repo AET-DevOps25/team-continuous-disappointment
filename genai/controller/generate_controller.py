@@ -3,12 +3,10 @@ import os
 import logging
 from werkzeug.utils import secure_filename
 
-from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from langchain_core.messages import HumanMessage
-
 from genai.rag.ingestion_pipeline import IngestionPipeline
 from genai.vector_database.qdrant_vdb import QdrantVDB
 from genai.rag.llm.chat_model import ChatModel
+from genai.service.rag_service import retrieve_similar_docs, prepare_prompt
 
 
 # Set Logging
@@ -80,13 +78,25 @@ def upload_file():
 
 @generate_bp.route('/genai/generate', methods=['POST'])
 def generate():
+    """API Endpoint for generating recipe responses based on document retrieval.
+    
+    This endpoint processes user queries against a vector database of recipes and returns
+    AI-generated responses using retrieved context.
+    
+    Request Body:
+        query (str): The user's recipe-related query
+        conversation_id (str): Unique identifier for the conversation thread
+    
+    Returns:
+        JSON response containing the generated recipe response or error message
+    """
     data = request.get_json()
 
     if not data or "query" not in data or "conversation_id" not in data:
         return jsonify({"error": "Missing 'query' or 'conversation_id'"}), 400
 
     query = data["query"]
-    conversation_id = data["conversation_id"] # will be used
+    #conversation_id = data["conversation_id"] # will be used in the future
 
     try:
         collection_name = "recipes"
@@ -96,23 +106,11 @@ def generate():
             vector_store = qdrant.create_and_get_vector_storage(
                 collection_name
             )
+            #todo: retrieve messages from chat history as BaseMessage
+            messages = []
+            retrieved_docs = retrieve_similar_docs(vector_store, query)
+            prompt = prepare_prompt(query, retrieved_docs, messages)
 
-            # Retrieve 5 similar documents
-            retriever = vector_store.as_retriever(search_kwargs={"k": 5})
-            retrieved_docs = retriever.invoke(query)
-            docs_content = "\n\n".join(doc.page_content for doc in retrieved_docs)
-
-            # Prepare prompt
-            prompt_template = ChatPromptTemplate([
-                ("system", "You are a helpful assistant for recipe generation based on the given ingredients and the following context:\n\n{context}"),
-                MessagesPlaceholder("msgs")
-            ])
-
-            prompt = prompt_template.invoke({
-                "context": docs_content,
-                "msgs": HumanMessage(content=query)
-            })
-            
             response = llm.invoke(prompt)
             return jsonify({
                 "response": response.content,
@@ -120,5 +118,3 @@ def generate():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-
