@@ -78,15 +78,15 @@ def upload_file():
 
 @generate_bp.route('/genai/generate', methods=['POST'])
 def generate():
-    """API Endpoint for generating recipe responses based on document retrieval.
-    
-    This endpoint processes user queries against a vector database of recipes and returns
-    AI-generated responses using retrieved context.
-    
+    """API Endpoint for generating recipe response based on document retrieval
+
+    This endpoint processes user queries against a vector database of recipes 
+    and returns AI-generated responses using retrieved context.
+
     Request Body:
         query (str): The user's recipe-related query
         conversation_id (str): Unique identifier for the conversation thread
-    
+
     Returns:
         JSON response containing the generated recipe response or error message
     """
@@ -96,7 +96,7 @@ def generate():
         return jsonify({"error": "Missing 'query' or 'conversation_id'"}), 400
 
     query = data["query"]
-    #conversation_id = data["conversation_id"] # will be used in the future
+    # conversation_id = data["conversation_id"] # will be used in the future
 
     try:
         collection_name = "recipes"
@@ -106,10 +106,15 @@ def generate():
             vector_store = qdrant.create_and_get_vector_storage(
                 collection_name
             )
-            #todo: retrieve messages from chat history as BaseMessage
+            # todo: retrieve messages from chat history as BaseMessage
             messages = []
             retrieved_docs = retrieve_similar_docs(vector_store, query)
-            prompt = prepare_prompt(query, retrieved_docs, messages)
+            prompt = prepare_prompt(
+                llm.get_system_prompt(),
+                query,
+                retrieved_docs,
+                messages
+                )
 
             response = llm.invoke(prompt)
 

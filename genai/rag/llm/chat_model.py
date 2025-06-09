@@ -10,24 +10,39 @@ from genai.service.openwebui_service import generate_response
 class ChatModel(BaseChatModel):
     model_name: str = Field(default="llama3.3:latest")
 
-    def _generate(self, messages: List[BaseMessage], stop=None, **kwargs) -> ChatResult:
-        prompt = "\n".join([msg.content for msg in messages if isinstance(msg, HumanMessage)])
+    def _generate(self, messages: List[BaseMessage],
+                  stop=None, 
+                  **kwargs) -> ChatResult:
+        prompt = "\n".join([
+            msg.content for msg in messages if isinstance(msg, HumanMessage)
+            ])
         response_text = generate_response(self.model_name, prompt)
 
         return ChatResult(
-            generations=[ChatGeneration(message=AIMessage(content=response_text))]
+            generations=[
+                ChatGeneration(message=AIMessage(content=response_text))
+                ]
         )
 
     @property
     def _llm_type(self) -> str:
         return "recipai-custom-model"
 
-# For Testing purposes 
-# if __name__ == "__main__":
-#     llm = ChatModel(model_name="llama3.3:latest")
+    def get_system_prompt(self) -> str:
+        """System prompt for the LLM"""
+        return """
+            You are RecipAI, an intelligent assistant that helps users discover and generate 
+            recipes based on the ingredients they provide. 
+            
+            Use the contextual information provided below to tailor your responses. 
+            
+            If relevant recipes or suggestions are found in the context, prioritize 
+            those. If no relevant context is available, use your own knowledge to help the user.
 
-#     message = HumanMessage(content="What is langchain, explain very briefly?")
+            Context:
+            {context}
 
-#     response = llm.invoke([message])
-
-#     print("LLM response:\n", response.content)
+            Be clear, creative, and helpful. If the user also asks follow-up 
+            questions (e.g., dietary adjustments, name references, meal timing), 
+            answer them precisely based on the context and query.
+            """

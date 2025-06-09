@@ -4,8 +4,9 @@ from genai.config import Config
 
 BASE_URL = "https://gpu.aet.cit.tum.de/"
 
+
 def generate_response(model_name: str, prompt: str):
-    """Making a POST request to the respective endpoint for 
+    """Making a POST request to the respective endpoint for
     response generation by an LLM"""
     url = f"{BASE_URL}/api/chat/completions"
 
@@ -18,7 +19,7 @@ def generate_response(model_name: str, prompt: str):
         "model": model_name,
         "messages": [
             {
-                "role": "user", 
+                "role": "user",
                 "content": prompt
                 }
             ]
@@ -35,7 +36,9 @@ def generate_response(model_name: str, prompt: str):
         return response.json()["choices"][0]["message"]["content"]
 
     except requests.exceptions.HTTPError as e:
-        raise RuntimeError(f"HTTP error from LLM server: {e} (status {response.status_code})") from e
+        raise RuntimeError(
+            f"HTTP error from LLM server: {e}, {response.status_code})"
+            ) from e
     except requests.exceptions.Timeout as e:
         raise RuntimeError(f"Request to LLM timed out: {e}") from e
     except requests.exceptions.RequestException as e:
