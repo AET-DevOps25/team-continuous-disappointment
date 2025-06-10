@@ -80,7 +80,7 @@ def upload_file():
 def generate():
     """API Endpoint for generating recipe response based on document retrieval
 
-    This endpoint processes user queries against a vector database of recipes 
+    This endpoint processes user queries against a vector database of recipes
     and returns AI-generated responses using retrieved context.
 
     Request Body:

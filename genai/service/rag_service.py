@@ -3,7 +3,7 @@ from typing import List
 from langchain_qdrant import QdrantVectorStore
 from langchain_core.messages import BaseMessage, HumanMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from genai.rag.llm.chat_model import ChatModel
+# from genai.rag.llm.chat_model import ChatModel
 
 
 def retrieve_similar_docs(vector_store: QdrantVectorStore, user_query: str):
@@ -37,6 +37,9 @@ def prepare_prompt(system_prompt: str,
 # if __name__ == "__main__":
 #     msg = HumanMessage(content="My name is John Doe.")
 #     llm = ChatModel()
-#     prompt = prepare_prompt(llm.get_system_prompt(), "Suggest me a basic breakfast. Btw, what is my name?", "", [msg])
+#     prompt = prepare_prompt(llm.get_system_prompt(), 
+#                             "Suggest me a basic breakfast. Btw, what is my name?",
+#                             "", 
+#                             [msg])
 #     response = llm.invoke(prompt)
 #     print(response.content)
