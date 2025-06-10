@@ -29,7 +29,7 @@ spec:
               cpu: "500m"
           env:
             - name: MONGO_HOST
-            - value: {{ .Values.services.mongodb }}:27017
+              value: {{ .Values.services.mongodb }}:27017
             - name: MONGO_USERNAME
               value: {{ .Values.db.adminUsername }}
             - name: MONGO_PASSWORD
