@@ -90,8 +90,8 @@ def generate():
         messages (List[Dict]): Full conversation history, each with 'role' and 'content'
             Example:
             [
-                {"role": "user", "content": "I have eggs and tomatoes."},
-                {"role": "assistant", "content": "You could make shakshuka."}
+                {"role": "USER", "content": "I have eggs and tomatoes."},
+                {"role": "ASSISTANT", "content": "You could make shakshuka."}
             ]
 
     Returns:

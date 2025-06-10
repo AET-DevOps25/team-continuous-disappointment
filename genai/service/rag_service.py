@@ -33,6 +33,7 @@ def prepare_prompt(system_prompt: str,
 
     return prompt
 
+
 def process_raw_messages(raw_messages: List[Dict]) -> List[BaseMessage]:
     """Turns raw messages into BaseMessages, so they can be passed into LLM"""
     processed_messages = []
@@ -40,10 +41,10 @@ def process_raw_messages(raw_messages: List[Dict]) -> List[BaseMessage]:
         role = msg.get("role")
         content = msg.get("content")
 
-        if role == "user":
+        if role.upper() == "USER":
             processed_messages.append(HumanMessage(content=content))
 
-        elif role == "assistant":
+        elif role.upper() == "ASSISTANT":
             processed_messages.append(AIMessage(content=content))
 
     return processed_messages
