@@ -37,9 +37,9 @@ def prepare_prompt(system_prompt: str,
 # if __name__ == "__main__":
 #     msg = HumanMessage(content="My name is John Doe.")
 #     llm = ChatModel()
-#     prompt = prepare_prompt(llm.get_system_prompt(), 
-#                             "Suggest me a basic breakfast. Btw, what is my name?",
-#                             "", 
+#     prompt = prepare_prompt(llm.get_system_prompt(),
+#                             "Suggest me a basic breakfast.",
+#                             "",
 #                             [msg])
 #     response = llm.invoke(prompt)
 #     print(response.content)
