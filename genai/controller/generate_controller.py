@@ -6,7 +6,11 @@ from werkzeug.utils import secure_filename
 from genai.rag.ingestion_pipeline import IngestionPipeline
 from genai.vector_database.qdrant_vdb import QdrantVDB
 from genai.rag.llm.chat_model import ChatModel
-from genai.service.rag_service import retrieve_similar_docs, prepare_prompt, process_raw_messages
+from genai.service.rag_service import (
+    retrieve_similar_docs,
+    prepare_prompt,
+    process_raw_messages
+    )
 
 
 # Set Logging
@@ -87,7 +91,8 @@ def generate():
 
     Request Body:
         query (str): The user's recipe-related query
-        messages (List[Dict]): Full conversation history, each with 'role' and 'content'
+        messages (List[Dict]): Full conversation history,
+        each with 'role' and 'content'
             Example:
             [
                 {"role": "USER", "content": "I have eggs and tomatoes."},
