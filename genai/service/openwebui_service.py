@@ -2,7 +2,7 @@ import requests
 
 from genai.config import Config
 
-BASE_URL = "https://gpu.aet.cit.tum.de/"
+BASE_URL = Config.base_url
 
 
 def generate_response(model_name: str, prompt: str):

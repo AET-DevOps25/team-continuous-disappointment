@@ -14,7 +14,10 @@ class ChatModel(BaseChatModel):
                   stop=None,
                   **kwargs) -> ChatResult:
         prompt = "\n".join([
-            msg.content for msg in messages if isinstance(msg, HumanMessage)
+            f"User: {m.content}" if isinstance(m, HumanMessage)
+            else f"Assistant: {m.content}" if isinstance(m, AIMessage)
+            else ""
+            for m in messages
             ])
         response_text = generate_response(self.model_name, prompt)
 

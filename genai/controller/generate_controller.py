@@ -6,7 +6,7 @@ from werkzeug.utils import secure_filename
 from genai.rag.ingestion_pipeline import IngestionPipeline
 from genai.vector_database.qdrant_vdb import QdrantVDB
 from genai.rag.llm.chat_model import ChatModel
-from genai.service.rag_service import retrieve_similar_docs, prepare_prompt
+from genai.service.rag_service import retrieve_similar_docs, prepare_prompt, process_raw_messages
 
 
 # Set Logging
@@ -78,25 +78,33 @@ def upload_file():
 
 @generate_bp.route('/genai/generate', methods=['POST'])
 def generate():
-    """API Endpoint for generating recipe response based on document retrieval
+    """
+    API Endpoint for generating recipe responses using retrieved context.
 
-    This endpoint processes user queries against a vector database of recipes
-    and returns AI-generated responses using retrieved context.
+    This endpoint processes a user query against a vector database of recipes
+    and returns an AI-generated response using both retrieved context and
+    the full conversation history provided in the request.
 
     Request Body:
         query (str): The user's recipe-related query
-        conversation_id (str): Unique identifier for the conversation thread
+        messages (List[Dict]): Full conversation history, each with 'role' and 'content'
+            Example:
+            [
+                {"role": "user", "content": "I have eggs and tomatoes."},
+                {"role": "assistant", "content": "You could make shakshuka."}
+            ]
 
     Returns:
-        JSON response containing the generated recipe response or error message
+        JSON response containing:
+            - 'response': The generated assistant reply
     """
     data = request.get_json()
 
-    if not data or "query" not in data or "conversation_id" not in data:
-        return jsonify({"error": "Missing 'query' or 'conversation_id'"}), 400
+    if not data or "query" not in data or "messages" not in data:
+        return jsonify({"error": "Missing 'query' or 'messages'"}), 400
 
     query = data["query"]
-    # conversation_id = data["conversation_id"] # will be used in the future
+    messages_raw = data["messages"]
 
     try:
         collection_name = "recipes"
@@ -106,8 +114,8 @@ def generate():
             vector_store = qdrant.create_and_get_vector_storage(
                 collection_name
             )
-            # todo: retrieve messages from chat history as BaseMessage
-            messages = []
+            # turn raw message into BaseMessage type
+            messages = process_raw_messages(messages_raw)
             retrieved_docs = retrieve_similar_docs(vector_store, query)
             prompt = prepare_prompt(
                 llm.get_system_prompt(),

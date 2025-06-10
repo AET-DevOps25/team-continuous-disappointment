@@ -1,7 +1,7 @@
-from typing import List
+from typing import List, Dict
 
 from langchain_qdrant import QdrantVectorStore
-from langchain_core.messages import BaseMessage, HumanMessage
+from langchain_core.messages import BaseMessage, HumanMessage, AIMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 # from genai.rag.llm.chat_model import ChatModel
 
@@ -32,6 +32,21 @@ def prepare_prompt(system_prompt: str,
     })
 
     return prompt
+
+def process_raw_messages(raw_messages: List[Dict]) -> List[BaseMessage]:
+    """Turns raw messages into BaseMessages, so they can be passed into LLM"""
+    processed_messages = []
+    for msg in raw_messages:
+        role = msg.get("role")
+        content = msg.get("content")
+
+        if role == "user":
+            processed_messages.append(HumanMessage(content=content))
+
+        elif role == "assistant":
+            processed_messages.append(AIMessage(content=content))
+
+    return processed_messages
 
 # For testing purposes
 # if __name__ == "__main__":
