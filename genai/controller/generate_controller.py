@@ -3,11 +3,24 @@ import os
 import logging
 from werkzeug.utils import secure_filename
 
-from rag.ingestion_pipeline import IngestionPipeline
-from vector_database.qdrant_vdb import QdrantVDB
+from genai.rag.ingestion_pipeline import IngestionPipeline
+from genai.vector_database.qdrant_vdb import QdrantVDB
+from genai.rag.llm.chat_model import ChatModel
+from genai.service.rag_service import (
+    retrieve_similar_docs,
+    prepare_prompt,
+    process_raw_messages
+    )
+
 
 # Set Logging
 logging.getLogger().setLevel(logging.INFO)
+
+# Set ChatModel
+llm = ChatModel(model_name="llama3.3:latest")
+
+# Set Vector Database
+qdrant = QdrantVDB()
 
 generate_bp = Blueprint('generate', __name__)
 
@@ -31,8 +44,6 @@ def upload_file():
 
     try:
         collection_name = "recipes"
-        # Initialize vector database
-        qdrant = QdrantVDB()
         # Check if the file already in the collection
         if (qdrant.client.collection_exists(collection_name)
                 and qdrant.collection_contains_file(
@@ -69,6 +80,60 @@ def upload_file():
         os.remove(file_path)
 
 
-@generate_bp.route('/api/generate', methods=['POST'])
+@generate_bp.route('/genai/generate', methods=['POST'])
 def generate():
-    return jsonify({'output': 'Hello World!'})
+    """
+    API Endpoint for generating recipe responses using retrieved context.
+
+    This endpoint processes a user query against a vector database of recipes
+    and returns an AI-generated response using both retrieved context and
+    the full conversation history provided in the request.
+
+    Request Body:
+        query (str): The user's recipe-related query
+        messages (List[Dict]): Full conversation history,
+        each with 'role' and 'content'
+            Example:
+            [
+                {"role": "USER", "content": "I have eggs and tomatoes."},
+                {"role": "ASSISTANT", "content": "You could make shakshuka."}
+            ]
+
+    Returns:
+        JSON response containing:
+            - 'response': The generated assistant reply
+    """
+    data = request.get_json()
+
+    if not data or "query" not in data or "messages" not in data:
+        return jsonify({"error": "Missing 'query' or 'messages'"}), 400
+
+    query = data["query"]
+    messages_raw = data["messages"]
+
+    try:
+        collection_name = "recipes"
+
+        if qdrant.client.collection_exists(collection_name):
+            # Get vector store
+            vector_store = qdrant.create_and_get_vector_storage(
+                collection_name
+            )
+            # turn raw message into BaseMessage type
+            messages = process_raw_messages(messages_raw)
+            retrieved_docs = retrieve_similar_docs(vector_store, query)
+            prompt = prepare_prompt(
+                llm.get_system_prompt(),
+                query,
+                retrieved_docs,
+                messages
+                )
+
+            response = llm.invoke(prompt)
+
+            return jsonify({
+                "response": response.content,
+            }), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
