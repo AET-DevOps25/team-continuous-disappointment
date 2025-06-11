@@ -113,27 +113,31 @@ def generate():
 
     try:
         collection_name = "recipes"
+        retrieved_docs = ""
 
+        # if collection exists, then retrieve documents
         if qdrant.client.collection_exists(collection_name):
             # Get vector store
             vector_store = qdrant.create_and_get_vector_storage(
                 collection_name
             )
-            # turn raw message into BaseMessage type
-            messages = process_raw_messages(messages_raw)
+            # retrieve similar docs
             retrieved_docs = retrieve_similar_docs(vector_store, query)
-            prompt = prepare_prompt(
-                llm.get_system_prompt(),
-                query,
-                retrieved_docs,
-                messages
-                )
 
-            response = llm.invoke(prompt)
+        # turn raw message into BaseMessage type
+        messages = process_raw_messages(messages_raw)
+        prompt = prepare_prompt(
+            llm.get_system_prompt(),
+            query,
+            retrieved_docs,
+            messages
+            )
 
-            return jsonify({
-                "response": response.content,
-            }), 200
+        response = llm.invoke(prompt)
+
+        return jsonify({
+            "response": response.content,
+        }), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
