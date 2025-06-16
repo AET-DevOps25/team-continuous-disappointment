@@ -7,7 +7,7 @@ import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.continiousdisappointment.user.domain.User;
+import com.continiousdisappointment.apigw.domain.User;
 
 @Service
 public class UserService {
