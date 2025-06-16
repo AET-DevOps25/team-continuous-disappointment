@@ -1,4 +1,4 @@
-package com.continiousdisappointment.user.service;
+package com.continiousdisappointment.apigw.service;
 
 import org.springframework.http.*;
 import org.springframework.security.core.Authentication;

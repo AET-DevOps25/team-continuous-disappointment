@@ -1,2 +1,2 @@
 rootProject.name = "server"
-include("user", "api-gw", "chat")
+include("api-gw", "chat")
