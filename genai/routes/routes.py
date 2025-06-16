@@ -2,11 +2,13 @@ from fastapi import APIRouter, UploadFile, File, HTTPException, Request
 from fastapi.responses import JSONResponse
 import os
 import logging
+from time import perf_counter
+
 from vector_database.qdrant_vdb import QdrantVDB
 from rag.ingestion_pipeline import IngestionPipeline
 from rag.llm.chat_model import ChatModel
 from service.rag_service import retrieve_similar_docs, prepare_prompt, process_raw_messages
-from metrics import file_ingestion_counter, generation_duration, ingestion_errors_total, generation_errors_total
+from metrics import file_ingestion_counter, generation_duration, ingestion_duration, ingestion_errors_total, generation_errors_total
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -16,6 +18,7 @@ qdrant = QdrantVDB()
 
 @router.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
+    start_time = perf_counter()
     logger.info("Upload API endpoint is called")
 
     filename = os.path.basename(file.filename).lower().strip()
@@ -47,10 +50,13 @@ async def upload_file(file: UploadFile = File(...)):
         if os.path.exists(file_path):
             os.remove(file_path)
             logger.info("Removed temporary file")
+        duration = perf_counter() - start_time
+        ingestion_duration.observe(duration)
 
 @router.post("/generate")
-@generation_duration.time()
 async def generate(request: Request):
+    start_time = perf_counter()
+
     body = await request.json()
     if "query" not in body or "messages" not in body:
         raise HTTPException(status_code=400, detail="Missing 'query' or 'messages'")
@@ -81,3 +87,7 @@ async def generate(request: Request):
         logger.exception("Error in generate endpoint")
         generation_errors_total.inc()
         raise HTTPException(status_code=500, detail=str(e))
+
+    finally:
+        duration = perf_counter() - start_time
+        generation_duration.observe(duration)

@@ -10,6 +10,11 @@ ingestion_errors_total = Counter(
     "Total number of ingestion errors"
 )
 
+ingestion_duration = Summary(
+    "genai_ingestion_duration_seconds",
+    "Time taken to ingest a file"
+)
+
 generation_duration = Summary(
     "genai_generation_duration_seconds",
     "Time taken to generate a recipe response"
