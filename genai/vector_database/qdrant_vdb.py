@@ -7,7 +7,7 @@ from qdrant_client.http.models import Filter, FieldCondition, MatchValue
 from langchain_qdrant import QdrantVectorStore
 from langchain_openai import OpenAIEmbeddings
 
-from genai.config import Config
+from config import Config
 from .base_vdb import BaseVDB
 
 # Set Logging

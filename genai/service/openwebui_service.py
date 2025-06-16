@@ -1,6 +1,6 @@
 import requests
 
-from genai.config import Config
+from config import Config
 
 BASE_URL = Config.base_url
 

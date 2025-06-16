@@ -4,7 +4,7 @@ from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.outputs import ChatResult, ChatGeneration
 from pydantic import Field
 
-from genai.service.openwebui_service import generate_response
+from service.openwebui_service import generate_response
 
 
 class ChatModel(BaseChatModel):
