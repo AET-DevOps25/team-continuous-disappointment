@@ -7,18 +7,18 @@ file_upload_request_counter = Counter(
 )
 
 file_upload_successfully_counter = Counter(
-    "genai_file_successfully_total",
-    "Total number of files successfully ingested"
+    "genai_file_upload_successfully_total",
+    "Total number of files successfully uploaded"
 )
 
 file_upload_errors_counter = Counter(
-    "genai_ingestion_errors_total",
-    "Total number of ingestion errors"
+    "genai_file_upload_errors_total",
+    "Total number of file upload errors"
 )
 
 file_upload_duration = Summary(
-    "genai_ingestion_duration_seconds",
-    "Time taken to ingest a file"
+    "genai_file_upload_duration_seconds",
+    "Time taken to upload a file"
 )
 
 # ----------- FILE INGESTION METRICS ------------ #

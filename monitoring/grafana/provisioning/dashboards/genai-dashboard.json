@@ -8,30 +8,61 @@
   "refresh": "10s",
   "panels": [
     {
-      "type": "timeseries",
-      "title": "Generation Duration",
       "id": 1,
+      "title": "Generation Requests",
+      "type": "stat",
       "datasource": {
         "type": "prometheus",
         "uid": "PBFA97CFB590B2093"
       },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
       "targets": [
         {
-          "expr": "genai_generation_duration_seconds",
+          "expr": "genai_generation_request_total",
           "refId": "A"
         }
       ]
     },
     {
-      "type": "stat",
-      "title": "Generation Errors",
       "id": 2,
+      "title": "Generation Successes",
+      "type": "stat",
       "datasource": {
         "type": "prometheus",
         "uid": "PBFA97CFB590B2093"
       },
-      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 0 },
+      "gridPos": {
+        "x": 6,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "genai_generation_successfully_total",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Generation Errors",
+      "type": "stat",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
       "targets": [
         {
           "expr": "genai_generation_errors_total",
@@ -40,60 +71,164 @@
       ]
     },
     {
-      "type": "stat",
-      "title": "Files Ingested",
-      "id": 3,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 8 },
-      "targets": [
-        {
-          "expr": "genai_ingested_files_total",
-          "refId": "A"
-        }
-      ]
-    },
-    {
-      "type": "stat",
-      "title": "Ingestion Errors",
       "id": 4,
+      "title": "Generation Duration",
+      "type": "timeseries",
       "datasource": {
         "type": "prometheus",
         "uid": "PBFA97CFB590B2093"
       },
-      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 8 },
+      "gridPos": {
+        "x": 0,
+        "y": 4,
+        "w": 18,
+        "h": 6
+      },
       "targets": [
         {
-          "expr": "genai_ingestion_errors_total",
+          "expr": "rate(genai_generation_duration_seconds_sum[5m]) / rate(genai_generation_duration_seconds_count[5m])",
           "refId": "A"
         }
       ]
     },
     {
-      "type": "timeseries",
-      "title": "Ingestion Duration",
       "id": 5,
+      "title": "Upload Requests",
+      "type": "stat",
       "datasource": {
         "type": "prometheus",
         "uid": "PBFA97CFB590B2093"
       },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 12 },
+      "gridPos": {
+        "x": 0,
+        "y": 16,
+        "w": 6,
+        "h": 4
+      },
       "targets": [
         {
-          "expr": "genai_ingestion_duration_seconds",
+          "expr": "genai_file_upload_request_total",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Upload Successes",
+      "type": "stat",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "gridPos": {
+        "x": 6,
+        "y": 16,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "genai_file_upload_successfully_total",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Upload Errors",
+      "type": "stat",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 16,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "genai_file_upload_errors_total",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Upload Duration",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 20,
+        "w": 18,
+        "h": 6
+      },
+      "targets": [
+        {
+          "expr": "rate(genai_file_upload_duration_seconds_sum[5m]) / rate(genai_file_upload_duration_seconds_count[5m])",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "title": "Files Ingested",
+      "type": "stat",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 26,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "genai_file_ingested_total",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "title": "Ingestion Duration",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "gridPos": {
+        "x": 6,
+        "y": 26,
+        "w": 18,
+        "h": 6
+      },
+      "targets": [
+        {
+          "expr": "rate(genai_ingestion_duration_seconds_sum[5m]) / rate(genai_ingestion_duration_seconds_count[5m])",
           "refId": "A"
         }
       ]
     }
   ],
-  "templating": { "list": [] },
+  "templating": {
+    "list": []
+  },
   "annotations": {
     "list": [
       {
         "builtIn": 1,
-        "datasource": { "type": "grafana", "uid": "-- Grafana --" },
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
