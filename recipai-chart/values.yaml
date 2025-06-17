@@ -17,12 +17,16 @@ replicaCount:
   client: 1
   server: 1
   genai: 1
+  prometheus: 1
+  grafana: 1
 
 # Port configuration per service
 ports:
   client: 80
   server: 8080
   genai: 8000
+  prometheus: 9090
+  grafana: 3000
 
 # Service names
 services:
@@ -44,3 +48,8 @@ vdb:
 secrets:
   gitlabClientSecret: "set in CI pipeline"
   mongodbAdminPassword: "set in CI pipeline"
+  apiOpenAi: "set in CI pipeline"
+  apiOpenWebUi: "set in CI pipeline"
+
+genai:
+  baseUrl: "https://gpu.aet.cit.tum.de"

@@ -15,7 +15,7 @@ ConfigT = namedtuple(
 )
 
 Config = ConfigT(
-    api_key_openai=environ.get("API_SECRET_OPENAI_MINE"),
+    api_key_openai=environ.get("API_OPENAI"),
     api_openwebui=environ.get("API_OPENWEBUI"),
     base_url=environ.get("BASE_URL")
 )

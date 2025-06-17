@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: genai
+spec:
+  replicas: {{ .Values.replicaCount.genai }}
+  selector:
+    matchLabels:
+      app: genai
+  template:
+    metadata:
+      labels:
+        app: genai
+      annotations:
+        checksum/redeploy: "{{ randAlphaNum 8 }}"
+    spec:
+      containers:
+        - name: genai
+          image: "{{ .Values.image.repository }}/genai:{{ .Values.image.tag }}"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: {{ .Values.ports.genai }}
+              name: genai-api
+          env:
+            - name: API_OPENAI
+              valueFrom:
+                secretKeyRef:
+                  name: genai-secret
+                  key: api-openai
+            - name: API_OPENWEBUI
+              valueFrom:
+                secretKeyRef:
+                  name: genai-secret
+                  key: api-openwebui
+            - name: BASE_URL
+              value: {{ .Values.genai.baseUrl }}
+          resources:
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
