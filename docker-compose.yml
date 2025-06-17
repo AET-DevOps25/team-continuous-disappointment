@@ -123,6 +123,7 @@ services:
     command: -config.file=/etc/loki/loki-config.yaml
     restart: unless-stopped
   
+  # This service is used to collect metrics from docker containers, not needed for k8s
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
     container_name: cadvisor
