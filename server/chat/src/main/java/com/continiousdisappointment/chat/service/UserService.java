@@ -15,13 +15,13 @@ public class UserService {
     private final RestTemplate restTemplate = new RestTemplate();
 
     public User getUserInfo() {
-        String url = "https://gitlab.lrz.de/api/v4/user";
+        String url = "http://user-service:8081/info";
         String accessToken = getBearerToken();
         if (accessToken == null) {
             throw new IllegalStateException("No access token found in security context");
         }
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(accessToken); // Sets Authorization: Bearer <token>
+        headers.setBearerAuth(accessToken);
 
         HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
 
