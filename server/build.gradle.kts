@@ -1,44 +1,48 @@
 plugins {
-    id("org.springframework.boot") version "3.2.5" apply false
-    id("io.spring.dependency-management") version "1.1.4" apply false
-    id("java")
+	java
+	id("org.springframework.boot") version "3.4.5"
+	id("io.spring.dependency-management") version "1.1.7"
 }
 
-subprojects {
-    apply(plugin = "java")
-    apply(plugin = "org.springframework.boot")
-    apply(plugin = "io.spring.dependency-management")
+group = "com.continiousdisappointment"
+version = "0.0.1-SNAPSHOT"
 
-    group = "com.continuousdisappointment"
-    version = "0.0.1-SNAPSHOT"
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
 
-    java {
-        sourceCompatibility = JavaVersion.VERSION_21
-    }
+configurations {
+	compileOnly {
+		extendsFrom(configurations.annotationProcessor.get())
+	}
+}
 
-    repositories {
-        mavenCentral()
-    }
-	
-    dependencies {
-		implementation("org.springframework.boot:spring-boot-starter-web")
-        implementation("org.springframework.boot:spring-boot-starter-actuator")
-        compileOnly("org.projectlombok:lombok")
-        annotationProcessor("org.projectlombok:lombok")
+repositories {
+	mavenCentral()
+}
 
-        testImplementation("org.springframework.boot:spring-boot-starter-test")
-        testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    }
+extra["springCloudVersion"] = "2024.0.1"
 
-    tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootJar> {
-        enabled = true
-    }
+dependencies {
+	implementation("org.springframework.boot:spring-boot-starter-actuator")
+	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+	implementation("org.springframework.cloud:spring-cloud-starter-gateway-mvc")
+	compileOnly("org.projectlombok:lombok")
+	annotationProcessor("org.projectlombok:lombok")
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
 
-    tasks.withType<org.springframework.boot.gradle.tasks.run.BootRun> {
-        enabled = true
-    }
+dependencyManagement {
+	imports {
+		mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
+	}
+}
 
-    tasks.withType<Test> {
-        useJUnitPlatform()
-    }
+tasks.withType<Test> {
+	useJUnitPlatform()
 }

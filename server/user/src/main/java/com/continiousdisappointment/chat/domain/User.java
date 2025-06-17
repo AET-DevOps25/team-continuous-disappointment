@@ -1,4 +1,4 @@
-package com.continiousdisappointment.apigw.domain;
+package com.continiousdisappointment.user.domain;
 
 public record User(Integer id, String username) {
     public User {
