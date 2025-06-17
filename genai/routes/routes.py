@@ -8,7 +8,17 @@ from vector_database.qdrant_vdb import QdrantVDB
 from rag.ingestion_pipeline import IngestionPipeline
 from rag.llm.chat_model import ChatModel
 from service.rag_service import retrieve_similar_docs, prepare_prompt, process_raw_messages
-from metrics import file_ingestion_counter, generation_duration, ingestion_duration, ingestion_errors_total, generation_errors_total
+from metrics import (
+    file_upload_request_counter,
+    file_upload_successfully_counter,
+    file_upload_errors_counter,
+    file_upload_duration,
+    generation_request_counter,
+    generation_successfully_counter,
+    generation_errors_counter,
+    generation_duration
+)
+
 
 router = APIRouter()
 
@@ -17,6 +27,7 @@ qdrant = QdrantVDB()
 
 @router.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
+    file_upload_request_counter.inc()
     start_time = perf_counter()
     logger.info("Upload endpoint is called in genai for the file %s", file.filename)
 
@@ -43,13 +54,13 @@ async def upload_file(file: UploadFile = File(...)):
         ingestion_pipeline = IngestionPipeline(vector_store=vector_store)
         ingestion_pipeline.ingest(file_path, filename)
 
-        file_ingestion_counter.inc()
+        file_upload_successfully_counter.inc()
 
         return {"message": "File processed successfully."}
 
     except Exception as e:
         logger.error("Upload is failed. Error: %s", str(e), exc_info=True)
-        ingestion_errors_total.inc()
+        file_upload_errors_counter.inc()
         raise HTTPException(status_code=500, detail=str(e))
 
     finally:
@@ -57,11 +68,12 @@ async def upload_file(file: UploadFile = File(...)):
             os.remove(file_path)
             logger.info("Removed temporary file")
         duration = perf_counter() - start_time
-        ingestion_duration.observe(duration)
+        file_upload_duration.observe(duration)
         logger.info("Upload duration: %.2f seconds", duration)
 
 @router.post("/generate")
 async def generate(request: Request):
+    generation_request_counter.inc()
     start_time = perf_counter()
     logger.info("Generate endpoint is called in genai")
 
@@ -95,12 +107,13 @@ async def generate(request: Request):
 
         response = llm.invoke(prompt)
         logger.info("Response is generated")
+        generation_successfully_counter.inc()
 
         return JSONResponse(content={"response": response.content})
 
     except Exception as e:
         logger.error("Generation is failed. Error: %s", str(e), exc_info=True)
-        generation_errors_total.inc()
+        generation_errors_counter.inc()
         raise HTTPException(status_code=500, detail=str(e))
 
     finally:
