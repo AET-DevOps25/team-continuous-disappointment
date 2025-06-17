@@ -1,7 +1,7 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException, Request
 from fastapi.responses import JSONResponse
 import os
-import logging
+from logger import logger
 from time import perf_counter
 
 from vector_database.qdrant_vdb import QdrantVDB
@@ -10,7 +10,6 @@ from rag.llm.chat_model import ChatModel
 from service.rag_service import retrieve_similar_docs, prepare_prompt, process_raw_messages
 from metrics import file_ingestion_counter, generation_duration, ingestion_duration, ingestion_errors_total, generation_errors_total
 
-logger = logging.getLogger(__name__)
 router = APIRouter()
 
 llm = ChatModel(model_name="llama3.3:latest")
@@ -19,7 +18,13 @@ qdrant = QdrantVDB()
 @router.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
     start_time = perf_counter()
-    logger.info("Upload API endpoint is called")
+    logger.info("Upload endpoint is called in genai for the file %s", file.filename)
+
+    if not file.filename.endswith(".pdf"):
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid file type. Only PDF files are allowed."
+        )
 
     filename = os.path.basename(file.filename).lower().strip()
     file_path = os.path.join("/tmp", filename)
@@ -37,12 +42,13 @@ async def upload_file(file: UploadFile = File(...)):
         vector_store = qdrant.create_and_get_vector_storage(collection_name)
         ingestion_pipeline = IngestionPipeline(vector_store=vector_store)
         ingestion_pipeline.ingest(file_path, filename)
+
         file_ingestion_counter.inc()
 
         return {"message": "File processed successfully."}
 
     except Exception as e:
-        logger.exception("Error in file upload")
+        logger.error("Upload is failed. Error: %s", str(e), exc_info=True)
         ingestion_errors_total.inc()
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -52,13 +58,16 @@ async def upload_file(file: UploadFile = File(...)):
             logger.info("Removed temporary file")
         duration = perf_counter() - start_time
         ingestion_duration.observe(duration)
+        logger.info("Upload duration: %.2f seconds", duration)
 
 @router.post("/generate")
 async def generate(request: Request):
     start_time = perf_counter()
+    logger.info("Generate endpoint is called in genai")
 
     body = await request.json()
     if "query" not in body or "messages" not in body:
+        logger.error("Missing 'query' or 'messages' in the request body")
         raise HTTPException(status_code=400, detail="Missing 'query' or 'messages'")
 
     query = body["query"]
@@ -69,25 +78,32 @@ async def generate(request: Request):
         retrieved_docs = ""
         if qdrant.client.collection_exists(collection_name):
             vector_store = qdrant.create_and_get_vector_storage(collection_name)
+            logger.info("Vector store is created for the collection %s", collection_name)
             retrieved_docs = retrieve_similar_docs(vector_store, query)
+            logger.info("Similar docs retrieved from the vector store")
 
         messages = process_raw_messages(messages_raw)
+        logger.info("Raw messages are processed for prompt preparation")
+
         prompt = prepare_prompt(
             llm.get_system_prompt(),
             query,
             retrieved_docs,
             messages
         )
+        logger.info("Prompt is prepared")
 
         response = llm.invoke(prompt)
+        logger.info("Response is generated")
 
         return JSONResponse(content={"response": response.content})
 
     except Exception as e:
-        logger.exception("Error in generate endpoint")
+        logger.error("Generation is failed. Error: %s", str(e), exc_info=True)
         generation_errors_total.inc()
         raise HTTPException(status_code=500, detail=str(e))
 
     finally:
         duration = perf_counter() - start_time
         generation_duration.observe(duration)
+        logger.info("Response generation duration: %.2f seconds", duration)

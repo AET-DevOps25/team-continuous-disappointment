@@ -7,8 +7,7 @@ from langchain_core.documents import Document
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-# Set Logging
-logging.getLogger().setLevel(logging.INFO)
+from logger import logger
 
 
 class IngestionPipeline:
@@ -46,9 +45,9 @@ class IngestionPipeline:
     def ingest(self, file_path: str, filename: str):
         """Ingestion method to load, chunk, and store pdf data"""
         unchunked_docs = self.load_document(file_path)
-        logging.info("Documents are loaded for file %s", filename)
+        logger.info("Documents are loaded for file %s", filename)
         chunked_docs = self.chunk_documents(unchunked_docs, filename)
-        logging.info("Documents are chunked for file %s", filename)
+        logger.info("Documents are chunked for file %s", filename)
         self.store_documents(chunked_docs)
-        logging.info("Ingested %s chunks into Qdrant for file %s.",
+        logger.info("Ingested %s chunks into Qdrant for file %s.",
                      len(chunked_docs), filename)
