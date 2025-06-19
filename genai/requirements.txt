@@ -22,7 +22,7 @@ requests==2.32.3
 # Pydantic for schema validation
 pydantic==2.11.5
 
-# Uvicorn for ASGI server (optional but common with FastAPI)
+# Uvicorn for ASGI server
 uvicorn[standard]==0.34.3
 
 # File Upload
