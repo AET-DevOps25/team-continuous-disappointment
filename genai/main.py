@@ -5,7 +5,8 @@ from routes.routes import router
 
 app = FastAPI(
     title="LLM Recipe Service",
-    description="Service that generates recipes based on given ingredients using an LLM",
+    description="Service that generates recipes based on "
+                "given ingredients using an LLM",
     version="1.0.0"
 )
 

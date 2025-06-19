@@ -7,7 +7,11 @@ from time import perf_counter
 from vector_database.qdrant_vdb import QdrantVDB
 from rag.ingestion_pipeline import IngestionPipeline
 from rag.llm.chat_model import ChatModel
-from service.rag_service import retrieve_similar_docs, prepare_prompt, process_raw_messages
+from service.rag_service import (
+    retrieve_similar_docs,
+    prepare_prompt,
+    process_raw_messages
+)
 from metrics import (
     file_upload_request_counter,
     file_upload_successfully_counter,
@@ -25,11 +29,15 @@ router = APIRouter()
 llm = ChatModel(model_name="llama3.3:latest")
 qdrant = QdrantVDB()
 
+
 @router.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
     file_upload_request_counter.inc()
     start_time = perf_counter()
-    logger.info("Upload endpoint is called in genai for the file %s", file.filename)
+    logger.info(
+        "Upload endpoint is called in genai for the file %s",
+        file.filename
+    )
 
     if not file.filename.endswith(".pdf"):
         raise HTTPException(
@@ -46,7 +54,12 @@ async def upload_file(file: UploadFile = File(...)):
 
         collection_name = "recipes"
         if (qdrant.client.collection_exists(collection_name) and
-            qdrant.collection_contains_file(qdrant.client, collection_name, filename)):
+            qdrant.collection_contains_file(
+                qdrant.client,
+                collection_name,
+                filename
+            )
+        ):
             logger.info("File already exists in qdrant")
             return {"message": f"File '{filename}' already uploaded."}
 
@@ -71,6 +84,7 @@ async def upload_file(file: UploadFile = File(...)):
         file_upload_duration.observe(duration)
         logger.info("Upload duration: %.2f seconds", duration)
 
+
 @router.post("/generate")
 async def generate(request: Request):
     generation_request_counter.inc()
@@ -80,7 +94,10 @@ async def generate(request: Request):
     body = await request.json()
     if "query" not in body or "messages" not in body:
         logger.error("Missing 'query' or 'messages' in the request body")
-        raise HTTPException(status_code=400, detail="Missing 'query' or 'messages'")
+        raise HTTPException(
+            status_code=400,
+            detail="Missing 'query' or 'messages'"
+        )
 
     query = body["query"]
     messages_raw = body["messages"]
@@ -89,8 +106,13 @@ async def generate(request: Request):
     try:
         retrieved_docs = ""
         if qdrant.client.collection_exists(collection_name):
-            vector_store = qdrant.create_and_get_vector_storage(collection_name)
-            logger.info("Vector store is created for the collection %s", collection_name)
+            vector_store = qdrant.create_and_get_vector_storage(
+                collection_name
+            )
+            logger.info(
+                "Vector store is created for the collection %s",
+                collection_name
+            )
             retrieved_docs = retrieve_similar_docs(vector_store, query)
             logger.info("Similar docs retrieved from the vector store")
 

@@ -51,8 +51,11 @@ class IngestionPipeline:
         chunked_docs = self.chunk_documents(unchunked_docs, filename)
         logger.info("Documents are chunked for file %s", filename)
         self.store_documents(chunked_docs)
-        logger.info("Ingested %s chunks into Qdrant for file %s.",
-                     len(chunked_docs), filename)
+        logger.info(
+            "Ingested %s chunks into Qdrant for file %s.",
+            len(chunked_docs),
+            filename
+        )
 
         duration = perf_counter() - start_time
         file_ingestion_duration.observe(duration)
