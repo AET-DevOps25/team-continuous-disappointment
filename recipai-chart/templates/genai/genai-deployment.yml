@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: genai
-          image: "{{ .Values.image.repository }}/genai:{{ .Values.image.tag }}"
+          image: "edkaya/genai:latest"
           imagePullPolicy: Always
           ports:
             - containerPort: {{ .Values.ports.genai }}

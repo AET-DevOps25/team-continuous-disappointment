@@ -5,9 +5,15 @@ metadata:
   labels:
     grafana_datasource: "1"
 data:
-  loki.yaml: |
+  datasources.yaml: |
     apiVersion: 1
     datasources:
+      - name: Prometheus
+        type: prometheus
+        access: proxy
+        url: http://prometheus:9090
+        isDefault: true
+
       - name: Loki
         type: loki
         access: proxy

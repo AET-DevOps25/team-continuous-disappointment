@@ -9,69 +9,62 @@
     "panels": [
       {
         "type": "timeseries",
-        "title": "CPU Usage (%)",
+        "title": "CPU Usage per Node (%)",
         "id": 1,
         "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
         "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
         "targets": [
           {
-            "expr": "sum by (container) (rate(container_cpu_usage_seconds_total[1m])) * 100",
+            "expr": "100 - (avg by(instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
             "refId": "A"
           }
         ]
       },
       {
         "type": "timeseries",
-        "title": "Memory Usage (MB)",
+        "title": "Memory Usage per Node(MB)",
         "id": 2,
         "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
         "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
         "targets": [
           {
-            "expr": "sum by (container) (container_memory_usage_bytes) / 1024 / 1024",
+            "expr": "(node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / 1024 / 1024",
             "refId": "A"
           }
         ]
       },
       {
         "type": "stat",
-        "title": "Container Uptime (Hours)",
+        "title": "Node Uptime",
         "id": 4,
         "gridPos": { "h": 4, "w": 6, "x": 6, "y": 16 },
         "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
         "targets": [
           {
-            "expr": "max by (container) (time() - container_start_time_seconds) / 3600",
+            "expr": "time() - node_boot_time_seconds",
             "refId": "A"
           }
-        ]
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "dthms"
+          },
+          "overrides": []
+        }
       },
       {
         "type": "stat",
-        "title": "Container Restarts",
+        "title": "Node Exporter Targets Up",
         "id": 3,
         "gridPos": { "h": 4, "w": 6, "x": 0, "y": 16 },
         "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
         "targets": [
           {
-            "expr": "up{job=\"cadvisor\"}",
+            "expr": "up{job=\"node-exporter\"}",
             "refId": "A"
           }
         ],
-        "description": "Note: container_restart_count not available in cadvisor"
-      },
-      {
-        "type": "timeseries",
-        "title": "Prometheus Scrape Duration (Seconds)",
-        "id": 5,
-        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 20 },
-        "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
-        "targets": [
-          {
-            "expr": "rate(prometheus_scrape_duration_seconds_sum{job=\"prometheus\"}[1m])",
-            "refId": "A"
-          }
-        ]
+        "description": "Shows whether node-exporter targets are up (1 = up)"
       }
     ],
     "annotations": {

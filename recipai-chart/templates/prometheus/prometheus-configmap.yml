@@ -8,16 +8,14 @@ data:
   prometheus.yml: |
     global:
       scrape_interval: 15s
-    
-    alerting:
-    alertmanagers:
-      - static_configs:
-          - targets: ["alertmanager:9093"]
 
     scrape_configs:
+      - job_name: 'node-exporter'
+        static_configs:
+          - targets: ['node-exporter-prometheus-node-exporter:9100']
       - job_name: 'genai-service'
         static_configs:
-          - targets: ['genai-service:8000']
+          - targets: ['genai-service:80']
       - job_name: 'server-service'
         static_configs:
-          - targets: ['server-service:8080']
+          - targets: ['server-service:80']

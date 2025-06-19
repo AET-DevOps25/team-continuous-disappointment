@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-alerting
+  labels:
+    grafana_alerting: "1"
+data:
+  contact-points.yaml: |
+    apiVersion: 1
+    contactPoints:
+      - orgId: 1
+        name: discord
+        receivers:
+          - uid: fepdr2f5po5q8c
+            type: discord
+            settings:
+              url: "https://discord.com/api/webhooks/1384597112955867277/YXLiCFAP8G3sXSv0EMNcspAVSeIElReokz2r2LoK-gtB-SxEbiTlplqXsrL09d8pwj4x"
+              use_discord_username: false
+            disableResolveMessage: false
+
+  notification-policies.yaml: |
+    apiVersion: 1
+    policies:
+      - orgId: 1
+        receiver: discord
+        group_by:
+          - '...'
+        group_wait: 30s
+        group_interval: 5m
+        repeat_interval: 1h
+
+  genai-rule.yaml: |
+    apiVersion: 1
+    groups:
+      - orgId: 1
+        name: Generation Alerts
+        folder: GenAI
+        interval: 1m
+        rules:
+          - uid: high_gen_duration
+            title: High Generation Duration
+            condition: A
+            data:
+              - refId: A
+                relativeTimeRange:
+                  from: 300
+                  to: 0
+                datasourceUid: PBFA97CFB590B2093
+                model:
+                  expr: "rate(genai_generation_duration_seconds_sum[5m]) / rate(genai_generation_duration_seconds_count[5m])"
+                  format: reduce
+                  instant: true
+                  interval: ""
+                  datasource:
+                    type: prometheus
+                    uid: PBFA97CFB590B2093
+            reduce:
+              reducer: avg
+            evaluator:
+              type: gt
+              params: [5]
+            noDataState: OK
+            execErrState: Alerting
+            for: 1m
+            annotations:
+              summary: "Generation duration too high"
+            labels:
+              severity: warning

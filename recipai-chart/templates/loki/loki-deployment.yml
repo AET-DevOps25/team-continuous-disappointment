@@ -15,6 +15,8 @@ spec:
       containers:
         - name: loki
           image: grafana/loki:2.9.0
+          securityContext:
+            runAsUser: 0
           args:
             - -config.file=/etc/loki/loki-config.yaml
           ports:
@@ -24,6 +26,8 @@ spec:
               mountPath: /etc/loki
             - name: loki-storage
               mountPath: /loki
+            - name: wal-storage
+              mountPath: /wal
       volumes:
         - name: loki-config
           configMap:
@@ -31,3 +35,5 @@ spec:
         - name: loki-storage
           persistentVolumeClaim:
             claimName: loki-pvc
+        - name: wal-storage
+          emptyDir: {}
