@@ -53,8 +53,9 @@ async def upload_file(file: UploadFile = File(...)):
             buffer.write(await file.read())
 
         collection_name = "recipes"
-        if (qdrant.client.collection_exists(collection_name) and
-            qdrant.collection_contains_file(
+        if (
+            qdrant.client.collection_exists(collection_name)
+            and qdrant.collection_contains_file(
                 qdrant.client,
                 collection_name,
                 filename
