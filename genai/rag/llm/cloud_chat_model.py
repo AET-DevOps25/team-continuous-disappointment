@@ -8,7 +8,8 @@ from config import Config
 
 
 class CloudLLM:
-    """A concrete implementation of a cloud-based LLM. Uses openai as the default LLM provider."""
+    """A concrete implementation of a cloud-based LLM.
+    Uses openai as the default LLM provider."""
 
     def __init__(
             self,
@@ -70,7 +71,7 @@ class CloudLLM:
             meal timing), answer them precisely based on the
             context and query.
             """
+
     def invoke(self, prompt: PromptValue) -> BaseMessage:
         """Invoke the LLM with the given prompt"""
         return self.model.invoke(prompt)
-
