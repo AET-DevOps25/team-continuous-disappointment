@@ -12,7 +12,7 @@ def generate_response(model_name: str, prompt: str):
     url = f"{BASE_URL}/api/chat/completions"
 
     headers = {
-        "Authorization": f"Bearer {Config.api_openwebui}",
+        "Authorization": f"Bearer {Config.api_key_openwebui}",
         "Content-Type": "application/json"
     }
 
