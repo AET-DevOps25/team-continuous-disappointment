@@ -47,4 +47,3 @@ def process_raw_messages(raw_messages: List[Dict]) -> List[BaseMessage]:
             processed_messages.append(AIMessage(content=content))
 
     return processed_messages
-

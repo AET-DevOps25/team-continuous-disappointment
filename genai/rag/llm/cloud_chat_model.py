@@ -10,20 +10,44 @@ from config import Config
 class CloudLLM:
     """A concrete implementation of a cloud-based LLM. Uses openai as the default LLM provider."""
 
-    def __init__(self, model_name: str = "gpt-4-1106-preview", model_provider: str = "openai", api_key: str = Config.api_key_openai):
+    def __init__(
+            self,
+            model_name: str = "gpt-4-1106-preview",
+            model_provider: str = "openai",
+            api_key: str = Config.api_key_openai
+    ):
         provider = model_provider.lower()
         if provider == "openai":
-            os.environ["OPENAI_API_KEY"] = api_key or os.getenv("API_OPENAI", "")
+            os.environ["OPENAI_API_KEY"] = (
+                    api_key
+                    or
+                    os.getenv("API_OPENAI", "")
+            )
         elif provider == "anthropic":
-            os.environ["ANTHROPIC_API_KEY"] = api_key or os.getenv("API_ANTHROPIC", "")
+            os.environ["ANTHROPIC_API_KEY"] = (
+                    api_key
+                    or
+                    os.getenv("API_ANTHROPIC", "")
+            )
         elif provider == "mistral":
-            os.environ["MISTRAL_API_KEY"] = api_key or os.getenv("API_MISTRAL", "")
+            os.environ["MISTRAL_API_KEY"] = (
+                    api_key
+                    or
+                    os.getenv("API_MISTRAL", "")
+            )
         elif provider == "huggingface":
-            os.environ["HUGGINGFACEHUB_API_TOKEN"] = api_key or os.getenv("API_HUGGINGFACEHUB", "")
+            os.environ["HUGGINGFACEHUB_API_TOKEN"] = (
+                    api_key
+                    or
+                    os.getenv("API_HUGGINGFACEHUB", "")
+            )
         else:
             raise ValueError(f"Unsupported LLM provider: {provider}")
 
-        self.model = init_chat_model(model=model_name, model_provider=provider)
+        self.model = init_chat_model(
+            model=model_name,
+            model_provider=provider
+        )
 
     def get_system_prompt(self) -> str:
         """System prompt for the LLM"""
