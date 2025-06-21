@@ -1,12 +1,15 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException, Request
 from fastapi.responses import JSONResponse
 import os
+
+# from config import Config
 from logger import logger
 from time import perf_counter
 
 from vector_database.qdrant_vdb import QdrantVDB
 from rag.ingestion_pipeline import IngestionPipeline
 from rag.llm.chat_model import ChatModel
+# from rag.llm.cloud_chat_model import CloudLLM
 from service.rag_service import (
     retrieve_similar_docs,
     prepare_prompt,
@@ -26,8 +29,43 @@ from metrics import (
 
 router = APIRouter()
 
-llm = ChatModel(model_name="llama3.3:latest")
+# Set vector database
 qdrant = QdrantVDB()
+
+# Set chat model for local llm models
+# Make calls to local models in openwebui hosted by the university
+llm = ChatModel(model_name="llama3.3:latest")
+
+# Alternatively, we can switch to a chat model based on cloud models as well
+# If you want to use other cloud models, please adjust model_name,
+# model_provider, and api key
+# accordingly
+
+# Examples:
+# llm_cloud_anthropic = CloudLLM(
+#     model_name="claude-3-sonnet-20240229",
+#     model_provider="anthropic",
+#     api_key=Config.api_key_anthropic,
+# )
+# llm_cloud_openai = CloudLLM(
+#     model_name="gpt-4-1106-preview",
+#     model_provider="openai",
+#     api_key=Config.api_key_openai,
+# )
+#
+# llm_cloud_mistral = CloudLLM(
+#     model_name="mistral-medium",
+#     model_provider="mistral",
+#     api_key=Config.api_key_mistral,
+# )
+
+# If no parameters are provided, the default cloud model will be openai.
+# If a cloud model is wanted, please remove the comment
+# for package import "CloudLLM"
+
+# Example:
+#llm = CloudLLM() # same as llm_cloud_openai
+
 
 
 @router.post("/upload")
@@ -130,6 +168,7 @@ async def generate(request: Request):
 
         response = llm.invoke(prompt)
         logger.info("Response is generated")
+
         generation_successfully_counter.inc()
 
         return JSONResponse(content={"response": response.content})
