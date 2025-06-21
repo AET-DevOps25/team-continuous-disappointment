@@ -73,10 +73,10 @@ services:
       - mongodb
     restart: unless-stopped
 
-  prometheus: 
+  prometheus:
     image: prom/prometheus:v2.52.0
     container_name: prometheus
-    ports: 
+    ports:
       - "9090:9090"
     volumes:
       - ./monitoring/prometheus:/etc/prometheus
@@ -128,7 +128,7 @@ services:
       - loki-data:/loki
     command: -config.file=/etc/loki/loki-config.yaml
     restart: unless-stopped
-  
+
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
     container_name: cadvisor
