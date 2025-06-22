@@ -1,7 +1,16 @@
 name: CI/CD Tests in GenAI
 
 on:
+  push:
+    branches-ignore:
+      - main
+    paths:
+      - 'genai/**'
+      - '.github/workflows/genai-tests.yml'
+
   pull_request:
+    branches-ignore:
+      - main
     paths:
       - 'genai/**'
       - '.github/workflows/genai-tests.yml'
