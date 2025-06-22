@@ -28,6 +28,7 @@ def test_generate_endpoint_success(_mock_exists, mock_invoke):
     assert data["response"] == "This is a test response"
     mock_invoke.assert_called_once()
 
+
 @patch("rag.llm.chat_model.ChatModel.invoke")
 @patch("routes.routes.qdrant.client.collection_exists", return_value=False)
 def test_generate_endpoint_empty_messages(_mock_exists, mock_invoke):
@@ -47,6 +48,7 @@ def test_generate_endpoint_empty_messages(_mock_exists, mock_invoke):
     data = response.json()
     assert "response" in data
     assert data["response"] == "No prior messages, here's a new idea!"
+
 
 def test_generate_endpoint_missing_fields():
     payload = {

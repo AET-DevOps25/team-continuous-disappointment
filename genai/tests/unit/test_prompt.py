@@ -13,6 +13,7 @@ def test_process_raw_messages_creates_correct_types():
     assert messages[0].content == "Hi"
     assert messages[1].content == "Hello!"
 
+
 def test_process_raw_messages_ignores_unknown_roles():
     raw = [
         {"role": "user", "content": "Hi"},
@@ -21,6 +22,7 @@ def test_process_raw_messages_ignores_unknown_roles():
     messages = process_raw_messages(raw)
     assert len(messages) == 1
     assert isinstance(messages[0], HumanMessage)
+
 
 def test_prepare_prompt_structure():
     system_prompt = "You are a helpful assistant. Context: {context}"
@@ -34,6 +36,7 @@ def test_prepare_prompt_structure():
     final_messages = prompt.to_messages()
     assert isinstance(final_messages[-1], HumanMessage)
     assert "What's a good recipe with eggs?" in final_messages[-1].content
+
 
 def test_prepare_prompt_includes_docs_context():
     system_prompt = "Use this: {context}"

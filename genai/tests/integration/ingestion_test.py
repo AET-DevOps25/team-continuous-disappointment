@@ -33,7 +33,12 @@ def test_real_ingestion_pipeline(tmp_path):
     pipeline = IngestionPipeline(vector_store=vector_store)
     pipeline.ingest(str(pdf_path), filename)
 
-    found = qdrant.collection_contains_file(qdrant.client, collection_name, filename)
+    found = qdrant.collection_contains_file(
+        qdrant.client,
+        collection_name,
+        filename
+    )
+
     assert found is True
 
     # Clean the vector database

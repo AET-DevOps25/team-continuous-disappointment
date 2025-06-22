@@ -2,15 +2,18 @@ from rag.llm.chat_model import ChatModel
 from langchain_core.messages import HumanMessage, AIMessage
 from unittest.mock import patch
 
+
 def test_llm_type_property():
     model = ChatModel()
     assert model._llm_type == "recipai-custom-model"
+
 
 def test_get_system_prompt_contains_context():
     model = ChatModel()
     prompt = model.get_system_prompt()
     assert isinstance(prompt, str)
     assert "{context}" in prompt
+
 
 @patch("rag.llm.chat_model.generate_response")
 def test_generate_calls_openwebui_and_returns_response(mock_generate):

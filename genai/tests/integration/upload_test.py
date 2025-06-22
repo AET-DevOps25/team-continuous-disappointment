@@ -9,7 +9,11 @@ client = TestClient(app)
 @patch("routes.routes.qdrant.client.collection_exists", return_value=False)
 @patch("routes.routes.qdrant.create_and_get_vector_storage")
 @patch("routes.routes.IngestionPipeline")
-def test_upload_file_success(mock_pipeline_class, _mock_vector_store, _mock_exists):
+def test_upload_file_success(
+        mock_pipeline_class,
+        _mock_vector_store,
+        _mock_exists
+):
     mock_pipeline = MagicMock()
     mock_pipeline_class.return_value = mock_pipeline
 
@@ -28,6 +32,7 @@ def test_upload_file_success(mock_pipeline_class, _mock_vector_store, _mock_exis
     mock_pipeline_class.assert_called_once()
     mock_pipeline.ingest.assert_called_once()
 
+
 def test_upload_file_invalid_type():
     file = io.BytesIO(b"just some text")
     file.name = "notes.txt"
@@ -38,7 +43,8 @@ def test_upload_file_invalid_type():
     )
 
     assert response.status_code == 400
-    assert response.json()["detail"] == "Invalid file type. Only PDF files are allowed."
+    assert (response.json()["detail"] ==
+            "Invalid file type. Only PDF files are allowed.")
 
 
 @patch("routes.routes.qdrant.client.collection_exists", return_value=True)
