@@ -1,6 +1,16 @@
 name: CI/CD Tests in GenAI
 
+#on:
+#  pull_request:
+#    paths:
+#      - 'genai/**'
+#      - '.github/genai-tests.yml'
+
 on:
+  push:
+    paths:
+      - 'genai/**'
+      - '.github/genai-tests.yml'
   pull_request:
     paths:
       - 'genai/**'
