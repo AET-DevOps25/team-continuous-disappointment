@@ -182,4 +182,3 @@ async def generate(request: Request):
         duration = perf_counter() - start_time
         generation_duration.observe(duration)
         logger.info("Response generation duration: %.2f seconds", duration)
-
