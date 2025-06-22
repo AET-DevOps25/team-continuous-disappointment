@@ -164,6 +164,7 @@ async def generate(request: Request):
             messages
         )
         logger.info("Prompt is prepared")
+        logger.info("Prompt: %s", prompt)
 
         response = llm.invoke(prompt)
         logger.info("Response is generated")

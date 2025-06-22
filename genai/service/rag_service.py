@@ -35,6 +35,8 @@ def prepare_prompt(system_prompt: str,
 
 def process_raw_messages(raw_messages: List[Dict]) -> List[BaseMessage]:
     """Turns raw messages into BaseMessages, so they can be passed into LLM"""
+    if not raw_messages:
+        return []
     processed_messages = []
     for msg in raw_messages:
         role = msg.get("role")
