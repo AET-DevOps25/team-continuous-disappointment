@@ -237,4 +237,9 @@ jobs:
           chmod 600 ~/.kube/config
 
       - name: Deploy with Helm
-        run: helm -n team-continuous-disappointment upgrade recip-ai ./recipai-chart --set secrets.gitlabClientSecret="${{ secrets.PROD_CLIENT_SECRET }}" --set secrets.mongodbAdminPassword="${{ secrets.MONGODB_ADMIN_PASSWORD }}"
+        run: |
+          helm -n team-continuous-disappointment upgrade recip-ai ./recipai-chart \
+            --set secrets.gitlabClientSecret="${{ secrets.PROD_CLIENT_SECRET }}" \
+            --set secrets.mongodbAdminPassword="${{ secrets.MONGODB_ADMIN_PASSWORD }}" \
+            --set secrets.apiOpenai="${{ secrets.API_OPENAI }}" \
+            --set secrets.apiOpenwebui="${{ secrets.API_OPENWEBUI }}"

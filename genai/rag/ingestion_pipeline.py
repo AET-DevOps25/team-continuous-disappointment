@@ -1,14 +1,14 @@
-import logging
 from typing import List
 from uuid import uuid4
+from time import perf_counter
 
 from langchain_qdrant import QdrantVectorStore
 from langchain_core.documents import Document
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-# Set Logging
-logging.getLogger().setLevel(logging.INFO)
+from logger import logger
+from metrics import file_ingested_counter, file_ingestion_duration
 
 
 class IngestionPipeline:
@@ -45,10 +45,19 @@ class IngestionPipeline:
 
     def ingest(self, file_path: str, filename: str):
         """Ingestion method to load, chunk, and store pdf data"""
+        start_time = perf_counter()
         unchunked_docs = self.load_document(file_path)
-        logging.info("Documents are loaded for file %s", filename)
+        logger.info("Documents are loaded for file %s", filename)
         chunked_docs = self.chunk_documents(unchunked_docs, filename)
-        logging.info("Documents are chunked for file %s", filename)
+        logger.info("Documents are chunked for file %s", filename)
         self.store_documents(chunked_docs)
-        logging.info("Ingested %s chunks into Qdrant for file %s.",
-                     len(chunked_docs), filename)
+        logger.info(
+            "Ingested %s chunks into Qdrant for file %s.",
+            len(chunked_docs),
+            filename
+        )
+
+        duration = perf_counter() - start_time
+        file_ingestion_duration.observe(duration)
+        file_ingested_counter.inc()
+        logger.info("File ingestion duration: %.2f seconds", duration)
