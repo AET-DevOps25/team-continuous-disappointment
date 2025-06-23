@@ -1,0 +1,10 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: chat
+  data:
+    mongodb:
+      uri: ${MONGODB_URI}
+server:
+  port: 8082

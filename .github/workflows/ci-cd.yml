@@ -6,10 +6,10 @@ on:
       - main
       - feature/**
     paths:
-      - 'genai/**'
-      - 'server/**'
-      - 'client/**'
-      - '.github/workflows/ci-cd.yml'
+      - "genai/**"
+      - "server/**"
+      - "client/**"
+      - ".github/workflows/ci-cd.yml"
 
 #----- Detect changes in services and trigger builds accordingly ------#
 jobs:
@@ -32,7 +32,7 @@ jobs:
             client:
               - 'client/**'
 
-#-------- Build and Test Services -----------------------------#
+  #-------- Build and Test Services -----------------------------#
   build-genai:
     needs: detect-changes
     if: |
@@ -45,7 +45,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install dependencies
         run: pip install -r requirements.txt
@@ -69,7 +69,7 @@ jobs:
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
+          distribution: "temurin"
           java-version: 21
 
       - name: Cache Gradle packages
@@ -86,12 +86,28 @@ jobs:
         run: chmod +x gradlew
         working-directory: server
 
-      - name: Build with Gradle
-        run: ./gradlew build
+      - name: Build API Gateway microservice
+        run: ./gradlew :api-gw:build
         working-directory: server
 
-      - name: Run tests
-        run: ./gradlew test
+      - name: Test API Gateway microservice
+        run: ./gradlew :api-gw:test
+        working-directory: server
+
+      - name: Build Chat microservice
+        run: ./gradlew :chat:build
+        working-directory: server
+
+      - name: Test Chat microservice
+        run: ./gradlew :chat:test
+        working-directory: server
+
+      - name: Build User microservice
+        run: ./gradlew :user:build
+        working-directory: server
+
+      - name: Test user microservice
+        run: ./gradlew :user:test
         working-directory: server
 
   build-client:
@@ -120,7 +136,7 @@ jobs:
         run: npm run build
         working-directory: client
 
-#-------- Publish Docker images of services -----------------------------#
+  #-------- Publish Docker images of services -----------------------------#
   docker-release-genai:
     needs: detect-changes
     if: github.ref == 'refs/heads/main' && needs.detect-changes.outputs.genai == 'true'
@@ -160,19 +176,11 @@ jobs:
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
+          distribution: "temurin"
           java-version: 21
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-        working-directory: server
-
-      - name: Build with Gradle
-        run: ./gradlew build
-        working-directory: server
-
-      - name: Run tests
-        run: ./gradlew test
         working-directory: server
 
       - name: Log in to GitHub Container Registry
@@ -182,12 +190,17 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build Docker image
+      - name: Build and push API Gateway microservice image
         working-directory: server
-        run: docker build -t ghcr.io/aet-devops25/team-continuous-disappointment/server:latest .
+        run: ./gradlew :api-gw:jib
 
-      - name: Push Docker image
-        run: docker push ghcr.io/aet-devops25/team-continuous-disappointment/server:latest
+      - name: Build and push User microservice image
+        working-directory: server
+        run: ./gradlew :user:jib
+
+      - name: Build and push Chat microservice image
+        working-directory: server
+        run: ./gradlew :chat:jib
 
   docker-release-client:
     needs: detect-changes
@@ -216,30 +229,37 @@ jobs:
       - name: Push Docker image
         run: docker push ghcr.io/aet-devops25/team-continuous-disappointment/client:latest
 
-#-------- Deploy Services on k8s cluster via helm -----------------------------#
+  #-------- Deploy Services on k8s cluster via helm -----------------------------#
 
-  helm-deploy:
-    needs: [detect-changes, docker-release-genai, docker-release-server, docker-release-client]
-    if: |
-      always() && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+  # Lets skip deployment for now
+  # helm-deploy:
+  #   needs:
+  #     [
+  #       detect-changes,
+  #       docker-release-genai,
+  #       docker-release-server,
+  #       docker-release-client,
+  #     ]
+  #   if: |
+  #     always() && github.ref == 'refs/heads/main'
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
 
-      - name: Set up Helm
-        uses: azure/setup-helm@v3
+  #     - name: Set up Helm
+  #       uses: azure/setup-helm@v3
 
-      - name: Set up Kubeconfig
-        run: |
-          mkdir -p ~/.kube
-          echo "${{ secrets.KUBE_CONFIG }}" > ~/.kube/config
-          chmod 600 ~/.kube/config
+  #     - name: Set up Kubeconfig
+  #       run: |
+  #         mkdir -p ~/.kube
+  #         echo "${{ secrets.KUBE_CONFIG }}" > ~/.kube/config
+  #         chmod 600 ~/.kube/config
 
-      - name: Deploy with Helm
-        run: |
-          helm -n team-continuous-disappointment upgrade recip-ai ./recipai-chart \
-            --set secrets.gitlabClientSecret="${{ secrets.PROD_CLIENT_SECRET }}" \
-            --set secrets.mongodbAdminPassword="${{ secrets.MONGODB_ADMIN_PASSWORD }}" \
-            --set secrets.apiOpenai="${{ secrets.API_OPENAI }}" \
-            --set secrets.apiOpenwebui="${{ secrets.API_OPENWEBUI }}"
+  #     - name: Deploy with Helm
+  #       run: |
+  #         helm -n team-continuous-disappointment upgrade recip-ai ./recipai-chart \
+  #           --set secrets.gitlabClientSecret="${{ secrets.PROD_CLIENT_SECRET }}" \
+  #           --set secrets.mongodbAdminPassword="${{ secrets.MONGODB_ADMIN_PASSWORD }}" \
+  #           --set secrets.apiOpenai="${{ secrets.API_OPENAI }}" \
+  #           --set secrets.apiOpenwebui="${{ secrets.API_OPENWEBUI }}"

@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user
+spec:
+  replicas: {{ .Values.replicaCount.server.user }}
+  selector:
+    matchLabels:
+      app: user
+  template:
+    metadata:
+      labels:
+        app: user
+      annotations:
+        checksum/redeploy: "{{ randAlphaNum 8 }}"
+    spec:
+      containers:
+      - name: user
+        image: "{{ .Values.image.repository }}/user:{{ .Values.image.tag }}"
+        imagePullPolicy: Always
+        ports:
+          - containerPort:  {{ .Values.ports.user }}
+            name: user-api
+        resources:
+          limits:
+            cpu: {{ .Values.resources.limits.cpu }}
+            memory: {{ .Values.resources.limits.memory }}
