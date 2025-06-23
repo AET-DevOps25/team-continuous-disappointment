@@ -231,35 +231,34 @@ jobs:
 
   #-------- Deploy Services on k8s cluster via helm -----------------------------#
 
-  # Lets skip deployment for now
-  # helm-deploy:
-  #   needs:
-  #     [
-  #       detect-changes,
-  #       docker-release-genai,
-  #       docker-release-server,
-  #       docker-release-client,
-  #     ]
-  #   if: |
-  #     always() && github.ref == 'refs/heads/main'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
+  helm-deploy:
+    needs:
+      [
+        detect-changes,
+        docker-release-genai,
+        docker-release-server,
+        docker-release-client,
+      ]
+    if: |
+      always() && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-  #     - name: Set up Helm
-  #       uses: azure/setup-helm@v3
+      - name: Set up Helm
+        uses: azure/setup-helm@v3
 
-  #     - name: Set up Kubeconfig
-  #       run: |
-  #         mkdir -p ~/.kube
-  #         echo "${{ secrets.KUBE_CONFIG }}" > ~/.kube/config
-  #         chmod 600 ~/.kube/config
+      - name: Set up Kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" > ~/.kube/config
+          chmod 600 ~/.kube/config
 
-  #     - name: Deploy with Helm
-  #       run: |
-  #         helm -n team-continuous-disappointment upgrade recip-ai ./recipai-chart \
-  #           --set secrets.gitlabClientSecret="${{ secrets.PROD_CLIENT_SECRET }}" \
-  #           --set secrets.mongodbAdminPassword="${{ secrets.MONGODB_ADMIN_PASSWORD }}" \
-  #           --set secrets.apiOpenai="${{ secrets.API_OPENAI }}" \
-  #           --set secrets.apiOpenwebui="${{ secrets.API_OPENWEBUI }}"
+      - name: Deploy with Helm
+        run: |
+          helm -n team-continuous-disappointment upgrade recip-ai ./recipai-chart \
+            --set secrets.gitlabClientSecret="${{ secrets.PROD_CLIENT_SECRET }}" \
+            --set secrets.mongodbAdminPassword="${{ secrets.MONGODB_ADMIN_PASSWORD }}" \
+            --set secrets.apiOpenai="${{ secrets.API_OPENAI }}" \
+            --set secrets.apiOpenwebui="${{ secrets.API_OPENWEBUI }}"
