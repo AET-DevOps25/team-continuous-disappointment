@@ -5,6 +5,6 @@ spring:
     name: chat
   data:
     mongodb:
-      uri: ${MONGODB_URI}
+      uri: mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@mongodb-service:27017/admin
 server:
   port: 8082
