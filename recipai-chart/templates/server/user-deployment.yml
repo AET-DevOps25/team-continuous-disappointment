@@ -19,7 +19,7 @@ spec:
         image: "{{ .Values.image.repository }}/user:{{ .Values.image.tag }}"
         imagePullPolicy: Always
         ports:
-          - containerPort:  {{ .Values.ports.user }}
+          - containerPort:  {{ .Values.ports.server.user }}
             name: user-api
         resources:
           limits:
