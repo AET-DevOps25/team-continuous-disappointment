@@ -21,11 +21,16 @@ jib {
         ports = listOf("8080")
 
         environment = mapOf(
-			"SPRING_PROFILES_ACTIVE" to "production"
+			"SPRING_PROFILES_ACTIVE" to "production",
+			"SERVER_ADDRESS" to "0.0.0.0"
 		)
         user = "1000"
 
 		creationTime = "USE_CURRENT_TIMESTAMP"
+
+		jvmFlags = listOf(
+            "-XX:+UseContainerSupport",
+        )
     }
 
 
