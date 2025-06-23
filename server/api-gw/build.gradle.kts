@@ -8,3 +8,28 @@ dependencies {
 	implementation("org.springframework.cloud:spring-cloud-starter-gateway-mvc")
 	implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
 }
+
+jib {
+    from {
+        image = "eclipse-temurin:21-jre-alpine"
+    }
+    to {
+        image = "ghcr.io/aet-devops25/team-continuous-disappointment/api-gw"
+        tags =  setOf("latest")
+    }
+    container {
+        ports = listOf("8080")
+
+        environment = mapOf(
+			"SPRING_PROFILES_ACTIVE" to "production"
+		)
+        user = "1000"
+
+		creationTime = "USE_CURRENT_TIMESTAMP"
+    }
+
+
+	dockerClient {
+        executable = "/usr/local/bin/docker"
+    }
+}

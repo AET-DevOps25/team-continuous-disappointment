@@ -1,6 +1,7 @@
 plugins {
     id("org.springframework.boot") version "3.3.0" apply false
     id("io.spring.dependency-management") version "1.1.4" apply false
+    id("com.google.cloud.tools.jib") version "3.4.1" apply false 
     id("java")
 }
 
@@ -8,6 +9,7 @@ subprojects {
     apply(plugin = "java")
     apply(plugin = "org.springframework.boot")
     apply(plugin = "io.spring.dependency-management")
+    apply(plugin = "com.google.cloud.tools.jib")
 
     group = "com.continuousdisappointment"
     version = "0.0.1-SNAPSHOT"
