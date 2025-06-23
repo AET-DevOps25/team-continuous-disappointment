@@ -22,6 +22,8 @@ spec:
           - containerPort:  {{ .Values.ports.server.apigw }}
             name: apigw-api
         env:
+          - name: GITLAB_CLIENT_ID
+            value: 97a36ff40524d6a4aa3be7e35557ec30f4a451e6157b3e82a06fbd5f37f7a6ee
           - name: GITLAB_CLIENT_SECRET
             valueFrom:
               secretKeyRef:
