@@ -1,8 +1,10 @@
 spring:
+  profiles:
+    active: dev
   application:
     name: chat
   data:
     mongodb:
-      uri: ${MONGODB_URI:mongodb://admin:admin@127.0.0.1:27017/recipai?authSource=admin}
+      uri: ${MONGODB_URI}
 server:
   port: 8082

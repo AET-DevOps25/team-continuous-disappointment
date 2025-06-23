@@ -1,0 +1,6 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://admin:admin@127.0.0.1:27017/recipai?authSource=admin
+server:
+  port: 8082

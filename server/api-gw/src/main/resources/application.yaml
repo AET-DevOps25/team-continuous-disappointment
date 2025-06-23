@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: dev
   application:
     name: api-gw
   cloud:
@@ -9,6 +11,22 @@ spring:
             uri: http://genai-service:8000 
             predicates:
               - Path=/genai/**
+          - id: chat
+            uri: http://user-service:8081
+            predicates:
+              - Path=/user/**
+          - id: user
+            uri: http://chat-service:8082
+            predicates:
+              - Path=/chat/**
+  security:
+    oauth2:
+      resourceserver:
+        opaquetoken:
+          client-id: ${GITLAB_CLIENT_ID:60a9e442420a386f2ddff0f60ed0801dd7e826f0710507e982d5afe6aa054334}
+          client-secret: ${GITLAB_CLIENT_SECRET:test-secret}
+          introspection-uri: https://gitlab.lrz.de/oauth/introspect
+
 
 server:
   port: 8080

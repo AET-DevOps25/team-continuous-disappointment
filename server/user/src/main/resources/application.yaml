@@ -1,24 +1,5 @@
 spring:
   application:
     name: user
-  security:
-    oauth2:
-      resourceserver:
-        opaquetoken:
-          client-id: ${GITLAB_CLIENT_ID:60a9e442420a386f2ddff0f60ed0801dd7e826f0710507e982d5afe6aa054334}
-          client-secret: ${GITLAB_CLIENT_SECRET:test-secret}
-          introspection-uri: https://gitlab.lrz.de/oauth/introspect
-  cloud:
-    gateway:
-      mvc:
-        routes:
-          - id: genai
-            uri: http://genai-service:8000 
-            predicates:
-              - Path=/genai/**
-  data:
-    mongodb:
-      uri: mongodb://${MONGO_USERNAME:admin}:${MONGO_PASSWORD:admin}@${MONGO_HOST:127.0.0.1:27017}/recipai?authSource=admin
-
 server:
   port: 8081
