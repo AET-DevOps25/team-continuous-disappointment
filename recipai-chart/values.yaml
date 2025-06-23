@@ -15,26 +15,35 @@ resources:
 # Replica count for each service
 replicaCount:
   client: 1
-  server: 1
   genai: 1
   prometheus: 1
   grafana: 1
+  server:
+    apigw: 1
+    user: 1
+    chat: 1
 
 # Port configuration per service
 ports:
   client: 80
-  server: 8080
   genai: 8000
   prometheus: 9090
   grafana: 3000
+  server:
+    apigw: 8080
+    user: 8081
+    chat: 8082
 
 # Service names
 services:
   client: client-service
-  server: server-service
   genai: genai-service
   mongodb: mongodb-service
   qdrant: qdrant-service
+  server:
+    apigw: apigw-service
+    user: user-service
+    chat: chat-service
 
 db:
   adminUsername: admin

@@ -1,26 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: server
+  name: chat
 spec:
-  replicas: {{ .Values.replicaCount.server }}
+  replicas: {{ .Values.replicaCount.server.chat }}
   selector:
     matchLabels:
-      app: server
+      app: chat
   template:
     metadata:
       labels:
-        app: server
+        app: chat
       annotations:
         checksum/redeploy: "{{ randAlphaNum 8 }}"
     spec:
       containers:
-      - name: server
-        image: "{{ .Values.image.repository }}/server:{{ .Values.image.tag }}"
+      - name: chat
+        image: "{{ .Values.image.repository }}/chat:{{ .Values.image.tag }}"
         imagePullPolicy: Always
         ports:
-          - containerPort:  {{ .Values.ports.server }}
-            name: server-api
+          - containerPort:  {{ .Values.ports.chat }}
+            name: chat-api
         env:
           - name: MONGODB_USERNAME
             value: {{ .Values.db.adminUsername }}
@@ -29,11 +29,6 @@ spec:
               secretKeyRef:
                 name: server-secret
                 key: mongodb-password
-          - name: GITLAB_CLIENT_SECRET
-            valueFrom:
-              secretKeyRef:
-                name: server-secret
-                key: gitlab-client-secret
         resources:
           limits:
             cpu: {{ .Values.resources.limits.cpu }}

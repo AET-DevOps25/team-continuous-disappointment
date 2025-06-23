@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apigw
+spec:
+  replicas: {{ .Values.replicaCount.server.apigw }}
+  selector:
+    matchLabels:
+      app: apigw
+  template:
+    metadata:
+      labels:
+        app: apigw
+      annotations:
+        checksum/redeploy: "{{ randAlphaNum 8 }}"
+    spec:
+      containers:
+      - name: apigw
+        image: "{{ .Values.image.repository }}/api-gw:{{ .Values.image.tag }}"
+        imagePullPolicy: Always
+        ports:
+          - containerPort:  {{ .Values.ports.server.apigw }}
+            name: apigw-api
+        env:
+          - name: GITLAB_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: server-secret
+                key: gitlab-client-secret
+        resources:
+          limits:
+            cpu: {{ .Values.resources.limits.cpu }}
+            memory: {{ .Values.resources.limits.memory }}
