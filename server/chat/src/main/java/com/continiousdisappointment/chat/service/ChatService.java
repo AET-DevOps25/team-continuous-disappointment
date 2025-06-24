@@ -3,6 +3,7 @@ package com.continiousdisappointment.chat.service;
 import java.util.List;
 import java.util.UUID;
 
+import com.continiousdisappointment.chat.domain.chat.GenAiMessage;
 import org.springframework.stereotype.Service;
 
 import com.continiousdisappointment.chat.domain.chat.Chat;
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ChatService {
     public final ChatRepository chatRepository;
+    public final GenAiService genAiService;
 
     public List<Chat> getChatsOfUser(int userId) {
         var chats = chatRepository.findByUserId(userId);
@@ -64,13 +66,26 @@ public class ChatService {
                 .orElseThrow(() -> new IllegalArgumentException("Chat not found"));
         assertChatBelongsToUser(chatModel, userId);
 
-        var messageModel = new MessageModel(
+        var userMessageModel = new MessageModel(
                 content,
                 role);
 
-        chatModel.getMessages().add(messageModel);
+        List<GenAiMessage> previousMessages = chatModel.getMessages().stream()
+                .map(m -> new GenAiMessage(m.getRole().name(), m.getContent()))
+                .toList();
+
+        String assistantReply = genAiService.generateAssistantReply(userMessageModel.getContent(), previousMessages);
+
+        var assistantMessageModel = new MessageModel(
+                assistantReply,
+                Role.ASSISTANT
+        );
+
+        chatModel.getMessages().add(userMessageModel);
+        chatModel.getMessages().add(assistantMessageModel);
         chatRepository.save(chatModel);
-        return Message.fromDom(messageModel);
+
+        return Message.fromDom(assistantMessageModel);
     }
 
     private void assertChatBelongsToUser(ChatModel chatModel, int userId) {
