@@ -1,18 +1,15 @@
 package com.continiousdisappointment.chat.controller;
 
 import com.continiousdisappointment.chat.domain.User;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.http.ResponseEntity;
-
-import com.continiousdisappointment.chat.service.ChatService;
-import com.continiousdisappointment.chat.service.UserService;
 import com.continiousdisappointment.chat.domain.chat.Chat;
 import com.continiousdisappointment.chat.domain.chat.Message;
 import com.continiousdisappointment.chat.domain.chat.Role;
 import com.continiousdisappointment.chat.dto.AddMessageToChatDto;
 import com.continiousdisappointment.chat.dto.CreateChatDto;
-
+import com.continiousdisappointment.chat.service.ChatService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 

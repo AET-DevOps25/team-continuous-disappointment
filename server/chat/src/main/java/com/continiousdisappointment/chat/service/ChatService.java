@@ -1,23 +1,23 @@
 package com.continiousdisappointment.chat.service;
 
-import java.util.List;
-import java.util.UUID;
-
-import org.springframework.stereotype.Service;
-
 import com.continiousdisappointment.chat.domain.chat.Chat;
 import com.continiousdisappointment.chat.domain.chat.Message;
 import com.continiousdisappointment.chat.domain.chat.Role;
 import com.continiousdisappointment.chat.model.ChatModel;
 import com.continiousdisappointment.chat.model.MessageModel;
 import com.continiousdisappointment.chat.repository.ChatRepository;
-
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class ChatService {
-    public final ChatRepository chatRepository;
+    private final ChatRepository chatRepository;
+    private final MeterRegistry meterRegistry;
 
     public List<Chat> getChatsOfUser(int userId) {
         var chats = chatRepository.findByUserId(userId);
@@ -40,6 +40,7 @@ public class ChatService {
                 title);
         chatModel.setMessages(List.of());
         chatRepository.save(chatModel);
+        meterRegistry.counter("chats.created").increment();
         return Chat.fromDom(chatModel);
     }
 
@@ -57,6 +58,7 @@ public class ChatService {
                 .orElseThrow(() -> new IllegalArgumentException("Chat not found"));
         assertChatBelongsToUser(chatModel, userId);
         chatRepository.delete(chatModel);
+        meterRegistry.counter("chats.deleted").increment();
     }
 
     public Message addMessageToChat(int userId, String chatId, String content, Role role) {
@@ -70,6 +72,7 @@ public class ChatService {
 
         chatModel.getMessages().add(messageModel);
         chatRepository.save(chatModel);
+        meterRegistry.counter("chats.messageCount", "chatId", chatId).increment();
         return Message.fromDom(messageModel);
     }
 

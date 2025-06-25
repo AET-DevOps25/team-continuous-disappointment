@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: chat-dashboard
+  labels:
+    grafana_dashboard: "1"
+data:
+  genai-dashboard.json: |
+{{ .Files.Get "dashboards/chat-dashboard.json" | indent 4 }}

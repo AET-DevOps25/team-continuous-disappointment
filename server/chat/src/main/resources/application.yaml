@@ -8,3 +8,13 @@ spring:
       uri: mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@mongodb-service:27017/recipai?authSource=admin
 server:
   port: 8082
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - info
+          - metrics
+          - prometheus

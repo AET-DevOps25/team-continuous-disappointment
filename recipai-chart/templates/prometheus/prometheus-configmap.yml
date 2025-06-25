@@ -16,6 +16,15 @@ data:
       - job_name: 'genai-service'
         static_configs:
           - targets: ['genai-service:80']
-      - job_name: 'server-service'
+      - job_name: 'api-gw'
+        metrics_path: '/actuator/prometheus'
         static_configs:
-          - targets: ['server-service:80']
+          - targets: ['apigw-service:80']
+      - job_name: 'chat'
+        metrics_path: '/actuator/prometheus'
+        static_configs:
+          - targets: ['chat-service:80']
+      - job_name: 'user'
+        metrics_path: '/actuator/prometheus'
+        static_configs:
+          - targets: ['user-service:80']
