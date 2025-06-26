@@ -33,7 +33,6 @@ jib {
         )
     }
 
-
 	dockerClient {
         executable = "/usr/local/bin/docker"
     }
