@@ -1,0 +1,168 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: http://localhost:8082
+    description: Generated server url
+tags:
+  - name: Chat Controller
+    description: Manages chat operations, requires bearer authorization
+paths:
+  /chat/{chatId}:
+    get:
+      tags:
+        - Chat Controller
+      operationId: getChat
+      parameters:
+        - name: chatId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Chat'
+    put:
+      tags:
+        - Chat Controller
+      operationId: updateChat
+      parameters:
+        - name: chatId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: title
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Chat'
+    delete:
+      tags:
+        - Chat Controller
+      operationId: deleteChat
+      parameters:
+        - name: chatId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+  /chat:
+    get:
+      tags:
+        - Chat Controller
+      operationId: getChats
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Chat'
+    post:
+      tags:
+        - Chat Controller
+      operationId: createChat
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateChatDto'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Chat'
+  /chat/{chatId}/messages:
+    post:
+      tags:
+        - Chat Controller
+      operationId: addMessage
+      parameters:
+        - name: chatId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddMessageToChatDto'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Message'
+components:
+  schemas:
+    Chat:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        userId:
+          type: integer
+          format: int32
+        title:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+    Message:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        content:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        role:
+          type: string
+          enum:
+            - USER
+            - ASSISTANT
+    CreateChatDto:
+      type: object
+      properties:
+        title:
+          type: string
+    AddMessageToChatDto:
+      type: object
+      properties:
+        content:
+          type: string

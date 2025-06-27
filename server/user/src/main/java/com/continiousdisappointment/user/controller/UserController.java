@@ -2,6 +2,7 @@ package com.continiousdisappointment.user.controller;
 
 import com.continiousdisappointment.user.domain.User;
 import com.continiousdisappointment.user.service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("info")
 @RequiredArgsConstructor
+@Tag(name = "User Controller", description = "Returns user information, requires bearer authorization")
 public class UserController {
     private final UserService userService;
 

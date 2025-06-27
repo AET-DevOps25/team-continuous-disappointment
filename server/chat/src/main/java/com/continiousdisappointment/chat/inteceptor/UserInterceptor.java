@@ -19,6 +19,11 @@ public class UserInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(
             HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+
+        if (checkUnauthorizedAllowedPath(request.getRequestURI())) {
+           return true;
+        }
+
         String token = request.getHeader(AUTHORIZATION_HEADER);
         if (token == null) {
             log.warn("No token found in Authorization header");
@@ -36,6 +41,9 @@ public class UserInterceptor implements HandlerInterceptor {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
         }
+    }
 
+    private boolean checkUnauthorizedAllowedPath(String path) {
+        return path.startsWith("/swagger") || path.startsWith("/v3/api-docs");
     }
 }
