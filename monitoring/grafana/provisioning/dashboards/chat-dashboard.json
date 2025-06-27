@@ -51,7 +51,7 @@
       },
       "targets": [
         {
-          "expr": "sum by (instance) (rate(chats_created_total[1m]))",
+          "expr": "sum by (instance) (rate(chats_total[1m]))",
           "legendFormat": "Chats Created Rate",
           "refId": "A"
         }
@@ -186,7 +186,7 @@
       },
       "targets": [
         {
-          "expr": "sum(chats_created_total)",
+          "expr": "sum(chats_total)",
           "legendFormat": "Total Chats Created",
           "refId": "A"
         }
