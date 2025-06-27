@@ -8,11 +8,14 @@ import com.continiousdisappointment.chat.model.MessageModel;
 import com.continiousdisappointment.chat.repository.ChatRepository;
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class ChatService {
@@ -41,6 +44,7 @@ public class ChatService {
         chatModel.setMessages(List.of());
         chatRepository.save(chatModel);
         meterRegistry.counter("chats.created").increment();
+        log.info("New chat created for user {} with title '{}'", userId, title);
         return Chat.fromDom(chatModel);
     }
 
