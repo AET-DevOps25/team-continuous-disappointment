@@ -1,3 +1,4 @@
+import os
 from qdrant_client import QdrantClient
 from qdrant_client.models import VectorParams, Distance
 from qdrant_client.http.models import Filter, FieldCondition, MatchValue
@@ -13,7 +14,7 @@ from logger import logger
 class QdrantVDB(BaseVDB):
     """Qdrant vector database implementation."""
     def __init__(self):
-        self.host = "http://qdrant-service:6333"
+        self.host = os.getenv("QDRANT_HOST", "http://localhost:6333")
         self.client = self.get_vector_database(self.host)
         logger.info("Qdrant vector database is initialized.")
 

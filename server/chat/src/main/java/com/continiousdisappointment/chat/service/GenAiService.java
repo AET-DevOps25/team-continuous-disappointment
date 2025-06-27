@@ -3,27 +3,50 @@ package com.continiousdisappointment.chat.service;
 import com.continiousdisappointment.chat.domain.chat.GenAiMessage;
 import com.continiousdisappointment.chat.dto.GenAiRequest;
 import com.continiousdisappointment.chat.dto.GenAiResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+
+import java.util.Arrays;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class GenAiService {
-
+    private final Environment environment;
     private final RestTemplate restTemplate = new RestTemplate();
 
     public String generateAssistantReply(String query, List<GenAiMessage> messages) {
-        GenAiRequest request = new GenAiRequest(query, messages);
-        ResponseEntity<GenAiResponse> response = restTemplate.postForEntity(
-                "http://genai-service/genai/generate",
-                request,
-                GenAiResponse.class
-        );
-        if (!response.getStatusCode().is2xxSuccessful()) {
-            throw new IllegalStateException("GenAI service responded with an error");
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            GenAiRequest genAiRequest = new GenAiRequest(query, messages);
+            HttpEntity<GenAiRequest> entity = new HttpEntity<>(genAiRequest, headers);
+
+            ResponseEntity<GenAiResponse> response = restTemplate.postForEntity(
+                    getGenAiServiceUrl() + "/genai/generate",
+                    entity,
+                    GenAiResponse.class
+            );
+            return response.getBody().response();
+
+        } catch (Exception e) {
+            System.err.println("Error calling LLM REST service: " + e.getMessage());
+            return "";
         }
-        return response.getBody().response();
+    }
+
+    private String getGenAiServiceUrl() {
+        if (Arrays.asList(environment.getActiveProfiles()).contains("dev")) {
+            return "http://localhost:8000";
+        }
+        return "http://genai-service";
     }
 }

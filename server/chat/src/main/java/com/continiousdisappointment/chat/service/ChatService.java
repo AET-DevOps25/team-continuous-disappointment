@@ -76,11 +76,13 @@ public class ChatService {
 
         String assistantReply = genAiService.generateAssistantReply(userMessageModel.getContent(), previousMessages);
 
+        if (assistantReply.isBlank()) {
+            return Message.fromDom(userMessageModel);
+        }
         var assistantMessageModel = new MessageModel(
                 assistantReply,
                 Role.ASSISTANT
         );
-
         chatModel.getMessages().add(userMessageModel);
         chatModel.getMessages().add(assistantMessageModel);
         chatRepository.save(chatModel);

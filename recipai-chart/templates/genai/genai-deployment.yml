@@ -34,6 +34,9 @@ spec:
                   key: api-openwebui
             - name: BASE_URL
               value: {{ .Values.genai.baseUrl }}
+            - name: QDRANT_HOST
+              value: {{ .Values.genai.qdrant_host }}
+
           resources:
             limits:
               cpu: {{ .Values.resources.limits.cpu }}
