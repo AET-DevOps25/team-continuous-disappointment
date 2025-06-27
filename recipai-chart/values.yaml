@@ -62,4 +62,4 @@ secrets:
 
 genai:
   baseUrl: "https://gpu.aet.cit.tum.de"
-  qdrant_host: "http://qdrant:6333"
+  qdrant_host: "http://qdrant-service:6333"
