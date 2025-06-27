@@ -49,6 +49,8 @@ spec:
           projected:
             sources:
               - configMap:
+                  name: chat-dashboard
+              - configMap:
                   name: genai-dashboard
               - configMap:
                   name: system-dashboard
