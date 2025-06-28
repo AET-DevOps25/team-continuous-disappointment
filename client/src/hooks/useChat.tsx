@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useChats } from "./useChats";
 import { useChatUpdate } from "./useChatUpdate";
 import { useChatCreate } from "./useChatCreate";
@@ -9,23 +9,44 @@ export default function useChat() {
   const [activeConversationId, setActiveConversationId] = useState<
     string | null
   >(null);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isTyping, setIsTyping] = useState(false);
-  const { addMessageToChat } = useChatUpdate({});
+  const { addMessageToChat } = useChatUpdate({
+    onSuccess: () => setIsTyping(false),
+    onError: () => setIsTyping(false),
+  });
   const { createChat } = useChatCreate({});
   const { deleteChat } = useChatDelete({});
 
-  const activeConversation =
-    chats.find((c) => c.id === activeConversationId) || null;
+  const [activeConversation, setActiveConversation] = useState(
+    chats.find((c) => c.id === activeConversationId) || null
+  );
+
+  const optimisticAddMessage = useCallback((content: string) => {
+    const newMessage: Message = {
+      id: crypto.randomUUID(),
+      content,
+      timestamp: new Date(),
+      role: "USER",
+    };
+    setActiveConversation((prev) => {
+      if (!prev) return null;
+      return {
+        ...prev,
+        messages: [...prev.messages, newMessage],
+      };
+    });
+  }, []);
 
   const addMessage = useCallback(
     (content: string) => {
+      setIsTyping(true);
+      optimisticAddMessage(content);
       addMessageToChat({
         message: content,
         conversationId: activeConversationId || "",
       });
     },
-    [activeConversationId, addMessageToChat]
+    [activeConversationId, addMessageToChat, optimisticAddMessage]
   );
 
   const createNewConversation = useCallback(
@@ -39,6 +60,12 @@ export default function useChat() {
     },
     [deleteChat]
   );
+
+  useEffect(() => {
+    setActiveConversation(
+      chats.find((c) => c.id === activeConversationId) || null
+    );
+  }, [setActiveConversation, chats, activeConversationId]);
 
   return {
     conversations: chats,
