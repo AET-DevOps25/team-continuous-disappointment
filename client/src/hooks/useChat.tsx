@@ -17,9 +17,8 @@ export default function useChat() {
   const { createChat } = useChatCreate({});
   const { deleteChat } = useChatDelete({});
 
-  const [activeConversation, setActiveConversation] = useState(
-    chats.find((c) => c.id === activeConversationId) || null
-  );
+  const [activeConversation, setActiveConversation] =
+    useState<Conversation | null>(null);
 
   const optimisticAddMessage = useCallback((content: string) => {
     const newMessage: Message = {
