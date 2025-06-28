@@ -4,8 +4,7 @@ import com.continiousdisappointment.chat.domain.chat.GenAiMessage;
 import com.continiousdisappointment.chat.dto.GenAiRequest;
 import com.continiousdisappointment.chat.dto.GenAiResponse;
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -18,10 +17,10 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Arrays;
 import java.util.List;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class GenAiService {
-    private static final Logger log = LogManager.getLogger(GenAiService.class);
     private final Environment environment;
     private final RestTemplate restTemplate = new RestTemplate();
 
