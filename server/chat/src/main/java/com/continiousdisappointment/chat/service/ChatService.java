@@ -71,7 +71,7 @@ public class ChatService {
                 role);
 
         List<GenAiMessage> previousMessages = chatModel.getMessages().stream()
-                .map(m -> new GenAiMessage(m.getRole().name(), m.getContent()))
+                .map(m -> new GenAiMessage(m.getRole(), m.getContent()))
                 .toList();
 
         String assistantReply = genAiService.generateAssistantReply(userMessageModel.getContent(), previousMessages);

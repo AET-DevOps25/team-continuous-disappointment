@@ -4,6 +4,8 @@ import com.continiousdisappointment.chat.domain.chat.GenAiMessage;
 import com.continiousdisappointment.chat.dto.GenAiRequest;
 import com.continiousdisappointment.chat.dto.GenAiResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -19,6 +21,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class GenAiService {
+    private static final Logger log = LogManager.getLogger(GenAiService.class);
     private final Environment environment;
     private final RestTemplate restTemplate = new RestTemplate();
 
@@ -35,10 +38,11 @@ public class GenAiService {
                     entity,
                     GenAiResponse.class
             );
+            log.info("GenAI service is called with reponse {} ", response.getBody().response());
             return response.getBody().response();
 
         } catch (Exception e) {
-            System.err.println("Error calling LLM REST service: " + e.getMessage());
+            log.error("Error calling GenAI service: {}", e.getMessage());
             return "";
         }
     }
