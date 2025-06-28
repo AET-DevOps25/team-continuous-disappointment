@@ -7,6 +7,7 @@ import com.continiousdisappointment.chat.domain.chat.Role;
 import com.continiousdisappointment.chat.dto.AddMessageToChatDto;
 import com.continiousdisappointment.chat.dto.CreateChatDto;
 import com.continiousdisappointment.chat.service.ChatService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/chat")
+@Tag(name = "Chat Controller", description = "Manages chat operations, requires bearer authorization")
 public class ChatController {
     private final ChatService chatService;
 

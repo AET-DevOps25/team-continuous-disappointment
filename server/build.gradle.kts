@@ -27,8 +27,14 @@ subprojects {
         implementation("org.springframework.boot:spring-boot-starter-actuator")
         implementation("org.springframework.security:spring-security-core:6.5.1")
         implementation ("org.springframework.security:spring-security-oauth2-core:5.8.5")
-        implementation("org.apache.logging.log4j:log4j-api:2.25.0")
-        implementation("org.apache.logging.log4j:log4j-core:2.25.0")
+
+        implementation("org.apache.logging.log4j:log4j-api:2.23.0")
+        implementation("org.apache.logging.log4j:log4j-core:2.23.0")
+
+        implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
+        implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.5.0")
+        implementation("org.springdoc:springdoc-openapi-starter-common:2.5.0")
+
         compileOnly("org.projectlombok:lombok")
         annotationProcessor("org.projectlombok:lombok")
 
