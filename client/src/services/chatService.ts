@@ -12,7 +12,6 @@ export async function getConversationsOfUser(
       throw new Error("Failed to fetch conversations.");
     }
     const conversations = await conversationsResponse.json();
-    console.log("Fetched conversations:", conversations);
     return conversations as Conversation[];
   } catch (error) {
     console.error("Error fetching conversations:", error);
