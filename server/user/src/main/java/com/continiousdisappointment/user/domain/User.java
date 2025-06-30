@@ -1,12 +1,18 @@
 package com.continiousdisappointment.user.domain;
 
-public record User(Integer id, String username) {
-    public User {
-        if (id == null || id < 0) {
-            throw new IllegalArgumentException("ID must be a non-negative integer.");
-        }
-        if (username == null || username.isBlank()) {
-            throw new IllegalArgumentException("Username cannot be null or blank.");
-        }
+import java.util.Set;
+
+import org.springframework.lang.NonNull;
+
+public class User extends OAuthUser {
+    private final Set<DietaryPreference> dietaryPreferences;
+
+    public User(String username, Integer id, @NonNull Set<DietaryPreference> dietaryPreferences) {
+        super(username, id);
+        this.dietaryPreferences = dietaryPreferences;
+    }
+
+    public Set<DietaryPreference> getDietaryPreferences() {
+        return dietaryPreferences;
     }
 }

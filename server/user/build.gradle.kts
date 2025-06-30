@@ -1,3 +1,7 @@
+dependencies {
+	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+}
+
 jib {
     from {
         image = "eclipse-temurin:21-jre-alpine"
