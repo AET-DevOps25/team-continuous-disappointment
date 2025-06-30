@@ -25,7 +25,7 @@ Generative AI is integrated meaningfully through a dedicated LLM microservice de
 
 4. **Ingredient-Limited Cooking**: A user specifies available ingredients, such as "eggs, spinach, and cheese," and the system suggests recipes that can be prepared using those ingredients, optimizing for simplicity and flavor.
 
-## Components and Responsibilities
+## Components and Responsibilities (System Design)
 
 ### 1. Frontend (React)
 
