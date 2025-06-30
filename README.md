@@ -189,7 +189,7 @@ cd team-continuous-disappointment
 
 ### GenAI Service Setup
 
-1. Navigate to the `llm` directory:
+1. Navigate to the `genai` directory:
    ```bash
    cd genai
    ```
