@@ -47,6 +47,7 @@ const PreferencesPage: React.FC = () => {
 
   const handleToggle = (key: keyof typeof preferences) => {
     const updatedPreferences = { ...preferences, [key]: !preferences[key] };
+    setPreferences(updatedPreferences);
     const updatedPreferenceList = getPreferenceList(updatedPreferences);
     updateUserPreferences({ preferences: updatedPreferenceList });
   };
