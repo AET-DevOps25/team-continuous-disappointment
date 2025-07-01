@@ -32,6 +32,6 @@ public class UserPreferencesController {
             log.warn("Error while saving user preferences", e);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        return null;
+        return ResponseEntity.ok().build();
     }
 }
