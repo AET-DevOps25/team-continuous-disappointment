@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -31,10 +32,18 @@ public class UserService {
 
     public void saveUserPreferences(String authorization, Set<DietaryPreference> dietaryPreferences) {
         OAuthUser oAuthUser = getOAuthUserInfo(authorization);
-        var userPreferences = new UserPreferencesModel();
-        userPreferences.setUserId(oAuthUser.getId());
-        userPreferences.setDietaryPreferences(dietaryPreferences);
-        userPreferencesRepository.save(userPreferences);
+
+        var existingUserPreferences = userPreferencesRepository.findByUserId(oAuthUser.getId());
+        if (existingUserPreferences.isEmpty()) {
+            var userPreferences = new UserPreferencesModel();
+            userPreferences.setUserId(oAuthUser.getId());
+            userPreferences.setId(UUID.randomUUID());
+            userPreferences.setDietaryPreferences(dietaryPreferences);
+            userPreferencesRepository.save(userPreferences);
+            return;
+        }
+        existingUserPreferences.getFirst().setDietaryPreferences(dietaryPreferences);
+        userPreferencesRepository.save(existingUserPreferences.getFirst());
     }
 
     private Set<DietaryPreference> getUserPreferences(String authorization) {
@@ -46,7 +55,7 @@ public class UserService {
     }
 
     private OAuthUser getOAuthUserInfo(String authorization) {
-        String url = "https://gitlab.lrz.de/api{/v4/user";
+        String url = "https://gitlab.lrz.de/api/v4/user";
         if (authorization == null) {
             log.warn("No access token found in security context");
             throw new IllegalStateException("No access token found in security context");

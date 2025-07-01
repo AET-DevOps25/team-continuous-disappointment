@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Log4j2
 @RestController
-@RequestMapping("info")
+@RequestMapping("user/info")
 @RequiredArgsConstructor
 @Tag(name = "User Controller", description = "Returns user information, requires bearer authorization")
 public class UserController {

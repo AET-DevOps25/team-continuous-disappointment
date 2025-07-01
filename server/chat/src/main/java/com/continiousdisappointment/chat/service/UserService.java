@@ -34,8 +34,8 @@ public class UserService {
 
     private String getUserServiceUrl() {
         if (Arrays.asList(environment.getActiveProfiles()).contains("dev")) {
-            return "http://localhost:8081/info";
+            return "http://localhost:8081/user/info";
         }
-        return "http://user-service/info";
+        return "http://user-service/user/info";
     }
 }

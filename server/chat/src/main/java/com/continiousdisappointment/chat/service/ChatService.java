@@ -2,10 +2,12 @@ package com.continiousdisappointment.chat.service;
 import java.util.List;
 import java.util.UUID;
 import com.continiousdisappointment.chat.domain.chat.GenAiMessage;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import com.continiousdisappointment.chat.domain.chat.Chat;
 import com.continiousdisappointment.chat.domain.chat.Message;
 import com.continiousdisappointment.chat.domain.chat.Role;
+import com.continiousdisappointment.chat.domain.User;
 import com.continiousdisappointment.chat.model.ChatModel;
 import com.continiousdisappointment.chat.model.MessageModel;
 import com.continiousdisappointment.chat.repository.ChatRepository;
@@ -65,20 +67,21 @@ public class ChatService {
         meterRegistry.counter("chats.deleted").increment();
     }
 
-    public Message addMessageToChat(int userId, String chatId, String content, Role role) {
+    public Message addMessageToChat(@NonNull User user, String chatId, String content) {
         var chatModel = chatRepository.findById(UUID.fromString(chatId))
                 .orElseThrow(() -> new IllegalArgumentException("Chat not found"));
-        assertChatBelongsToUser(chatModel, userId);
+        assertChatBelongsToUser(chatModel, user.id());
 
         var userMessageModel = new MessageModel(
                 content,
-                role);
+                Role.USER);
 
         List<GenAiMessage> previousMessages = chatModel.getMessages().stream()
                 .map(m -> new GenAiMessage(m.getRole(), m.getContent()))
                 .toList();
 
-        String assistantReply = genAiService.generateAssistantReply(userMessageModel.getContent(), previousMessages);
+        String query = appendPreferencesToQuery(userMessageModel.getContent(), user);
+        String assistantReply = genAiService.generateAssistantReply(query, previousMessages);
 
         if (assistantReply.isBlank()) {
             return Message.fromDom(userMessageModel);
@@ -100,6 +103,10 @@ public class ChatService {
         if (chatModel.getUserId() != userId) {
             throw new IllegalArgumentException("Chat does not belong to the user");
         }
+    }
+
+    private String appendPreferencesToQuery(@NonNull String query, @NonNull User user) {
+        return query + "\n" + "My dietary preferences are: " + user.dietaryPreferences().toString();
     }
 
 }

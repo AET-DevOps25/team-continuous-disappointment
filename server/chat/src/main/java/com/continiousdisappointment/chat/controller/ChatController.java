@@ -3,7 +3,6 @@ package com.continiousdisappointment.chat.controller;
 import com.continiousdisappointment.chat.domain.User;
 import com.continiousdisappointment.chat.domain.chat.Chat;
 import com.continiousdisappointment.chat.domain.chat.Message;
-import com.continiousdisappointment.chat.domain.chat.Role;
 import com.continiousdisappointment.chat.dto.AddMessageToChatDto;
 import com.continiousdisappointment.chat.dto.CreateChatDto;
 import com.continiousdisappointment.chat.service.ChatService;
@@ -55,6 +54,6 @@ public class ChatController {
             @PathVariable("chatId") String chatId,
             @RequestBody AddMessageToChatDto dto,
             @RequestAttribute("user") User user) {
-        return ResponseEntity.ok(chatService.addMessageToChat(user.id(), chatId, dto.content(), Role.USER));
+        return ResponseEntity.ok(chatService.addMessageToChat(user, chatId, dto.content()));
     }
 }
