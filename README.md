@@ -364,7 +364,7 @@ The project includes Docker configurations for containerized deployment.
 
 1. Build and start all services:
    ```bash
-   docker compose -f docker-compose.yml up --build -d
+   docker compose -f docker-compose.yml up -d
    ```
 2. Access the application:
    - Client: [http://localhost:3000](http://localhost:3000)
