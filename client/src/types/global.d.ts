@@ -1,3 +1,5 @@
+import { DIETARY_PREFERENCES } from "./enums";
+
 export {};
 declare global {
   type Message = {
@@ -17,8 +19,10 @@ declare global {
   type User = {
     id: number;
     username: string;
-    name: string;
-    email: string;
+    dietaryPreferences: DIETARY_PREFERENCES[];
     token: string; //bearer token
   };
+
+  type DietaryPreference =
+    (typeof DIETARY_PREFERENCES)[keyof typeof DIETARY_PREFERENCES];
 }

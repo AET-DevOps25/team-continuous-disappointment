@@ -1,20 +1,55 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
+import { useUser } from "../contexts/userContext";
+import { useUserPreferencesUpdate } from "../hooks/useUserPreferencesUpdate";
+import { DIETARY_PREFERENCES } from "../types/enums";
+
+const defaultPreferences = {
+  vegetarian: false,
+  vegan: false,
+  glutenFree: false,
+  dairyFree: false,
+  nutFree: false,
+  spicyFood: false,
+};
+
+const getPreferenceMap = (list: DietaryPreference[]) => ({
+  vegetarian: list.includes(DIETARY_PREFERENCES.VEGETARIAN),
+  vegan: list.includes(DIETARY_PREFERENCES.VEGAN),
+  glutenFree: list.includes(DIETARY_PREFERENCES.GLUTEN_FREE),
+  dairyFree: list.includes(DIETARY_PREFERENCES.DAIRY_FREE),
+  nutFree: list.includes(DIETARY_PREFERENCES.NUT_FREE),
+  spicyFood: list.includes(DIETARY_PREFERENCES.SPICY_FOOD),
+});
+
+const getPreferenceList = (preferences: typeof defaultPreferences) => {
+  const list: DietaryPreference[] = [];
+  if (preferences.vegetarian) list.push(DIETARY_PREFERENCES.VEGETARIAN);
+  if (preferences.vegan) list.push(DIETARY_PREFERENCES.VEGAN);
+  if (preferences.glutenFree) list.push(DIETARY_PREFERENCES.GLUTEN_FREE);
+  if (preferences.dairyFree) list.push(DIETARY_PREFERENCES.DAIRY_FREE);
+  if (preferences.nutFree) list.push(DIETARY_PREFERENCES.NUT_FREE);
+  if (preferences.spicyFood) list.push(DIETARY_PREFERENCES.SPICY_FOOD);
+  return list;
+};
 
 const PreferencesPage: React.FC = () => {
-  const [preferences, setPreferences] = useState({
-    vegetarian: false,
-    vegan: false,
-    glutenFree: false,
-    dairyFree: false,
-    nutFree: false,
-    spicyFood: false,
-  });
+  const { user } = useUser();
+  const { updateUserPreferences } = useUserPreferencesUpdate({});
+  const [preferences, setPreferences] = useState(defaultPreferences);
+
+  useEffect(() => {
+    setPreferences(
+      user?.dietaryPreferences
+        ? getPreferenceMap(user.dietaryPreferences)
+        : defaultPreferences
+    );
+  }, [user?.dietaryPreferences]);
 
   const handleToggle = (key: keyof typeof preferences) => {
-    setPreferences((prev) => ({
-      ...prev,
-      [key]: !prev[key],
-    }));
+    const updatedPreferences = { ...preferences, [key]: !preferences[key] };
+    setPreferences(updatedPreferences);
+    const updatedPreferenceList = getPreferenceList(updatedPreferences);
+    updateUserPreferences({ preferences: updatedPreferenceList });
   };
 
   return (

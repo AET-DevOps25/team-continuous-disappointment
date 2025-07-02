@@ -1,6 +1,11 @@
 spring:
   application:
     name: user
+  profiles:
+    active: dev
+  data:
+    mongodb:
+      uri: mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@mongodb-service:27017/recipai?authSource=admin
 server:
   port: 8081
 

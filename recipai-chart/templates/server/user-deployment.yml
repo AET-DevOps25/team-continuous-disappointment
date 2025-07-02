@@ -21,6 +21,14 @@ spec:
         ports:
           - containerPort:  {{ .Values.ports.server.user }}
             name: user-api
+        env:
+          - name: MONGODB_USERNAME
+            value: {{ .Values.db.adminUsername }}
+          - name: MONGODB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: server-secret
+                key: mongodb-password
         resources:
           limits:
             cpu: {{ .Values.resources.limits.cpu }}
