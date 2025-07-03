@@ -3,37 +3,90 @@ info:
   title: OpenAPI definition
   version: v0
 servers:
-  - url: http://localhost:8081
-    description: Generated server url
+- url: http://localhost:8081
+  description: Generated server url
 tags:
-  - name: User Controller
-    description: Returns user information, requires bearer authorization
+- name: User Preferences Controller
+  description: "Handles user dietary preferences, requires bearer authorization"
+- name: User Controller
+  description: "Returns user information, requires bearer authorization"
 paths:
-  /info:
-    get:
+  /user/preferences:
+    post:
       tags:
-        - User Controller
-      operationId: getUserInfo
+      - User Preferences Controller
+      operationId: saveUserPreferences
       parameters:
-        - name: Authorization
-          in: header
-          required: true
-          schema:
-            type: string
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SaveUserPreferencesRequestDto"
+        required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/User'
+                type: object
+  /user/info:
+    get:
+      tags:
+      - User Controller
+      operationId: getUserInfo
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/User"
 components:
   schemas:
+    SaveUserPreferencesRequestDto:
+      type: object
+      properties:
+        dietaryPreferences:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+            enum:
+            - VEGETARIAN
+            - VEGAN
+            - GLUTEN_FREE
+            - DAIRY_FREE
+            - NUT_FREE
+            - SPICY_FOOD
     User:
       type: object
       properties:
+        username:
+          type: string
         id:
           type: integer
           format: int32
-        username:
-          type: string
+        dietaryPreferences:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+            enum:
+            - VEGETARIAN
+            - VEGAN
+            - GLUTEN_FREE
+            - DAIRY_FREE
+            - NUT_FREE
+            - SPICY_FOOD
