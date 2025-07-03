@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: client-config
+data:
+  config.json: |
+    {
+      "clientId": "{{ .Values.gitlabClientId }}",
+      "redirectUri": "https://{{ .Values.host }}",
+    }

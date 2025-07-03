@@ -25,3 +25,11 @@ spec:
           limits:
             cpu: {{ .Values.resources.limits.cpu }}
             memory: {{ .Values.resources.limits.memory }}
+        volumeMounts:
+        - name: config-volume
+          mountPath: /usr/share/nginx/html/config.json
+          subPath: config.json
+      volumes:
+      - name: config-volume
+        configMap:
+          name: client-config

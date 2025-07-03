@@ -55,6 +55,8 @@ services:
       - "3000:80"
     depends_on:
       - apigw-service
+    volumes:
+      - ./client/config.json:/usr/share/nginx/html/config.json:ro
     restart: unless-stopped
 
   mongodb:
