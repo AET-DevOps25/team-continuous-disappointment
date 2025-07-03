@@ -1,7 +1,7 @@
 services:
   apigw-service:
     image: ghcr.io/aet-devops25/team-continuous-disappointment/api-gw:latest
-    container_name: user
+    container_name: apigw
     ports:
       - "8080:8080"
     restart: unless-stopped
@@ -10,7 +10,7 @@ services:
 
   user-service:
     image: ghcr.io/aet-devops25/team-continuous-disappointment/user:latest
-    container_name: apigw
+    container_name: user
     ports:
       - "8081:8081"
     restart: unless-stopped

@@ -381,7 +381,7 @@ The project includes Docker configurations for containerized deployment.
    docker compose -f docker-compose.yml up -d
    ```
 2. Access the application:
-   - Client: [http://localhost:3000](http://localhost:5173)
+   - Client: [http://localhost:5173](http://localhost:5173)
    - API Gateway Service: [http://localhost:8080](http://localhost:8080)
    - User Service: [http://localhost:8081](http://localhost:8081)
    - Chat Service: [http://localhost:8082](http://localhost:8082)

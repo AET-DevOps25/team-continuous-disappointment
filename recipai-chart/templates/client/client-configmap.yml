@@ -6,5 +6,5 @@ data:
   config.json: |
     {
       "clientId": "{{ .Values.gitlabClientId }}",
-      "redirectUri": "https://{{ .Values.host }}",
+      "redirectUri": "https://{{ .Values.host }}"
     }
