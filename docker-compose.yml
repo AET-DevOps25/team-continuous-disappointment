@@ -1,12 +1,12 @@
 services:
   apigw-service:
     image: ghcr.io/aet-devops25/team-continuous-disappointment/api-gw:latest
-    container_name: apigw
+    container_name: user
     ports:
       - "8080:8080"
     restart: unless-stopped
     env_file:
-      - ./server/.env
+      - .env
 
   user-service:
     image: ghcr.io/aet-devops25/team-continuous-disappointment/user:latest
@@ -15,15 +15,33 @@ services:
       - "8081:8081"
     restart: unless-stopped
     env_file:
-      - ./server/.env
+      - .env
+    environment:
+      - MONGODB_USERNAME=admin
+      - MONGODB_PASSWORD=admin
+
   chat-service:
     image: ghcr.io/aet-devops25/team-continuous-disappointment/chat:latest
-    container_name: apigw
+    container_name: chat
     ports:
       - "8082:8082"
     restart: unless-stopped
     env_file:
-      - ./server/.env
+      - .env
+    environment:
+      - MONGODB_USERNAME=admin
+      - MONGODB_PASSWORD=admin
+
+  client-service:
+    image: ghcr.io/aet-devops25/team-continuous-disappointment/client:latest
+    container_name: client
+    ports:
+      - "5173:80"
+    depends_on:
+      - apigw-service
+    volumes:
+      - ./client/config.json:/usr/share/nginx/html/config.json:ro
+    restart: unless-stopped
 
   genai-service:
     image: ghcr.io/aet-devops25/team-continuous-disappointment/genai:latest
@@ -35,9 +53,9 @@ services:
       - qdrant-service
     restart: unless-stopped
     env_file:
-      - ./genai/.env
+      - .env
     environment:
-      - QDRANT_HOST: http://qdrant-service:6333
+      - QDRANT_HOST=http://qdrant-service:6333
 
   qdrant-service:
     image: qdrant/qdrant
@@ -47,17 +65,6 @@ services:
       - "6333:6333"
     volumes:
       - qdrant_storage:/qdrant/storage
-
-  client-service:
-    image: ghcr.io/aet-devops25/team-continuous-disappointment/client:latest
-    container_name: client
-    ports:
-      - "3000:80"
-    depends_on:
-      - apigw-service
-    volumes:
-      - ./client/config.json:/usr/share/nginx/html/config.json:ro
-    restart: unless-stopped
 
   mongodb:
     image: mongo:8.0

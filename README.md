@@ -1,4 +1,5 @@
 # RecipAI
+
 RecipAI is available at [`https://recipai.student.k8s.aet.cit.tum.de`](https://recipai.student.k8s.aet.cit.tum.de)
 
 ## Project Description
@@ -29,7 +30,8 @@ Generative AI is integrated meaningfully through a dedicated LLM microservice de
 
 ### 1. Frontend (React)
 
-***Responsible Students:*** 
+**_Responsible Students:_**
+
 - Mehmed Esad Akcam & Ege Dogu Kaya
 
 **Responsibilities:**
@@ -47,10 +49,10 @@ Generative AI is integrated meaningfully through a dedicated LLM microservice de
 - Preference settings (gluten-free, diabetic, vegan, etc.)
 - Recipe history viewer
 
-
 ### 2. Backend (Spring Boot REST API)
 
-***Responsible Student:*** 
+**_Responsible Student:_**
+
 - Mehmed Esad Akcam
 
 **Responsibilities:**
@@ -61,10 +63,10 @@ Generative AI is integrated meaningfully through a dedicated LLM microservice de
 - Store and retrieve chat and recipe history from MongoDB.
 - Expose REST endpoints for client-side operations.
 
-
 ### 3. GenAI Microservice (Python with FastAPI + LangChain + Qdrant)
 
-***Responsible Student:*** 
+**_Responsible Student:_**
+
 - Ege Dogu Kaya
 
 **Responsibilities:**
@@ -80,7 +82,6 @@ Generative AI is integrated meaningfully through a dedicated LLM microservice de
 - Prompt templates that incorporate user reqeusts, preferences and dietary constraints
 - Qdrant vector database to store embedded documents for similarity search
 
-
 ### 4. Database (MongoDB)
 
 **Collections:**
@@ -92,25 +93,24 @@ Generative AI is integrated meaningfully through a dedicated LLM microservice de
 
 - Preferences are indexed for fast lookup
 
-
 ### 5. Vector Database (Qdrant)
 
 **Collections:**
 
 - `recipes` – Stores embedded recipe documents which are uploaded by the user
 
-
 ### 6. DevOps
 
-***Responsible Students:*** 
+**_Responsible Students:_**
+
 - Mehmed Esad Akcam & Ege Dogu Kaya
 
-***Responsibilites***
+**_Responsibilites_**
+
 - Each service is dockerized and has its own image in github registry
 - CI/CD pipelines to deploy on student cluster in Rancher and AWS
 - Helm charts for k8s deployment
 - Docker compose for AWS deployment
-
 
 ### 7. Authentication (GitLab LRZ SSO)
 
@@ -122,7 +122,6 @@ Generative AI is integrated meaningfully through a dedicated LLM microservice de
 - Backend creates or updates the user profile in MongoDB
 - Tokens used for secure communication between frontend and backend
 
-
 ### Communication Flow Example
 
 1. User logs in via GitLab LRZ → token returned.
@@ -132,7 +131,6 @@ Generative AI is integrated meaningfully through a dedicated LLM microservice de
 5. GenAI returns structured recipe.
 6. API stores recipe + chat history in MongoDB.
 7. Response returned to frontend and rendered in chat UI.
-
 
 ### Technologies
 
@@ -144,7 +142,6 @@ Generative AI is integrated meaningfully through a dedicated LLM microservice de
 | Database        | MongoDB           |
 | Vector Database | Qdrant            |
 | Auth            | GitLab LRZ SSO    |
-
 
 ## Setup Instructions
 
@@ -214,28 +211,37 @@ docker compose -f docker-compose-dev.yml up -d
 cd client
 npm run dev
 ```
+
 The client will be available at [http://localhost:5173](http://localhost:5173).
 
 ### Start the Server Services
+
 ```bash
 cd server
 ```
+
 #### API-Gateway Service
+
 ```bash
 ./gradlew :api-gw:bootRun
 ```
+
 The API-Gateway Service API will be available at [http://localhost:8080](http://localhost:8080).
 
 #### User Service
+
 ```bash
 ./gradlew :user:bootRun
 ```
+
 The User Service API will be available at [http://localhost:8081](http://localhost:8081).
 
 #### Chat Service
+
 ```bash
 ./gradlew :chat:bootRun
 ```
+
 The Chat Service API will be available at [http://localhost:8082](http://localhost:8082).
 
 ### Start the GenAI Service
@@ -244,6 +250,7 @@ The Chat Service API will be available at [http://localhost:8082](http://localho
 cd genai
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
+
 The LLM service will be available at [http://localhost:8000](http://localhost:8000).
 
 ## Development Workflow
@@ -274,16 +281,20 @@ The LLM service will be available at [http://localhost:8000](http://localhost:80
 - Tests are in the `genai/tests` directory.
 
 #### GenAI Usage
+
 - The GenAI service is responsible for all interactions with the language model used to generate and modify recipes in RecipAI. It receives user inputs as free-text prompts and responds with structured outputs such as complete recipes, meal plans, or modified instructions. It is implemented using FastAPI, LangChain, and integrates with local and cloud large language models.
 
 ##### Retrieval-Augmented Generation
+
 - The GenAI service uses Qdrant as a vector store to retrieve relevant documents before querying the LLM. It adds the retrieved context to the prompt to improve the relevance of answers.
 
 ##### Integration
+
 - The client UI sends user requests to the server, which forwards them to the GenAI service along with the user’s query and chat history to support multi-turn conversations. GenAI service then makes a similarity search in the vector database with the given query, and generates a respective answer. GenAI service is able to provide a proper answer altough no similar context is found in the vector database. (Endpoint: POST - `genai/generate`)
 - If the user wants to upload a recipe file, client UI sends the file content directly to the GenAI service, where the content of the file is chunked, embedded, and stored in the vector database. (Endpoint: POST - `genai/upload`)
 
 ##### Vector Database - Qdrant
+
 We use Qdrant as the vector database to enable semantic search and retrieval-augmented generation (RAG) in RecipAI. Embeddings are generated using OpenAI’s small embedding model `text-embedding-3-small`.
 
 ```bash
@@ -295,7 +306,9 @@ embeddings = OpenAIEmbeddings(
 ```
 
 ##### Environment Variables
+
 - If you want to use cloud and local based LLM models, you need to set the respective api key in your `.env` file. Required `.env` variables:
+
 ```bash
 # Cloud based LLM models
 API_OPENAI="your openai key"
@@ -309,6 +322,7 @@ BASE_URL="base url where openwebui is hosted"
 ```
 
 - Example for Cloud LLM Models (defined in `genai/routes/routes.py`):
+
 ```bash
 llm_cloud_anthropic = CloudLLM(
      model_name="claude-3-sonnet-20240229",
@@ -367,7 +381,7 @@ The project includes Docker configurations for containerized deployment.
    docker compose -f docker-compose.yml up -d
    ```
 2. Access the application:
-   - Client: [http://localhost:3000](http://localhost:3000)
+   - Client: [http://localhost:3000](http://localhost:5173)
    - API Gateway Service: [http://localhost:8080](http://localhost:8080)
    - User Service: [http://localhost:8081](http://localhost:8081)
    - Chat Service: [http://localhost:8082](http://localhost:8082)
@@ -397,36 +411,44 @@ The project includes Helm charts for Kubernetes deployment in the `recipai-chart
 ## CI/CD Pipeline
 
 The project includes a GitHub Actions workflow `ci-cd.yml` for:
+
 - **Building Docker Images**: Automatically builds and pushes Docker images to GitHub Container Registry.
 - **Deploying Docker Images**: Automatically deploys the application to a production environment by using deployment manifests in helm for K8s cluster.
 
 The project includes a GitHub Actions workflow `helm-manual.yml` for:
+
 - **Deploying Docker Images**: Manually deploys the application to a production environment by using deployment manifests in helm for K8s cluster.
 
 The project includes a GitHub Actions workflow `ansible-manual.yml` for:
+
 - **Running Ansible Playbook**: Manually runs any Ansible playbook defined in the `ansible/playbooks` directory against an EC2 instance securely using SSH and Ansible Vault.
 
 The project includes a GitHub Actions workflow `genai-tests.yml` for:
+
 - **Running GenAI Tests**: Automatically runs the tests defined in the `genai/tests` directory on every code push in genai module.
 
 The project includes a GitHub Actions workflow `server-tests.yml` for:
+
 - **Running Server Tests**: TODO
 
 ## API Documentation
 
 ### User Service
+
 API documentation is available in the [`server/user/openapi.yml`](server/user/openapi.yml) file.
 
 ### Chat Service
+
 API documentation is available in the [`server/chat/openapi.yml`](server/chat/openapi.yml) file.
 
 ### GenAI Service
-API documentation is available in the [`genai/openapi.yaml`](genai/openapi.yaml) file.
 
+API documentation is available in the [`genai/openapi.yaml`](genai/openapi.yaml) file.
 
 ## Requirements
 
 ### Functional Requirements
+
 - Recipe Generation: The system must allow users to input a description or ingredients and receive a complete recipe in response.
 - Meal Planning: The system must allow users to request a meal plan for a specified number of days and meals per day.
 - Chat-Based Interaction: The user must be able to interact with the application via a conversational interface and therefore the system must preserve context in multi-turn conversations.
@@ -435,6 +457,7 @@ API documentation is available in the [`genai/openapi.yaml`](genai/openapi.yaml)
 - Chat History: The user must be able to view and revisit previous recipe requests and conversations.
 
 ### Nonfunctional Requirements
+
 - Performance: The system must generate a recipe in response to a user query within 15 seconds in 95% of cases.
 - Scalability: The architecture must allow horizontal scaling of microservices.
 - Availability: The system must maintain 99.5% uptime during working hours.
@@ -448,58 +471,66 @@ API documentation is available in the [`genai/openapi.yaml`](genai/openapi.yaml)
 - Usability: The chat interface must be responsive and intuitive.
 - Observability & Monitoring: The system must expose Prometheus metrics for all critical services. Dashboards must be created in Grafana to visualize response latency, error rates, and user request volume. Besides that, at least one alert must be defined.
 
-
 ## Architecture Overview - TODO
 
-
-
 ## Monitoring and Observability
+
 RecipAI is equipped with a monitoring stack powered by Prometheus and Grafana, deployed in a Kubernetes environment. This setup enables real-time observability across all microservices, including the GenAI service, user and chat services, and the API gateway.
 
 ### Prometheus Configuration
+
 Prometheus is configured via a Kubernetes ConfigMap named prometheus-config at [`recipai-chart/templates/prometheus/prometheus-configmap.yml`](recipai-chart/templates/prometheus/prometheus-configmap.yml). The configuration defines scrape jobs for each service, enabling Prometheus to collect metrics every 15 seconds.
 
 All services expose Prometheus-compatible metrics:
+
 - GenAI service uses a standard `/metrics` endpoint.
 - Server (Spring Boot) services (e.g., chat, user, api-gw) expose metrics via `/actuator/prometheus`.
 
 For dockerized setup, respective prometheus config is also defined at [`monitoring/prometheus/prometheus.yml`](monitoring/prometheus/prometheus.yml)
 
 ### Grafana Dashboards
+
 Grafana is used to visualize metrics collected by Prometheus. It is deployed via Helm and configured with:
+
 - Dashboards for GenAI and chat service latency, error rates, and request counts.
 - Dashboard for general system metrics of the cluster
 - Contact points for alerting (Discord Webhook)
 
 ##### Included Dashboards
+
 - system-dasboard.json: Infrastructure-level metrics (CPU, memory, nodes)
-    - For dockerized setup: [`monitoring/grafana/dashboards/system-dashboard.json`](monitoring/grafana/dashboards/system-dashboard.json)
-    - For helm setup: [`recipai-chart/dashboards/system-dashboard.json`](recipai-chart/dashboards/system-dashboard.json)
+  - For dockerized setup: [`monitoring/grafana/dashboards/system-dashboard.json`](monitoring/grafana/dashboards/system-dashboard.json)
+  - For helm setup: [`recipai-chart/dashboards/system-dashboard.json`](recipai-chart/dashboards/system-dashboard.json)
 - genai-dashboard.json: latency, error rates, and request counts
-    - For dockerized setup: [`monitoring/grafana/dashboards/genai-dashboard.json`](monitoring/grafana/dashboards/genai-dashboard.json)
-    - For helm setup: [`recipai-chart/dashboards/genai-dashboard.json`](recipai-chart/dashboards/genai-dashboard.json)
+  - For dockerized setup: [`monitoring/grafana/dashboards/genai-dashboard.json`](monitoring/grafana/dashboards/genai-dashboard.json)
+  - For helm setup: [`recipai-chart/dashboards/genai-dashboard.json`](recipai-chart/dashboards/genai-dashboard.json)
 - chat-dashboard.json: latency, error rates, and request counts
-    - For dockerized setup: [`monitoring/grafana/dashboards/chat-dashboard.json`](monitoring/grafana/dashboards/chat-dashboard.json)
-    - For helm setup: [`recipai-chart/dashboards/chat-dashboard.json`](recipai-chart/dashboards/chat-dashboard.json)
+  - For dockerized setup: [`monitoring/grafana/dashboards/chat-dashboard.json`](monitoring/grafana/dashboards/chat-dashboard.json)
+  - For helm setup: [`recipai-chart/dashboards/chat-dashboard.json`](recipai-chart/dashboards/chat-dashboard.json)
 
 #### Accessing Grafana
+
 - To access Grafana locally from the cluster, we can do port-forwarding:
-   ```bash
-    kubectl port-forward svc/grafana 3000:3000
-   ```
-   Then, it should be available at [`http://localhost:3000`](http://localhost:3000)
+
+  ```bash
+   kubectl port-forward svc/grafana 3000:3000
+  ```
+
+  Then, it should be available at [`http://localhost:3000`](http://localhost:3000)
 
 - Or you can access it directly via our ingress in the cluster: [`https://grafana-tcd.student.k8s.aet.cit.tum.de`](https://grafana-tcd.student.k8s.aet.cit.tum.de)
 
 - Grafana Credentials:
-    - Username: `admin`
-    - Password: `admin`
+  - Username: `admin`
+  - Password: `admin`
 
 ### Alerting Setup
+
 Alerts are configured using Grafana’s Unified Alerting system. It defines receivers (e.g., Discord webhook) for high response generation duration in the GenAI service (for >20 seconds).
+
 - Contact points are defined:
-    - For dockerized setup: [`monitoring/grafana/provisioning/alerting/contact-points.yaml`](monitoring/grafana/provisioning/alerting/contact-points.yaml)
-    - For helm setup: [`recipai-chart/templates/grafana/grafana-alerting.yml`](recipai-chart/templates/grafana/grafana-alerting.yml)
+  - For dockerized setup: [`monitoring/grafana/provisioning/alerting/contact-points.yaml`](monitoring/grafana/provisioning/alerting/contact-points.yaml)
+  - For helm setup: [`recipai-chart/templates/grafana/grafana-alerting.yml`](recipai-chart/templates/grafana/grafana-alerting.yml)
 
 ## License
 
