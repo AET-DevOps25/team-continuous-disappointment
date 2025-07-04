@@ -8,15 +8,15 @@ spring:
       mvc:
         routes:
           - id: genai
-            uri: http://genai-service
+            uri: http://genai-service:8000
             predicates:
               - Path=/genai/**
           - id: user
-            uri: http://user-service
+            uri: http://user-service:8081
             predicates:
               - Path=/user/**
           - id: chat
-            uri: http://chat-service
+            uri: http://chat-service:8082
             predicates:
               - Path=/chat/**
   security:

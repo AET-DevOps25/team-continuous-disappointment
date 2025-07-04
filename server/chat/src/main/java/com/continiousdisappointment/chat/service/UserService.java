@@ -36,6 +36,6 @@ public class UserService {
         if (Arrays.asList(environment.getActiveProfiles()).contains("dev")) {
             return "http://localhost:8081/user/info";
         }
-        return "http://user-service/user/info";
+        return "http://user-service:8081/user/info";
     }
 }

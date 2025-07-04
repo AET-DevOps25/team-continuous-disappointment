@@ -7,5 +7,5 @@ spec:
     app: genai
   ports:
     - protocol: TCP
-      port: 80
+      port: 8000
       targetPort: genai-api
