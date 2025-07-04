@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,8 +34,7 @@ public class GenAiService {
             ResponseEntity<GenAiResponse> response = restTemplate.postForEntity(
                     getGenAiServiceUrl() + "/genai/generate",
                     entity,
-                    GenAiResponse.class
-            );
+                    GenAiResponse.class);
             log.info("GenAI service is called with reponse {} ", response.getBody().response());
             return response.getBody().response();
 
@@ -50,6 +48,6 @@ public class GenAiService {
         if (Arrays.asList(environment.getActiveProfiles()).contains("dev")) {
             return "http://localhost:8000";
         }
-        return "http://genai-service";
+        return "http://genai-service:8000";
     }
 }
