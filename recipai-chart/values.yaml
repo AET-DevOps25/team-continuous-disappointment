@@ -6,6 +6,9 @@ image:
 # Hostname for Ingress
 host: recipai.student.k8s.aet.cit.tum.de
 
+# Gitlab OAUTH2 client id
+gitlabClientId: 97a36ff40524d6a4aa3be7e35557ec30f4a451e6157b3e82a06fbd5f37f7a6ee
+
 # Resource limits
 resources:
   limits:
