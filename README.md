@@ -412,6 +412,7 @@ The project includes Helm charts for Kubernetes deployment in the `recipai-chart
 
 The project includes a GitHub Actions workflow `ci-cd.yml` for:
 
+- **Testing Server**: For each push, server tests on server microservices are run.
 - **Building Docker Images**: Automatically builds and pushes Docker images to GitHub Container Registry.
 - **Deploying Docker Images**: Automatically deploys the application to a production environment by using deployment manifests in helm for K8s cluster.
 
@@ -426,10 +427,6 @@ The project includes a GitHub Actions workflow `ansible-manual.yml` for:
 The project includes a GitHub Actions workflow `genai-tests.yml` for:
 
 - **Running GenAI Tests**: Automatically runs the tests defined in the `genai/tests` directory on every code push in genai module.
-
-The project includes a GitHub Actions workflow `server-tests.yml` for:
-
-- **Running Server Tests**: TODO
 
 ## API Documentation
 
