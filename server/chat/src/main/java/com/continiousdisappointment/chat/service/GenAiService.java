@@ -35,7 +35,7 @@ public class GenAiService {
                     getGenAiServiceUrl() + "/genai/generate",
                     entity,
                     GenAiResponse.class);
-            log.info("GenAI service is called with reponse {} ", response.getBody().response());
+            log.info("GenAI service is called with response {} ", response.getBody().response());
             return response.getBody().response();
 
         } catch (Exception e) {
