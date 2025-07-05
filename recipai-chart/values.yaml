@@ -59,6 +59,7 @@ vdb:
 # will be overridden
 secrets:
   gitlabClientSecret: "set in CI pipeline"
+  gitlabClientSecretDev: "set in CI pipeline"
   mongodbAdminPassword: "set in CI pipeline"
   apiOpenAi: "set in CI pipeline"
   apiOpenWebUi: "set in CI pipeline"

@@ -2,6 +2,8 @@
 
 RecipAI is available at [`https://recipai.student.k8s.aet.cit.tum.de`](https://recipai.student.k8s.aet.cit.tum.de)
 
+For running it on docker please see [dockerized-deployment](#dockerized-deployment) and [.env.template](.env.template).
+
 ## Project Description
 
 ### Main Functionality

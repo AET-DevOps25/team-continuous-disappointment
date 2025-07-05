@@ -23,6 +23,7 @@ jobs:
         run: |
           helm -n team-continuous-disappointment upgrade recip-ai ./recipai-chart \
             --set secrets.gitlabClientSecret="${{ secrets.PROD_CLIENT_SECRET }}" \
+            --set secrets.gitlabClientSecretDev="${{ secrets.DEV_CLIENT_SECRET }}" \
             --set secrets.mongodbAdminPassword="${{ secrets.MONGODB_ADMIN_PASSWORD }}" \
             --set secrets.apiOpenAi="${{ secrets.API_OPENAI }}" \
             --set secrets.apiOpenWebUi="${{ secrets.API_OPENWEBUI }}"
