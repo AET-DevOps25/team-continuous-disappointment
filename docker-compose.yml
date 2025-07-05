@@ -66,7 +66,7 @@ services:
     volumes:
       - qdrant_storage:/qdrant/storage
 
-  mongodb:
+  mongodb-service:
     image: mongo:8.0
     container_name: mongodb
     ports:
@@ -92,7 +92,7 @@ services:
       - ME_CONFIG_BASICAUTH_USERNAME=admin
       - ME_CONFIG_BASICAUTH_PASSWORD=admin
     depends_on:
-      - mongodb
+      - mongodb-service
     restart: unless-stopped
 
   prometheus:
