@@ -3,16 +3,17 @@
   hosts: all
   vars:
     project_dir: "{{ ansible_env.HOME }}/recipai"
-    folders_to_copy:
-      - server
-      - client
-      - genai
 
   tasks:
     - name: Copy docker-compose.yml
       copy:
         src: "../../docker-compose.yml"
         dest: "{{ project_dir }}/docker-compose.yml"
+
+    - name: Copy docker-compose.yml
+      copy:
+        src: "../files/config.json"
+        dest: "{{ project_dir }}/client/config.json"
 
     - name: Copy secrets
       copy:
