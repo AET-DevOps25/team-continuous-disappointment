@@ -7,4 +7,5 @@ metadata:
 type: Opaque
 stringData:
   gitlab-client-secret: {{ .Values.secrets.gitlabClientSecret }}
+  gitlab-client-secret-dev: {{ .Values.secrets.gitlabClientSecretDev }}
   mongodb-password: {{ .Values.secrets.mongodbAdminPassword }}
