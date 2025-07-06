@@ -5,6 +5,16 @@
     project_dir: "{{ ansible_env.HOME }}/recipai"
 
   tasks:
+    - name: Ensure project directory exists
+      ansible.builtin.file:
+        path: "{{ project_dir }}"
+        state: directory
+
+    - name: Ensure client directory exists
+      ansible.builtin.file:
+        path: "{{ project_dir }}/client"
+        state: directory
+
     - name: Copy docker-compose.yml
       copy:
         src: "../../docker-compose.yml"
