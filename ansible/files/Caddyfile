@@ -1,4 +1,4 @@
-ec2-44-201-251-81.compute-1.amazonaws.com {
+recipai.duckdns.org {
     reverse_proxy localhost:5173
     tls esad.akcam@tum.de
     log
