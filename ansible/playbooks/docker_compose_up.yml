@@ -9,12 +9,6 @@
       - genai
 
   tasks:
-    - name: Copy project folders
-      copy:
-        src: "../../{{ item }}/"
-        dest: "{{ project_dir }}/{{ item }}/"
-      loop: "{{ folders_to_copy }}"
-
     - name: Copy docker-compose.yml
       copy:
         src: "../../docker-compose.yml"
