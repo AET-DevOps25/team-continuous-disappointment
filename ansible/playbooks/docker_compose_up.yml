@@ -16,7 +16,7 @@
 
     - name: Copy secrets
       copy:
-        src: ../secrets/.env
+        src: ../secrets/secret.env
         dest: "{{ project_dir }}/.env"
 
     - name: Stop any running containers
