@@ -307,7 +307,7 @@ embeddings = OpenAIEmbeddings(
 )
 ```
 
-##### Environment Variables
+##### Environment Variables for GenAI
 
 - If you want to use cloud and local based LLM models, you need to set the respective api key in your `.env` file. Required `.env` variables:
 
@@ -322,6 +322,7 @@ API_OPENWEBUI="your openwebui key"
 # Base URL for calling local models
 BASE_URL="base url where openwebui is hosted"
 ```
+- However, you do not need to set all of these fields in your `.env` file. To run the GenAI module, you need at least the API_OPENAI, API_OPENWEBUI, and BASE_URL variables. You can find more information in the [.env.template](.env.template) file.
 
 - Example for Cloud LLM Models (defined in `genai/routes/routes.py`):
 
