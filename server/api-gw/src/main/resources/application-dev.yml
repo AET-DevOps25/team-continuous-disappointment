@@ -5,18 +5,13 @@ spring:
     gateway:
       mvc:
         routes:
-          - id: genai
-            uri: http://localhost:8000
-            predicates:
-              - Path=/genai/**
-          - id: chat
+          - id: user
             uri: http://localhost:8081
             predicates:
               - Path=/user/**
-          - id: user
+          - id: chat
             uri: http://localhost:8082
             predicates:
               - Path=/chat/**
-
 server:
   port: 8080
