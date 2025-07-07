@@ -1,0 +1,5 @@
+recipai.duckdns.org {
+    reverse_proxy localhost:5173
+    tls esad.akcam@tum.de
+    log
+}

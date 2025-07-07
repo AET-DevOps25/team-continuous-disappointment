@@ -1,0 +1,52 @@
+---
+- name: Install and configure Caddy reverse proxy
+  hosts: all
+  become: yes
+
+  vars:
+    caddy_config_path: /etc/caddy/Caddyfile
+
+  tasks:
+    - name: Install dependencies
+      apt:
+        name: [debian-keyring, debian-archive-keyring, apt-transport-https]
+        state: present
+        update_cache: yes
+
+    - name: Add Caddy GPG key
+      apt_key:
+        url: https://dl.cloudsmith.io/public/caddy/stable/gpg.key
+        state: present
+
+    - name: Add Caddy repository
+      apt_repository:
+        repo: deb [trusted=yes] https://dl.cloudsmith.io/public/caddy/stable/deb/debian any-version main
+        state: present
+
+    - name: Install Caddy
+      apt:
+        name: caddy
+        state: present
+        update_cache: yes
+
+    - name: Deploy Caddyfile
+      copy:
+        dest: "{{ caddy_config_path }}"
+        src: "../files/Caddyfile"
+        owner: root
+        group: root
+        mode: '0644'
+      notify:
+        - Reload Caddy
+
+    - name: Ensure Caddy is running and enabled
+      systemd:
+        name: caddy
+        enabled: yes
+        state: started
+
+  handlers:
+    - name: Reload Caddy
+      systemd:
+        name: caddy
+        state: restarted
