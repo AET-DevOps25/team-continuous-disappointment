@@ -7,10 +7,6 @@ spring:
     gateway:
       mvc:
         routes:
-          - id: genai
-            uri: http://genai-service:8000
-            predicates:
-              - Path=/genai/**
           - id: user
             uri: http://user-service:8081
             predicates:
