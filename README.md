@@ -1,6 +1,6 @@
 # RecipAI
 
-RecipAI is available at [`https://recipai.student.k8s.aet.cit.tum.de`](https://recipai.student.k8s.aet.cit.tum.de)
+RecipAI is available at [`https://recipai.student.k8s.aet.cit.tum.de`](https://recipai.student.k8s.aet.cit.tum.de) (k8s) and deployable at [`https://recipai.duckdns.org`](https://recipai.duckdns.org) (aws)
 
 For running it on docker please see [dockerized-deployment](#dockerized-deployment) and [.env.template](.env.template).
 
@@ -409,6 +409,17 @@ The project includes Helm charts for Kubernetes deployment in the `recipai-chart
             --set secrets.apiOpenAi="your open ai api key" \
             --set secrets.apiOpenWebUi="your open web ui api key"
    ```
+
+## AWS Deployment
+
+## Deploy with Ansible
+
+1. Change the host name of the server on [inventory.ini](./ansible/inventory.ini) and [ansible-manual](./.github/workflows/ansible-manual.yml) to the server or ip address of VM.
+2. Update `recipai.duckdns.org` DNS record on DuckDNS to point new VM IP address
+3. The application is now deployable through github actions with the following steps
+   - Run Manual Ansible Playbook Execution action install_docker.yml as input
+   - Run Manual Ansible Playbook Execution action with docker_compose_up.yml
+   - Run Manual Ansible Playbook Execution action with install_caddy.yml
 
 ## CI/CD Pipeline
 
