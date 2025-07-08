@@ -424,10 +424,30 @@ The project includes Helm charts for Kubernetes deployment in the `recipai-chart
 ## CI/CD Pipeline
 
 The project includes a GitHub Actions workflow `ci-cd.yml` for:
-
-- **Testing Server**: For each push, server tests on server microservices are run.
 - **Building Docker Images**: Automatically builds and pushes Docker images to GitHub Container Registry.
 - **Deploying Docker Images**: Automatically deploys the application to a production environment by using deployment manifests in helm for K8s cluster.
+- **Running Server Tests**: For each push, server tests on server microservices are run.
+- **Running GenAI Tests**: Automatically runs the tests defined in the `genai/tests` directory on every code push in genai module.
+- **Running Client Tests**: Automatically runs the UI tests defined in the `client/src/components/__tests__` directory on every code push in client module.
+
+### CI/CD Pipeline Workflow (`ci-cd.yml`)
+
+**Triggers:**
+- Push to `main` or `feature/**` branches
+- Changes in `genai/**`, `server/**`, `client/**`, or workflow files
+
+**Features:**
+- **Change Detection**: Uses `dorny/paths-filter` to detect which services have changed
+- **Conditional Builds**: Only builds and tests services that have been modified
+- **Multi-stage Pipeline**: Build → Test → Docker → Deploy
+
+**Jobs:**
+- `detect-changes`: Identifies which services need building/testing
+- `build-genai`: Python linting and dependency installation
+- `build-server`: Java microservices build and test (API Gateway, Chat, User)
+- `build-client`: Node.js build and test
+- `docker-release-*`: Builds and pushes Docker images to GitHub Container Registry
+- `helm-deploy`: Deploys to Kubernetes using Helm charts
 
 The project includes a GitHub Actions workflow `helm-manual.yml` for:
 
@@ -436,10 +456,6 @@ The project includes a GitHub Actions workflow `helm-manual.yml` for:
 The project includes a GitHub Actions workflow `ansible-manual.yml` for:
 
 - **Running Ansible Playbook**: Manually runs any Ansible playbook defined in the `ansible/playbooks` directory against an EC2 instance securely using SSH and Ansible Vault.
-
-The project includes a GitHub Actions workflow `genai-tests.yml` for:
-
-- **Running GenAI Tests**: Automatically runs the tests defined in the `genai/tests` directory on every code push in genai module.
 
 ## API Documentation
 
