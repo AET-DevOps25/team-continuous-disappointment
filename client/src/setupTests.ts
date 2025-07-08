@@ -1,6 +1,9 @@
 import "@testing-library/jest-dom";
 import { vi } from "vitest";
 
+// Configure React to run in development mode for tests
+(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
+
 // Mock window.matchMedia
 Object.defineProperty(window, "matchMedia", {
   writable: true,
