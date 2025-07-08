@@ -63,6 +63,7 @@ secrets:
   mongodbAdminPassword: "set in CI pipeline"
   apiOpenAi: "set in CI pipeline"
   apiOpenWebUi: "set in CI pipeline"
+  discordWebhookUrl: "set in CI pipeline"
 
 genai:
   baseUrl: "https://gpu.aet.cit.tum.de"

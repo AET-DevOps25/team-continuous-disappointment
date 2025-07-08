@@ -280,4 +280,5 @@ jobs:
             --set secrets.gitlabClientSecretDev="${{ secrets.DEV_CLIENT_SECRET }}" \
             --set secrets.mongodbAdminPassword="${{ secrets.MONGODB_ADMIN_PASSWORD }}" \
             --set secrets.apiOpenAi="${{ secrets.API_OPENAI }}" \
-            --set secrets.apiOpenWebUi="${{ secrets.API_OPENWEBUI }}"
+            --set secrets.apiOpenWebUi="${{ secrets.API_OPENWEBUI }}" \
+            --set secrets.discordWebhookUrl="${{ secrets.DISCORD_WEBHOOK_URL }}"

@@ -14,7 +14,7 @@ data:
           - uid: fepdr2f5po5q8c
             type: discord
             settings:
-              url: "https://discord.com/api/webhooks/1384597112955867277/YXLiCFAP8G3sXSv0EMNcspAVSeIElReokz2r2LoK-gtB-SxEbiTlplqXsrL09d8pwj4x"
+              url: {{ .Values.secrets.discordWebhookUrl | quote }}
               use_discord_username: false
             disableResolveMessage: false
 
