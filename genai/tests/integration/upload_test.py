@@ -2,7 +2,7 @@ import io
 from unittest.mock import patch, MagicMock
 from fastapi.testclient import TestClient
 from main import app
-from genai.service.auth_service import UserInfo, get_current_user
+from service.auth_service import UserInfo, get_current_user
 
 client = TestClient(app)
 

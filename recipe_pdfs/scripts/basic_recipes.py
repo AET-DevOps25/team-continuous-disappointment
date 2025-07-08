@@ -8,9 +8,10 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.units import inch
 
+
 def create_recipe_pdf():
     """Create a PDF with 25 basic recipes."""
-    
+
     recipes = [
         {
             "title": "Scrambled Eggs",
@@ -138,7 +139,7 @@ def create_recipe_pdf():
             "instructions": "Cook chicken with seasoning. Sauté peppers and onions. Serve in tortillas."
         }
     ]
-    
+
     # Create PDF
     current_dir = os.path.dirname(os.path.abspath(__file__))
     parent_dir = os.path.dirname(current_dir)
@@ -146,41 +147,42 @@ def create_recipe_pdf():
     doc = SimpleDocTemplate(pdf_path, pagesize=letter)
     styles = getSampleStyleSheet()
     story = []
-    
+
     # Title page
     title = Paragraph("Basic Recipes Collection", styles['Title'])
     story.append(title)
     story.append(Spacer(1, 0.5*inch))
-    
+
     # Add recipes
     for i, recipe in enumerate(recipes, 1):
         # Recipe title
         recipe_title = Paragraph(f"{i}. {recipe['title']}", styles['Heading2'])
         story.append(recipe_title)
         story.append(Spacer(1, 0.1*inch))
-        
+
         # Ingredients
         ingredients_title = Paragraph("Ingredients:", styles['Heading3'])
         story.append(ingredients_title)
-        
+
         for ingredient in recipe['ingredients']:
             ingredient_text = Paragraph(f"• {ingredient}", styles['Normal'])
             story.append(ingredient_text)
-        
+
         story.append(Spacer(1, 0.1*inch))
-        
+
         # Instructions
         instructions_title = Paragraph("Instructions:", styles['Heading3'])
         story.append(instructions_title)
-        
+
         instructions_text = Paragraph(recipe['instructions'], styles['Normal'])
         story.append(instructions_text)
-        
+
         story.append(Spacer(1, 0.3*inch))
-    
+
     # Build PDF
     doc.build(story)
     print("PDF created successfully")
+
 
 if __name__ == "__main__":
     create_recipe_pdf()
