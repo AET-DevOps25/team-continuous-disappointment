@@ -63,6 +63,11 @@ jobs:
           pip install flake8
           flake8 . || exit 1
         working-directory: genai
+      
+      - name: Run Tests
+        run: |
+          pytest --maxfail=1 --disable-warnings -q
+        working-directory: genai
 
   build-server:
     needs: detect-changes
