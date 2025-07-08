@@ -295,8 +295,12 @@ The LLM service will be available at [http://localhost:8000](http://localhost:80
 
 ##### Integration
 
-- The client UI sends user requests to the server, which forwards them to the GenAI service along with the user’s query and chat history to support multi-turn conversations. GenAI service then makes a similarity search in the vector database with the given query, and generates a respective answer. GenAI service is able to provide a proper answer altough no similar context is found in the vector database. (Endpoint: POST - `genai/generate`)
-- If the user wants to upload a recipe file, client UI sends the file content directly to the GenAI service, where the content of the file is chunked, embedded, and stored in the vector database. (Endpoint: POST - `genai/upload`)
+- The client UI sends user requests to the API gateway, which forwards them to the chat service. Chat service forwards them to the GenAI service along with the user’s query and chat history to support multi-turn conversations. GenAI service then makes a similarity search in the vector database with the given query, and generates a respective answer. GenAI service is able to provide a proper answer altough no similar context is found in the vector database. (Endpoint: POST - `genai/generate`)
+- If the user wants to upload a recipe file, client UI sends the file content directly to the API gateway, which forwards to the GenAI service, where the content of the file is chunked, embedded, and stored in the vector database. (Endpoint: POST - `genai/upload`)
+- For using/testing the upload functionality, you can find some recipe PDFs to test the upload under `recipe_pdfs` folder. If you want, you can also modify the content of the script to generate your own recipe PDFs which can be found under `recipe_pdfs/scripts` folder. You can run the script from the root folder like:
+   - ```bash
+      python recipe_pdfs/scripts/basic_recipes.py
+      ```
 
 ##### Vector Database - Qdrant
 

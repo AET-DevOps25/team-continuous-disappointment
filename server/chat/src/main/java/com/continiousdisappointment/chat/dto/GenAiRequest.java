@@ -7,5 +7,6 @@ import java.util.List;
 
 public record GenAiRequest(
         @JsonProperty("query") String query,
-        @JsonProperty("messages")List<GenAiMessage> messages
+        @JsonProperty("messages")List<GenAiMessage> messages,
+        @JsonProperty("user_id") Integer userId
 ) {}

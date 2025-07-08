@@ -2,6 +2,7 @@ import io
 from unittest.mock import patch, MagicMock
 from fastapi.testclient import TestClient
 from main import app
+from service.auth_service import UserInfo, get_current_user
 
 client = TestClient(app)
 
@@ -14,6 +15,10 @@ def test_upload_file_success(
         _mock_vector_store,
         _mock_exists
 ):
+    # Mock the authentication by overriding the dependency
+    mock_user = UserInfo(user_id=123, username="test_user")
+    app.dependency_overrides[get_current_user] = lambda: mock_user
+
     mock_pipeline = MagicMock()
     mock_pipeline_class.return_value = mock_pipeline
 
@@ -32,8 +37,15 @@ def test_upload_file_success(
     mock_pipeline_class.assert_called_once()
     mock_pipeline.ingest.assert_called_once()
 
+    # Clean up the dependency override
+    app.dependency_overrides.clear()
+
 
 def test_upload_file_invalid_type():
+    # Mock the authentication by overriding the dependency
+    mock_user = UserInfo(user_id=123, username="test_user")
+    app.dependency_overrides[get_current_user] = lambda: mock_user
+
     file = io.BytesIO(b"just some text")
     file.name = "notes.txt"
 
@@ -46,10 +58,17 @@ def test_upload_file_invalid_type():
     assert (response.json()["detail"] ==
             "Invalid file type. Only PDF files are allowed.")
 
+    # Clean up the dependency override
+    app.dependency_overrides.clear()
+
 
 @patch("routes.routes.qdrant.client.collection_exists", return_value=True)
 @patch("routes.routes.qdrant.collection_contains_file", return_value=True)
 def test_upload_file_already_exists(_mock_contains, _mock_exists):
+    # Mock the authentication
+    mock_user = UserInfo(user_id=123, username="test_user")
+    app.dependency_overrides[get_current_user] = lambda: mock_user
+
     file = io.BytesIO(b"%PDF-1.4")
     file.name = "existing.pdf"
 
@@ -60,3 +79,6 @@ def test_upload_file_already_exists(_mock_contains, _mock_exists):
 
     assert response.status_code == 200
     assert "already uploaded" in response.json()["message"]
+
+    # Clean up the dependency override
+    app.dependency_overrides.clear()

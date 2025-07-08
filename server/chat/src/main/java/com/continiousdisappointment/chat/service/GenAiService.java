@@ -23,12 +23,12 @@ public class GenAiService {
     private final Environment environment;
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public String generateAssistantReply(String query, List<GenAiMessage> messages) {
+    public String generateAssistantReply(String query, List<GenAiMessage> messages, Integer userId) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
-            GenAiRequest genAiRequest = new GenAiRequest(query, messages);
+            GenAiRequest genAiRequest = new GenAiRequest(query, messages, userId);
             HttpEntity<GenAiRequest> entity = new HttpEntity<>(genAiRequest, headers);
 
             ResponseEntity<GenAiResponse> response = restTemplate.postForEntity(
