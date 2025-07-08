@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import { vi } from "vitest";
 import UploadRecipe from "../UploadRecipe";
 
@@ -27,7 +27,12 @@ describe("UploadRecipe Component", () => {
     expect(screen.getByLabelText("Upload Recipe PDF")).toBeInTheDocument();
   });
 
-  it("shows uploading state when file is selected", () => {
+  it("shows uploading state when file is selected", async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({}),
+    });
+
     render(<UploadRecipe />);
 
     const fileInput = screen.getByLabelText(
@@ -37,7 +42,9 @@ describe("UploadRecipe Component", () => {
       type: "application/pdf",
     });
 
-    fireEvent.change(fileInput!, { target: { files: [file] } });
+    await act(async () => {
+      fireEvent.change(fileInput!, { target: { files: [file] } });
+    });
 
     // Check that fetch was called
     expect(mockFetch).toHaveBeenCalledWith("/api/genai/upload", {
