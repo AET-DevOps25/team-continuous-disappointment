@@ -61,4 +61,6 @@ def test_generate_endpoint_missing_fields():
     response = client.post("/genai/generate", json=payload)
 
     assert response.status_code == 400
-    assert response.json() == {"detail": "Missing 'query', 'messages', or 'user_id'"}
+    assert response.json() == {
+        "detail": "Missing 'query', 'messages', or 'user_id'"
+        }

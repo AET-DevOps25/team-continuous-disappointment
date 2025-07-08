@@ -1,4 +1,11 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException, Request, Depends
+from fastapi import (
+    APIRouter,
+    UploadFile,
+    File,
+    HTTPException,
+    Request,
+    Depends
+)
 from fastapi.responses import JSONResponse
 import os
 
@@ -103,7 +110,10 @@ async def upload_file(
                 filename
             )
         ):
-            logger.info("File already exists in qdrant for user %s", current_user.username)
+            logger.info(
+                "File already exists in qdrant for user %s",
+                current_user.username
+                )
             return {"message": f"File '{filename}' already uploaded."}
 
         vector_store = qdrant.create_and_get_vector_storage(collection_name)
@@ -136,7 +146,9 @@ async def generate(request: Request):
 
     body = await request.json()
     if "query" not in body or "messages" not in body or "user_id" not in body:
-        logger.error("Missing 'query', 'messages', or 'user_id' in the request body")
+        logger.error(
+            "Missing 'query', 'messages', or 'user_id' in the request body"
+            )
         raise HTTPException(
             status_code=400,
             detail="Missing 'query', 'messages', or 'user_id'"
@@ -146,7 +158,7 @@ async def generate(request: Request):
     messages_raw = body["messages"]
     user_id = body["user_id"]
     collection_name = f"recipes_{user_id}"
-    
+
     logger.info("Generate endpoint called for user_id: %s", user_id)
 
     try:
