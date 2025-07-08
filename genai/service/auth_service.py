@@ -12,7 +12,7 @@ class UserInfo:
 
 async def get_current_user(
     authorization: Optional[str] = Header(None)
-    ) -> UserInfo:
+) -> UserInfo:
     """
     Extract user information from the Authorization header.
 
@@ -37,8 +37,8 @@ async def get_current_user(
 
     # use dev and prod URLs for user service, where prod is the fallback
     user_service_urls = [
-    "http://user-service:8081/user/info",
-    "http://localhost:8081/user/info",
+        "http://user-service:8081/user/info",
+        "http://localhost:8081/user/info",
     ]
 
     for url in user_service_urls:
