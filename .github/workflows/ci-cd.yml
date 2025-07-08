@@ -38,6 +38,13 @@ jobs:
     if: |
       startsWith(github.ref, 'refs/heads/feature/') && needs.detect-changes.outputs.genai == 'true'
     runs-on: ubuntu-latest
+    services:
+      qdrant:
+        image: qdrant/qdrant
+        ports:
+          - 6333:6333
+    env:
+      OPENAI_API_KEY: ${{ secrets.API_OPENAI }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -55,6 +62,11 @@ jobs:
         run: |
           pip install flake8
           flake8 . || exit 1
+        working-directory: genai
+      
+      - name: Run Tests
+        run: |
+          pytest --maxfail=1 --disable-warnings -q
         working-directory: genai
 
   build-server:
@@ -131,6 +143,12 @@ jobs:
       - name: Install dependencies
         run: npm install --include=dev
         working-directory: client
+
+      - name: Run tests
+        run: npm run test -- --run
+        working-directory: client
+        env:
+          NODE_ENV: test
 
       - name: Build with Node
         run: npm run build
