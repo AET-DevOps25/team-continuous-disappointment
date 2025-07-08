@@ -1,4 +1,4 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException, Request
+from fastapi import APIRouter, UploadFile, File, HTTPException, Request, Depends
 from fastapi.responses import JSONResponse
 import os
 
@@ -15,6 +15,7 @@ from service.rag_service import (
     prepare_prompt,
     process_raw_messages
 )
+from service.auth_service import get_current_user, UserInfo
 from metrics import (
     file_upload_request_counter,
     file_upload_successfully_counter,
@@ -68,12 +69,16 @@ llm = ChatModel(model_name="llama3.3:latest")
 
 
 @router.post("/upload")
-async def upload_file(file: UploadFile = File(...)):
+async def upload_file(
+    file: UploadFile = File(...),
+    current_user: UserInfo = Depends(get_current_user)
+):
     file_upload_request_counter.inc()
     start_time = perf_counter()
     logger.info(
-        "Upload endpoint is called in genai for the file %s",
-        file.filename
+        "Upload endpoint is called in genai for the file %s by user %s",
+        file.filename,
+        current_user.username
     )
 
     if not file.filename.endswith(".pdf"):
@@ -89,7 +94,7 @@ async def upload_file(file: UploadFile = File(...)):
         with open(file_path, "wb") as buffer:
             buffer.write(await file.read())
 
-        collection_name = "recipes"
+        collection_name = f"recipes_{current_user.user_id}"
         if (
             qdrant.client.collection_exists(collection_name)
             and qdrant.collection_contains_file(
@@ -98,7 +103,7 @@ async def upload_file(file: UploadFile = File(...)):
                 filename
             )
         ):
-            logger.info("File already exists in qdrant")
+            logger.info("File already exists in qdrant for user %s", current_user.username)
             return {"message": f"File '{filename}' already uploaded."}
 
         vector_store = qdrant.create_and_get_vector_storage(collection_name)
@@ -130,16 +135,19 @@ async def generate(request: Request):
     logger.info("Generate endpoint is called in genai")
 
     body = await request.json()
-    if "query" not in body or "messages" not in body:
-        logger.error("Missing 'query' or 'messages' in the request body")
+    if "query" not in body or "messages" not in body or "user_id" not in body:
+        logger.error("Missing 'query', 'messages', or 'user_id' in the request body")
         raise HTTPException(
             status_code=400,
-            detail="Missing 'query' or 'messages'"
+            detail="Missing 'query', 'messages', or 'user_id'"
         )
 
     query = body["query"]
     messages_raw = body["messages"]
-    collection_name = "recipes"
+    user_id = body["user_id"]
+    collection_name = f"recipes_{user_id}"
+    
+    logger.info("Generate endpoint called for user_id: %s", user_id)
 
     try:
         retrieved_docs = ""
@@ -148,8 +156,9 @@ async def generate(request: Request):
                 collection_name
             )
             logger.info(
-                "Vector store is created for the collection %s",
-                collection_name
+                "Vector store is created for the collection %s for user_id %s",
+                collection_name,
+                user_id
             )
             retrieved_docs = retrieve_similar_docs(vector_store, query)
             logger.info("Similar docs retrieved from the vector store")

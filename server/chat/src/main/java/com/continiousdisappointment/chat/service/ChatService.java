@@ -81,7 +81,7 @@ public class ChatService {
                 .toList();
 
         String query = appendPreferencesToQuery(userMessageModel.getContent(), user);
-        String assistantReply = genAiService.generateAssistantReply(query, previousMessages);
+        String assistantReply = genAiService.generateAssistantReply(query, previousMessages, user.id());
 
         if (assistantReply.isBlank()) {
             return Message.fromDom(userMessageModel);

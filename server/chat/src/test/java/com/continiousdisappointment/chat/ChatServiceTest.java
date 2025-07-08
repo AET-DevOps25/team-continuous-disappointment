@@ -239,7 +239,7 @@ class ChatServiceTest {
         testChatModel.getMessages().add(existingMessage);
 
         when(chatRepository.findById(chatId)).thenReturn(Optional.of(testChatModel));
-        when(genAiService.generateAssistantReply(anyString(), anyList())).thenReturn(aiResponse);
+        when(genAiService.generateAssistantReply(anyString(), anyList(), anyInt())).thenReturn(aiResponse);
 
         // When
         Message result = chatService.addMessageToChat(testUser, chatId.toString(), messageContent);
@@ -260,7 +260,8 @@ class ChatServiceTest {
         // Verify AI service was called with dietary preferences appended
         ArgumentCaptor<String> queryCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<List<GenAiMessage>> messagesCaptor = ArgumentCaptor.forClass(List.class);
-        verify(genAiService).generateAssistantReply(queryCaptor.capture(), messagesCaptor.capture());
+        ArgumentCaptor<Integer> idCaptor = ArgumentCaptor.forClass(Integer.class);
+        verify(genAiService).generateAssistantReply(queryCaptor.capture(), messagesCaptor.capture(), idCaptor.capture());
 
         String capturedQuery = queryCaptor.getValue();
         assertThat(capturedQuery).contains(messageContent);
@@ -276,7 +277,7 @@ class ChatServiceTest {
     void addMessageToChat_WhenAiResponseIsBlank_AddsOnlyUserMessage() {
         // Given
         when(chatRepository.findById(chatId)).thenReturn(Optional.of(testChatModel));
-        when(genAiService.generateAssistantReply(anyString(), anyList())).thenReturn("");
+        when(genAiService.generateAssistantReply(anyString(), anyList(), anyInt())).thenReturn("");
 
         // When
         Message result = chatService.addMessageToChat(testUser, chatId.toString(), messageContent);
@@ -316,14 +317,14 @@ class ChatServiceTest {
         String aiResponse = "First AI response";
         when(meterRegistry.counter(anyString(), anyString(), anyString())).thenReturn(counter);
         when(chatRepository.findById(chatId)).thenReturn(Optional.of(testChatModel));
-        when(genAiService.generateAssistantReply(anyString(), anyList())).thenReturn(aiResponse);
+        when(genAiService.generateAssistantReply(anyString(), anyList(), anyInt())).thenReturn(aiResponse);
 
         // When
         Message result = chatService.addMessageToChat(testUser, chatId.toString(), messageContent);
 
         // Then
         ArgumentCaptor<List<GenAiMessage>> messagesCaptor = ArgumentCaptor.forClass(List.class);
-        verify(genAiService).generateAssistantReply(anyString(), messagesCaptor.capture());
+        verify(genAiService).generateAssistantReply(anyString(), messagesCaptor.capture(), anyInt());
 
         List<GenAiMessage> capturedMessages = messagesCaptor.getValue();
         assertThat(capturedMessages).isEmpty();
@@ -340,14 +341,14 @@ class ChatServiceTest {
         String aiResponse = "AI response";
         when(meterRegistry.counter(anyString(), anyString(), anyString())).thenReturn(counter);
         when(chatRepository.findById(chatId)).thenReturn(Optional.of(testChatModel));
-        when(genAiService.generateAssistantReply(anyString(), anyList())).thenReturn(aiResponse);
+        when(genAiService.generateAssistantReply(anyString(), anyList(), anyInt())).thenReturn(aiResponse);
 
         // When
         chatService.addMessageToChat(userWithNoPreferences, chatId.toString(), messageContent);
 
         // Then
         ArgumentCaptor<String> queryCaptor = ArgumentCaptor.forClass(String.class);
-        verify(genAiService).generateAssistantReply(queryCaptor.capture(), anyList());
+        verify(genAiService).generateAssistantReply(queryCaptor.capture(), anyList(), anyInt());
 
         String capturedQuery = queryCaptor.getValue();
         assertThat(capturedQuery).contains("My dietary preferences are: []");

@@ -17,7 +17,8 @@ def test_generate_endpoint_success(_mock_exists, mock_invoke):
         "messages": [
             {"role": "USER", "content": "I have rice and eggs"},
             {"role": "ASSISTANT", "content": "How about fried rice?"}
-        ]
+        ],
+        "user_id": 123
     }
 
     response = client.post("/genai/generate", json=payload)
@@ -39,7 +40,8 @@ def test_generate_endpoint_empty_messages(_mock_exists, mock_invoke):
 
     payload = {
         "query": "Can I cook with lentils?",
-        "messages": []
+        "messages": [],
+        "user_id": 123
     }
 
     response = client.post("/genai/generate", json=payload)
@@ -59,4 +61,4 @@ def test_generate_endpoint_missing_fields():
     response = client.post("/genai/generate", json=payload)
 
     assert response.status_code == 400
-    assert response.json() == {"detail": "Missing 'query' or 'messages'"}
+    assert response.json() == {"detail": "Missing 'query', 'messages', or 'user_id'"}
