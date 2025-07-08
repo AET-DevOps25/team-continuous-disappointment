@@ -58,7 +58,7 @@ data:
               reducer: avg
             evaluator:
               type: gt
-              params: [5]
+              params: [15]
             noDataState: OK
             execErrState: Alerting
             for: 1m
