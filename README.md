@@ -6,6 +6,9 @@ For running it on docker please see [dockerized-deployment](#dockerized-deployme
 
 ## Project Description
 
+### Application Overview
+![RecipAI](docs/images/recipai.png)
+
 ### Main Functionality
 
 The primary functionality of the application is to enable users to generate and explore recipes through a natural language interface powered by a LLM. The application allows users to search for recipes based on ingredients, generate meal plans, and receive step-by-step cooking instructions tailored to their preferences and dietary requirements.
@@ -528,12 +531,15 @@ Grafana is used to visualize metrics collected by Prometheus. It is deployed via
 - system-dasboard.json: Infrastructure-level metrics (CPU, memory, nodes)
   - For dockerized setup: [`monitoring/grafana/dashboards/system-dashboard.json`](monitoring/grafana/dashboards/system-dashboard.json)
   - For helm setup: [`recipai-chart/dashboards/system-dashboard.json`](recipai-chart/dashboards/system-dashboard.json)
+  - ![System Dashboard](docs/images/system-dashboard.png)
 - genai-dashboard.json: latency, error rates, and request counts
   - For dockerized setup: [`monitoring/grafana/dashboards/genai-dashboard.json`](monitoring/grafana/dashboards/genai-dashboard.json)
   - For helm setup: [`recipai-chart/dashboards/genai-dashboard.json`](recipai-chart/dashboards/genai-dashboard.json)
+  - ![GenAI Dashboard](docs/images/genai-dashboard.png)
 - chat-dashboard.json: latency, error rates, and request counts
   - For dockerized setup: [`monitoring/grafana/dashboards/chat-dashboard.json`](monitoring/grafana/dashboards/chat-dashboard.json)
   - For helm setup: [`recipai-chart/dashboards/chat-dashboard.json`](recipai-chart/dashboards/chat-dashboard.json)
+  - ![Chat Dashboard](docs/images/chat-dashboard.png)
 
 #### Accessing Grafana
 
@@ -553,11 +559,14 @@ Grafana is used to visualize metrics collected by Prometheus. It is deployed via
 
 ### Alerting Setup
 
-Alerts are configured using Grafana’s Unified Alerting system. It defines receivers (e.g., Discord webhook) for high response generation duration in the GenAI service (for >20 seconds).
+Alerts are configured using Grafana’s Unified Alerting system. It defines our Discord webhook as the receiver for high response generation duration in the GenAI service (for >15 seconds).
 
 - Contact points are defined:
   - For dockerized setup: [`monitoring/grafana/provisioning/alerting/contact-points.yaml`](monitoring/grafana/provisioning/alerting/contact-points.yaml)
   - For helm setup: [`recipai-chart/templates/grafana/grafana-alerting.yml`](recipai-chart/templates/grafana/grafana-alerting.yml)
+
+- Discord webhook as our contact point:
+   - ![Discord Webhook Configuration](docs/images/alerts.png)
 
 ## License
 
