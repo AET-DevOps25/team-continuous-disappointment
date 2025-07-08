@@ -443,7 +443,7 @@ The project includes a GitHub Actions workflow `ci-cd.yml` for:
 
 **Jobs:**
 - `detect-changes`: Identifies which services need building/testing
-- `build-genai`: Python linting and dependency installation
+- `build-genai`: Python linting, dependency installation, and genai tests
 - `build-server`: Java microservices build and test (API Gateway, Chat, User)
 - `build-client`: Node.js build and test
 - `docker-release-*`: Builds and pushes Docker images to GitHub Container Registry
