@@ -37,7 +37,7 @@ llm = ChatModel(model_name="llama3.3:latest")
 # for package import "CloudLLM"
 
 # Example:
-# llm = CloudLLM() # same as llm_cloud_openai
+# llm = CloudLLM()  # same as llm_cloud_openai
 
 
 def get_system_prompt() -> str:

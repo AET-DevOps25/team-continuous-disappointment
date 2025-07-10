@@ -5,6 +5,7 @@ from langchain_core.prompt_values import PromptValue
 from langchain_core.messages import BaseMessage
 
 from config import Config
+from logger import logger
 
 
 class CloudLLM:
@@ -49,6 +50,11 @@ class CloudLLM:
             model=model_name,
             model_provider=provider
         )
+        logger.info(
+            "Cloud LLM initialized with model: %s and provider: %s",
+            model_name, 
+            provider
+            )
 
     def get_system_prompt(self) -> str:
         """System prompt for the LLM"""
@@ -74,4 +80,5 @@ class CloudLLM:
 
     def invoke(self, prompt: PromptValue) -> BaseMessage:
         """Invoke the LLM with the given prompt"""
+        logger.info("Request to LLM is sent")
         return self.model.invoke(prompt)
