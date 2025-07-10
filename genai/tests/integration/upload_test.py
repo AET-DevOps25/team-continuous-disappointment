@@ -1,5 +1,5 @@
 import io
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 from fastapi.testclient import TestClient
 from main import app
 from service.auth_service import UserInfo, get_current_user
@@ -7,23 +7,15 @@ from service.auth_service import UserInfo, get_current_user
 client = TestClient(app)
 
 
-@patch(
-    "service.qdrant_service.qdrant.client.collection_exists",
-    return_value=False
-    )
-@patch("service.qdrant_service.qdrant.create_and_get_vector_storage")
-@patch("service.qdrant_service.IngestionPipeline")
+@patch("routes.routes.ingest_file")
+@patch("routes.routes.file_already_uploaded", return_value=False)
 def test_upload_file_success(
-        mock_pipeline_class,
-        _mock_vector_store,
-        _mock_exists
+        mock_file_uploaded,
+        mock_ingest_file
 ):
     # Mock the authentication by overriding the dependency
     mock_user = UserInfo(user_id=123, username="test_user")
     app.dependency_overrides[get_current_user] = lambda: mock_user
-
-    mock_pipeline = MagicMock()
-    mock_pipeline_class.return_value = mock_pipeline
 
     file_content = b"%PDF-1.4 dummy content"
     file = io.BytesIO(file_content)
@@ -37,8 +29,8 @@ def test_upload_file_success(
     assert response.status_code == 200
     assert response.json() == {"message": "File processed successfully."}
 
-    mock_pipeline_class.assert_called_once()
-    mock_pipeline.ingest.assert_called_once()
+    mock_ingest_file.assert_called_once()
+    mock_file_uploaded.assert_called_once()
 
     # Clean up the dependency override
     app.dependency_overrides.clear()

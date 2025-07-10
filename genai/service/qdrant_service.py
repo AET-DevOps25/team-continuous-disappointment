@@ -1,4 +1,6 @@
-from rag.ingestion_pipeline import IngestionPipeline
+from langchain_qdrant import QdrantVectorStore
+
+from service.ingestion_service import ingest
 from vector_database.qdrant_vdb import QdrantVDB
 from logger import logger
 
@@ -24,7 +26,7 @@ def file_already_uploaded(collection_name: str, filename: str) -> bool:
     return False
 
 
-def get_vector_store(collection_name: str):
+def get_vector_store(collection_name: str) -> QdrantVectorStore:
     """
     Returns the vector store for the specified collection name.
     This function is used to retrieve the vector store instance for a specific
@@ -53,7 +55,5 @@ def ingest_file(collection_name: str, file_path: str, filename: str):
     This function is used to process and store the file content in the vector
     database for later retrieval.
     """
-    pipeline = IngestionPipeline(
-        vector_store=get_vector_store(collection_name)
-        )
-    pipeline.ingest(file_path, filename)
+    vector_store = get_vector_store(collection_name)
+    ingest(vector_store, file_path, filename)
