@@ -9,14 +9,17 @@ from fastapi import (
 from fastapi.responses import JSONResponse
 import os
 
-# from config import Config
 from logger import logger
 from time import perf_counter
 
-from vector_database.qdrant_vdb import QdrantVDB
-from rag.ingestion_pipeline import IngestionPipeline
-from rag.llm.chat_model import ChatModel
-# from rag.llm.cloud_chat_model import CloudLLM
+from service.llm_service import generate_response
+
+from service.qdrant_service import (
+    file_already_uploaded,
+    collection_already_exists,
+    ingest_file
+)
+
 from service.rag_service import (
     retrieve_similar_docs,
     prepare_prompt,
@@ -36,43 +39,6 @@ from metrics import (
 
 
 router = APIRouter()
-
-# Set vector database
-qdrant = QdrantVDB()
-
-# Set chat model for local llm models
-# Make calls to local models in openwebui hosted by the university
-llm = ChatModel(model_name="llama3.3:latest")
-
-# Alternatively, we can switch to a chat model based on cloud models as well
-# If you want to use other cloud models, please adjust model_name,
-# model_provider, and api key
-# accordingly
-
-# Examples:
-# llm_cloud_anthropic = CloudLLM(
-#     model_name="claude-3-sonnet-20240229",
-#     model_provider="anthropic",
-#     api_key=Config.api_key_anthropic,
-# )
-# llm_cloud_openai = CloudLLM(
-#     model_name="gpt-4-1106-preview",
-#     model_provider="openai",
-#     api_key=Config.api_key_openai,
-# )
-#
-# llm_cloud_mistral = CloudLLM(
-#     model_name="mistral-medium",
-#     model_provider="mistral",
-#     api_key=Config.api_key_mistral,
-# )
-
-# If no parameters are provided, the default cloud model will be openai.
-# If a cloud model is wanted, please remove the comment
-# for package import "CloudLLM"
-
-# Example:
-# llm = CloudLLM() # same as llm_cloud_openai
 
 
 @router.post("/upload")
@@ -102,26 +68,15 @@ async def upload_file(
             buffer.write(await file.read())
 
         collection_name = f"recipes_{current_user.user_id}"
-        if (
-            qdrant.client.collection_exists(collection_name)
-            and qdrant.collection_contains_file(
-                qdrant.client,
-                collection_name,
-                filename
-            )
-        ):
+        if file_already_uploaded(collection_name, filename):
             logger.info(
                 "File already exists in qdrant for user %s",
                 current_user.username
                 )
             return {"message": f"File '{filename}' already uploaded."}
 
-        vector_store = qdrant.create_and_get_vector_storage(collection_name)
-        ingestion_pipeline = IngestionPipeline(vector_store=vector_store)
-        ingestion_pipeline.ingest(file_path, filename)
-
+        ingest_file(collection_name, file_path, filename)
         file_upload_successfully_counter.inc()
-
         return {"message": "File processed successfully."}
 
     except Exception as e:
@@ -163,35 +118,32 @@ async def generate(request: Request):
 
     try:
         retrieved_docs = ""
-        if qdrant.client.collection_exists(collection_name):
-            vector_store = qdrant.create_and_get_vector_storage(
-                collection_name
-            )
+        if collection_already_exists(collection_name):
             logger.info(
-                "Vector store is created for the collection %s for user_id %s",
+                "Collection %s already exists for user_id %s",
                 collection_name,
                 user_id
             )
-            retrieved_docs = retrieve_similar_docs(vector_store, query)
+
+            retrieved_docs = retrieve_similar_docs(collection_name, query)
             logger.info("Similar docs retrieved from the vector store")
 
         messages = process_raw_messages(messages_raw)
         logger.info("Raw messages are processed for prompt preparation")
 
         prompt = prepare_prompt(
-            llm.get_system_prompt(),
             query,
             retrieved_docs,
             messages
         )
         logger.info("Prompt is prepared")
 
-        response = llm.invoke(prompt)
+        response = generate_response(prompt)
         logger.info("Response is generated")
 
         generation_successfully_counter.inc()
 
-        return JSONResponse(content={"response": response.content})
+        return JSONResponse(content={"response": response})
 
     except Exception as e:
         logger.error("Generation is failed. Error: %s", str(e), exc_info=True)

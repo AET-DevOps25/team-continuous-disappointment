@@ -4,7 +4,7 @@ import { useAuth } from "../hooks/useAuth";
 
 const UploadRecipe: React.FC = () => {
   const [status, setStatus] = useState<
-    "idle" | "uploading" | "success" | "error"
+    "idle" | "uploading" | "success" | "already_uploaded" | "error"
   >("idle");
 
   const { user } = useAuth();
@@ -27,7 +27,15 @@ const UploadRecipe: React.FC = () => {
       });
 
       if (!response.ok) throw new Error("Upload failed");
-      setStatus("success");
+      
+      const data = await response.json();
+      const message = data.message || "";
+      
+      if (message.includes("already uploaded")) {
+        setStatus("already_uploaded");
+      } else {
+        setStatus("success");
+      }
 
       setTimeout(() => setStatus("idle"), 3000);
     } catch (err) {
@@ -59,6 +67,13 @@ const UploadRecipe: React.FC = () => {
         <div className="flex items-center justify-center gap-2 text-sm text-green-600">
           <CheckCircle className="w-5 h-5" />
           Uploaded successfully!
+        </div>
+      )}
+
+      {status === "already_uploaded" && (
+        <div className="flex items-center justify-center gap-2 text-sm text-yellow-600">
+          <CheckCircle className="w-5 h-5" />
+          File Already Uploaded!
         </div>
       )}
 
