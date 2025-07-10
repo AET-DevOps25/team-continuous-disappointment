@@ -52,7 +52,7 @@ class CloudLLM:
         )
         logger.info(
             "Cloud LLM initialized with model: %s and provider: %s",
-            model_name, 
+            model_name,
             provider
             )
 
