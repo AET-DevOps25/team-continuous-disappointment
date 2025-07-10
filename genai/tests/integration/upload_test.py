@@ -7,9 +7,12 @@ from service.auth_service import UserInfo, get_current_user
 client = TestClient(app)
 
 
-@patch("routes.routes.qdrant.client.collection_exists", return_value=False)
-@patch("routes.routes.qdrant.create_and_get_vector_storage")
-@patch("routes.routes.IngestionPipeline")
+@patch(
+    "service.qdrant_service.qdrant.client.collection_exists",
+    return_value=False
+    )
+@patch("service.qdrant_service.qdrant.create_and_get_vector_storage")
+@patch("service.qdrant_service.IngestionPipeline")
 def test_upload_file_success(
         mock_pipeline_class,
         _mock_vector_store,
@@ -62,8 +65,14 @@ def test_upload_file_invalid_type():
     app.dependency_overrides.clear()
 
 
-@patch("routes.routes.qdrant.client.collection_exists", return_value=True)
-@patch("routes.routes.qdrant.collection_contains_file", return_value=True)
+@patch(
+    "service.qdrant_service.qdrant.client.collection_exists",
+    return_value=True
+    )
+@patch(
+    "service.qdrant_service.qdrant.collection_contains_file",
+    return_value=True
+    )
 def test_upload_file_already_exists(_mock_contains, _mock_exists):
     # Mock the authentication
     mock_user = UserInfo(user_id=123, username="test_user")
