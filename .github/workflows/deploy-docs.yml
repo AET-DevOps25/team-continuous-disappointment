@@ -5,7 +5,7 @@ on:
     branches: [ main, feature/clean-up-repo ]
     paths: 
       - 'api/openapi.yaml'
-  workflow_dispatch: # Allow manual trigger as well
+  workflow_dispatch:
 
 jobs:
   deploy-docs:
