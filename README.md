@@ -7,7 +7,12 @@ For running it on docker please see [dockerized-deployment](#dockerized-deployme
 ## Project Description
 
 ### Application Overview
-![RecipAI](docs/images/recipai.png)
+
+#### Main Page
+![RecipAI](docs/images/recipai_main.png)
+
+#### User Preferences
+![RecipAI Preferences](docs/images/recipai_preferences.png)
 
 ### Main Functionality
 
