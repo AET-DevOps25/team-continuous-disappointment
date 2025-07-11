@@ -2,7 +2,7 @@ name: Deploy API Documentation
 
 on:
   push:
-    branches: [ main, feature/clean-up-repo ]
+    branches: [ main ]
     paths: 
       - 'api/openapi.yaml'
   workflow_dispatch:
@@ -23,14 +23,14 @@ jobs:
         uses: actions/configure-pages@v4
         
       - name: Create docs directory
-        run: mkdir -p docs
+        run: mkdir -p docs/api-documentation
         
       - name: Copy OpenAPI spec
-        run: cp api/openapi.yaml docs/openapi.yaml
+        run: cp api/openapi.yaml docs/api-documentation/openapi.yaml
         
       - name: Create Swagger UI HTML
         run: |
-          cat > docs/index.html << 'EOF'
+          cat > docs/api-documentation/index.html << 'EOF'
           <!DOCTYPE html>
           <html>
           <head>
