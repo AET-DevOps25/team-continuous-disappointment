@@ -516,17 +516,7 @@ The project includes a GitHub Actions workflow `ansible-manual.yml` for:
 
 ## API Documentation
 
-### User Service
-
-API documentation is available in the [`server/user/openapi.yml`](server/user/openapi.yml) file.
-
-### Chat Service
-
-API documentation is available in the [`server/chat/openapi.yml`](server/chat/openapi.yml) file.
-
-### GenAI Service
-
-API documentation is available in the [`genai/openapi.yaml`](genai/openapi.yaml) file.
+API documentation for User, Chat, API Gateway, and GenaAI is available in the [`api/openapi.yaml`](api/openapi.yaml) file.
 
 ## Requirements
 
