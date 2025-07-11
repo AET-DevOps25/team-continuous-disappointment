@@ -19,7 +19,7 @@ The application is designed for home cooks, culinary enthusiasts, individuals wi
 
 ### Integration of Generative AI
 
-Generative AI is integrated meaningfully through a dedicated LLM microservice developed in Python. This service processes user inputs in natural language, generates recipes based on the provided ingredients, modifies existing recipes according to user needs, and provides meal suggestions. The use of GenAI enhances the user experience by offering creative, context-aware, and highly adaptable culinary solutions.
+Generative AI is integrated meaningfully through a dedicated LLM microservice developed in Python. This service processes user inputs in natural language, generates recipes based on the provided ingredients, modifies existing recipes according to user needs, and provides meal suggestions based on the user dietary preferences. The use of GenAI enhances the user experience by offering a personalized RAG system that emphasizes user-specific recipe collections. Through the use of a conversational AI system, we provide to the users with a multi-turn chat with context preservation.
 
 ### Functional Scenarios
 
@@ -27,7 +27,7 @@ Generative AI is integrated meaningfully through a dedicated LLM microservice de
 
 2. **Recipe Modification**: A user submits a traditional recipe and requests, "Make this vegan." The LLM identifies non-vegan ingredients and substitutes them with plant-based alternatives, returning a modified version of the recipe.
 
-3. **Meal Planning**: A user asks for a weekly meal plan. The LLM generates a diverse and nutritionally balanced plan, optionally based on dietary restrictions or cuisine preferences.
+3. **Meal Planning with User Preferences**: A user defines his/her dietary preferences in the web application and asks for a weekly meal plan in the chat. The LLM generates a diverse and nutritionally balanced plan, based on dietary restrictions or cuisine preferences.
 
 4. **Ingredient-Limited Cooking**: A user specifies available ingredients, such as "eggs, spinach, and cheese," and the system suggests recipes that can be prepared using those ingredients, optimizing for simplicity and flavor.
 
@@ -52,6 +52,7 @@ Generative AI is integrated meaningfully through a dedicated LLM microservice de
 - Login with GitLab LRZ SSO
 - Chat interface (user prompt + LLM response)
 - Preference settings (gluten-free, diabetic, vegan, etc.)
+- Recipe document upload
 - Recipe history viewer
 
 ### 2. Backend (Spring Boot REST API)
@@ -77,9 +78,9 @@ Generative AI is integrated meaningfully through a dedicated LLM microservice de
 **Responsibilities:**
 
 - Process incoming prompts and preferences.
-- Use LLM (e.g., GPT via LangChain) to generate, modify, and plan recipes.
+- Use LLM (e.g., GPT via LangChain or Llama3) to generate, modify, and plan recipes.
+- Fetch additional data from a well known recipe source stored in the vector database Qdrant to enable document retrieval for answering recipe document based questions.
 - Structure outputs into JSON responses and provide endpoints via FastAPI for server module.
-- Fetch additional data from a well known recipe source stored in the vector database Qdrant.
 
 **Design:**
 
@@ -102,7 +103,7 @@ Generative AI is integrated meaningfully through a dedicated LLM microservice de
 
 **Collections:**
 
-- `recipes` – Stores embedded recipe documents which are uploaded by the user
+- `recipes` – Stores user specific embedded recipe documents which are uploaded by the user
 
 ### 6. DevOps
 
@@ -130,7 +131,8 @@ Generative AI is integrated meaningfully through a dedicated LLM microservice de
 ### Communication Flow Example
 
 1. User logs in via GitLab LRZ → token returned.
-2. User types: _"Suggest a vegan dinner with lentils."_
+2. User select his/her didtary preferences.
+2. User types: _"Suggest a dinner with lentils."_
 3. React sends prompt + preferences to Spring Boot API.
 4. API calls GenAI microservice with combined data.
 5. GenAI returns structured recipe.
@@ -179,6 +181,48 @@ cd team-continuous-disappointment
    ```
 
 ### Server Setup
+
+**Note**: Please be aware that you need to manually add the GITLAB_CLIENT_SECRET from the `.env` file (see [.env.template](.env.template)) to the [application.yaml](server/api-gw/src/main/resources/application.yaml) file for the field `client-secret` for local development.
+```bash
+spring:
+   profiles:
+      active: dev
+   application:
+      name: api-gw
+   cloud:
+      gateway:
+         mvc:
+         routes:
+            - id: user
+               uri: http://user-service:8081
+               predicates:
+               - Path=/user/**
+            - id: chat
+               uri: http://chat-service:8082
+               predicates:
+               - Path=/chat/**
+   security:
+      oauth2:
+         resourceserver:
+         opaquetoken:
+            client-id: ${GITLAB_CLIENT_ID:60a9e442420a386f2ddff0f60ed0801dd7e826f0710507e982d5afe6aa054334}
+            client-secret: -> PUT HERE <-
+            introspection-uri: https://gitlab.lrz.de/oauth/introspect
+
+
+   server:
+   port: 8080
+
+   management:
+   endpoints:
+      web:
+         exposure:
+         include:
+            - health
+            - info
+            - metrics
+            - prometheus
+   ```
 
 1. Navigate to the `server` directory:
    ```bash
@@ -281,7 +325,7 @@ The LLM service will be available at [http://localhost:8000](http://localhost:80
 
 - Built with FastAPI for AI-powered recipe recommendations.
 - Integrates with local and cloud LLMs for generating suggestions based on the given ingredients.
-- Stores embedded documents in a vector database to be able to make similarity search.
+- Stores embedded documents in a vector database to be able to make similarity search and document retrieval.
 - Source code is in the `genai` directory.
 - Tests are in the `genai/tests` directory.
 
@@ -505,7 +549,24 @@ API documentation is available in the [`genai/openapi.yaml`](genai/openapi.yaml)
 - Usability: The chat interface must be responsive and intuitive.
 - Observability & Monitoring: The system must expose Prometheus metrics for all critical services. Dashboards must be created in Grafana to visualize response latency, error rates, and user request volume. Besides that, at least one alert must be defined.
 
-## Architecture Overview - TODO
+## Architecture Overview
+
+### UML Component Diagram
+
+The following UML component diagram shows the details of the RecipAI application architecture and provides a comprehensive overview of the interfaces offered by the genai, chat, user, and API gateway services.
+![Component Diagram](docs/architecture_diagrams/component_diagram.png)
+
+### UML Class Diagram - Server
+The following UML class diagram shows the details of the RecipAI application server’s repository layer, service layer, and controller layer.
+![Server Class Diagram](docs/architecture_diagrams/server_class_diagram.png)
+
+### UML Class Diagram - GenAI
+The following UML class diagram shows the details of the RecipAI GenAI module's repository layer, service layer, and controller layer.
+![GenAI Class Diagram](docs/architecture_diagrams/genai_class_diagram.png)
+
+### UML Use Case Diagram
+The following UML use case diagram shows the use cases and the participating actors of the RecipAI web application.
+![Use Case Diagram](docs/architecture_diagrams/use_case_diagram.png)
 
 ## Monitoring and Observability
 
