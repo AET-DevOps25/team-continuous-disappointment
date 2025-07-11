@@ -516,7 +516,11 @@ The project includes a GitHub Actions workflow `ansible-manual.yml` for:
 
 ## API Documentation
 
-API documentation for User, Chat, API Gateway, and GenaAI is available in the [`api/openapi.yaml`](api/openapi.yaml) file.
+REST API documentation for User, Chat, API Gateway, and GenaAI is available in the [`api/openapi.yaml`](api/openapi.yaml) file.
+
+We also publish our REST API documentation via Github Pages automatically:
+
+📄 Swagger UI: [https://aet-devops25.github.io/team-continuous-disappointment/api-documentation/](https://aet-devops25.github.io/team-continuous-disappointment/api-documentation/)
 
 ## Requirements
 
