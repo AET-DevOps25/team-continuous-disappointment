@@ -1,0 +1,81 @@
+name: Deploy API Documentation
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy-docs:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+        
+      - name: Create docs directory
+        run: mkdir -p docs/api-documentation
+        
+      - name: Copy OpenAPI spec
+        run: cp api/openapi.yaml docs/api-documentation/openapi.yaml
+        
+      - name: Create Swagger UI HTML
+        run: |
+          cat > docs/api-documentation/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>RecipAI API Documentation</title>
+            <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui.css" />
+            <link rel="icon" type="image/png" href="https://unpkg.com/swagger-ui-dist@5.9.0/favicon-32x32.png" sizes="32x32" />
+            <style>
+              html { box-sizing: border-box; overflow: -moz-scrollbars-vertical; overflow-y: scroll; }
+              *, *:before, *:after { box-sizing: inherit; }
+              body { margin:0; background: #fafafa; }
+              .info .title { color: #3b4151; font-size: 36px; }
+            </style>
+          </head>
+          <body>
+            <div id="swagger-ui"></div>
+            <script src="https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui-bundle.js"></script>
+            <script src="https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui-standalone-preset.js"></script>
+            <script>
+              window.onload = function() {
+                const ui = SwaggerUIBundle({
+                  url: './openapi.yaml',
+                  dom_id: '#swagger-ui',
+                  deepLinking: true,
+                  presets: [
+                    SwaggerUIBundle.presets.apis,
+                    SwaggerUIStandalonePreset
+                  ],
+                  plugins: [
+                    SwaggerUIBundle.plugins.DownloadUrl
+                  ],
+                  layout: "StandaloneLayout",
+                  validatorUrl: null,
+                  tryItOutEnabled: true,
+                  supportedSubmitMethods: ['get', 'post', 'put', 'delete', 'patch'],
+                  onComplete: function() {
+                    console.log('Swagger UI loaded');
+                  }
+                });
+              };
+            </script>
+          </body>
+          </html>
+          EOF
+        
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./docs
+          
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
