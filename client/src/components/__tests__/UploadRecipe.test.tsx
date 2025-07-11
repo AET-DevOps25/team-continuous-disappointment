@@ -23,8 +23,8 @@ describe("UploadRecipe Component", () => {
   it("renders upload button in idle state", () => {
     render(<UploadRecipe />);
 
-    expect(screen.getByText("Upload Recipe PDF")).toBeInTheDocument();
-    expect(screen.getByLabelText("Upload Recipe PDF")).toBeInTheDocument();
+    expect(screen.getByText("Upload Recipe Book")).toBeInTheDocument();
+    expect(screen.getByLabelText("Upload Recipe Book")).toBeInTheDocument();
   });
 
   it("shows uploading state when file is selected", async () => {
@@ -36,7 +36,7 @@ describe("UploadRecipe Component", () => {
     render(<UploadRecipe />);
 
     const fileInput = screen.getByLabelText(
-      "Upload Recipe PDF",
+      "Upload Recipe Book",
     ) as HTMLInputElement;
     const file = new File(["test content"], "recipe.pdf", {
       type: "application/pdf",
@@ -60,12 +60,12 @@ describe("UploadRecipe Component", () => {
     render(<UploadRecipe />);
 
     const fileInput = screen.getByLabelText(
-      "Upload Recipe PDF",
+      "Upload Recipe Book",
     ) as HTMLInputElement;
 
     fireEvent.change(fileInput!, { target: { files: [] } });
 
     expect(mockFetch).not.toHaveBeenCalled();
-    expect(screen.getByText("Upload Recipe PDF")).toBeInTheDocument();
+    expect(screen.getByText("Upload Recipe Book")).toBeInTheDocument();
   });
 });

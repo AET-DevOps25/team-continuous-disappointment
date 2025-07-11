@@ -50,7 +50,7 @@ const UploadRecipe: React.FC = () => {
       {status === "idle" && (
         <form>
           <label className="flex flex-col items-center justify-center px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-md cursor-pointer hover:bg-green-700 transition-colors">
-            Upload Recipe PDF
+            Upload Recipe Book
             <input type="file" accept=".pdf" hidden onChange={handleUpload} />
           </label>
         </form>
