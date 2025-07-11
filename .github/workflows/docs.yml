@@ -2,7 +2,7 @@ name: Deploy API Documentation
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, feature/clean-up-repo ]
     paths: 
       - 'api/openapi.yaml'
       - 'github/workflows/deploy-docs.yml'
