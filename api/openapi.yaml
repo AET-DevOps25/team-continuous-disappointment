@@ -1,0 +1,513 @@
+openapi: 3.0.3
+info:
+  title: RecipAI API
+  description: Comprehensive API for RecipAI application including chat, user management, and GenAI services
+  version: 1.0.0
+  contact:
+    name: Team Continuous Disappointment
+    
+servers:
+  - url: http://localhost:8080
+    description: API Gateway (Local Development)
+  - url: http://localhost:8081
+    description: User Service (Local Development)
+  - url: http://localhost:8082
+    description: Chat Service (Local Development)
+  - url: http://localhost:8000
+    description: GenAI Service (Local Development)
+
+security:
+  - bearerAuth: []
+
+paths:
+  # User Service Endpoints
+  /user/info:
+    get:
+      tags:
+        - User
+      summary: Get user information
+      description: Returns authenticated user information including dietary preferences
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User information retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+        '404':
+          description: User not found
+
+  /user/preferences:
+    post:
+      tags:
+        - User
+      summary: Save user dietary preferences
+      description: Updates user's dietary preferences
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SaveUserPreferencesRequest'
+      responses:
+        '200':
+          description: Preferences saved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Preferences saved successfully"
+        '400':
+          description: Invalid request data
+        '401':
+          description: Unauthorized
+
+  # Chat Service Endpoints
+  /chat:
+    get:
+      tags:
+        - Chat
+      summary: Get all chats for authenticated user
+      description: Returns all chats belonging to the authenticated user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Chats retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Chat'
+        '401':
+          description: Unauthorized
+    post:
+      tags:
+        - Chat
+      summary: Create a new chat
+      description: Creates a new chat for the authenticated user
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateChatRequest'
+      responses:
+        '200':
+          description: Chat created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chat'
+        '400':
+          description: Invalid request data
+        '401':
+          description: Unauthorized
+
+  /chat/{chatId}:
+    get:
+      tags:
+        - Chat
+      summary: Get chat by ID
+      description: Returns a specific chat with all its messages
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: chatId
+          in: path
+          required: true
+          description: UUID of the chat
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Chat retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chat'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Chat does not belong to user
+        '404':
+          description: Chat not found
+    put:
+      tags:
+        - Chat
+      summary: Update chat title
+      description: Updates the title of an existing chat
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: chatId
+          in: path
+          required: true
+          description: UUID of the chat
+          schema:
+            type: string
+            format: uuid
+        - name: title
+          in: query
+          required: true
+          description: New title for the chat
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Chat updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chat'
+        '400':
+          description: Invalid request data
+        '401':
+          description: Unauthorized
+        '403':
+          description: Chat does not belong to user
+        '404':
+          description: Chat not found
+    delete:
+      tags:
+        - Chat
+      summary: Delete chat
+      description: Deletes a chat and all its messages
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: chatId
+          in: path
+          required: true
+          description: UUID of the chat
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Chat deleted successfully
+        '401':
+          description: Unauthorized
+        '403':
+          description: Chat does not belong to user
+        '404':
+          description: Chat not found
+
+  /chat/{chatId}/messages:
+    post:
+      tags:
+        - Chat
+      summary: Add message to chat
+      description: Adds a user message to the chat and returns the AI assistant's response
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: chatId
+          in: path
+          required: true
+          description: UUID of the chat
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddMessageRequest'
+      responses:
+        '200':
+          description: Message added and AI response generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '400':
+          description: Invalid request data
+        '401':
+          description: Unauthorized
+        '403':
+          description: Chat does not belong to user
+        '404':
+          description: Chat not found
+
+  # GenAI Service Endpoints
+  /genai/upload:
+    post:
+      tags:
+        - GenAI
+      summary: Upload recipe PDF for ingestion
+      description: Uploads a PDF file containing recipes for processing and ingestion into the system
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UploadRequest'
+      responses:
+        '200':
+          description: File processed successfully or already uploaded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
+        '400':
+          description: No file provided or invalid file format
+        '401':
+          description: Unauthorized
+        '500':
+          description: Server error during ingestion
+
+  /genai/generate:
+    post:
+      tags:
+        - GenAI
+      summary: Generate AI response
+      description: Generates a recipe-related response using retrieved context and chat history
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenAiRequest'
+      responses:
+        '200':
+          description: AI-generated recipe response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenAiResponse'
+        '400':
+          description: Missing required fields (query or messages)
+        '401':
+          description: Unauthorized
+        '500':
+          description: Server error during generation
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: OAuth2 bearer token from GitLab
+
+  schemas:
+    # User Service Schemas
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: Unique user identifier
+        username:
+          type: string
+          description: User's username
+        dietaryPreferences:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/DietaryPreference'
+          description: User's dietary preferences
+      required:
+        - id
+        - username
+        - dietaryPreferences
+
+    DietaryPreference:
+      type: string
+      enum:
+        - VEGETARIAN
+        - VEGAN
+        - GLUTEN_FREE
+        - DAIRY_FREE
+        - NUT_FREE
+        - SPICY_FOOD
+      description: Available dietary preference options
+
+    SaveUserPreferencesRequest:
+      type: object
+      properties:
+        dietaryPreferences:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/DietaryPreference'
+          description: List of dietary preferences to save
+      required:
+        - dietaryPreferences
+
+    # Chat Service Schemas
+    Chat:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique chat identifier
+        userId:
+          type: integer
+          format: int32
+          description: ID of the user who owns this chat
+        title:
+          type: string
+          description: Chat title
+        createdAt:
+          type: string
+          format: date-time
+          description: Chat creation timestamp
+        updatedAt:
+          type: string
+          format: date-time
+          description: Chat last update timestamp
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+          description: List of messages in the chat
+      required:
+        - id
+        - userId
+        - title
+        - createdAt
+        - updatedAt
+        - messages
+
+    Message:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique message identifier
+        content:
+          type: string
+          description: Message content
+        timestamp:
+          type: string
+          format: date-time
+          description: Message timestamp
+        role:
+          $ref: '#/components/schemas/Role'
+      required:
+        - id
+        - content
+        - timestamp
+        - role
+
+    Role:
+      type: string
+      enum:
+        - USER
+        - ASSISTANT
+      description: Message role in the conversation
+
+    CreateChatRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title for the new chat
+      required:
+        - title
+
+    AddMessageRequest:
+      type: object
+      properties:
+        content:
+          type: string
+          description: Message content from the user
+      required:
+        - content
+
+    # GenAI Service Schemas
+    UploadRequest:
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+          description: PDF file containing recipes to upload and ingest
+      required:
+        - file
+
+    UploadResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Success message or status
+        error:
+          type: string
+          description: Error message if upload failed
+
+    # Internal Service Communication DTOs
+    GenAiRequest:
+      type: object
+      properties:
+        query:
+          type: string
+          description: The user's recipe-related query (includes dietary preferences)
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/GenAiMessage'
+          description: Full conversation history for context
+        user_id:
+          type: integer
+          format: int32
+          description: ID of the user making the request
+      required:
+        - query
+        - messages
+        - user_id
+      description: Internal DTO used by Chat service to communicate with GenAI service
+
+    GenAiResponse:
+      type: object
+      properties:
+        response:
+          type: string
+          description: AI-generated recipe response
+      required:
+        - response
+      description: Internal DTO returned by GenAI service to Chat service
+
+    GenAiMessage:
+      type: object
+      properties:
+        role:
+          $ref: '#/components/schemas/Role'
+        content:
+          type: string
+          description: Message content
+      required:
+        - role
+        - content
+      description: Message format used for GenAI communication
+
+tags:
+  - name: User
+    description: User management and preferences
+  - name: Chat
+    description: Chat and message management
+  - name: GenAI
+    description: AI-powered recipe generation and file processing
