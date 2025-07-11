@@ -3,73 +3,83 @@ name: Deploy API Documentation
 on:
   push:
     branches: [ main, feature/clean-up-repo ]
-    paths:
+    paths: 
       - 'api/openapi.yaml'
-      - '.github/workflows/docs.yml'
   workflow_dispatch:
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
 jobs:
-  build-docs:
-    name: Build API docs
+  deploy-docs:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Set up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install doc generators
+        
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+        
+      - name: Create docs directory
+        run: mkdir -p docs
+        
+      - name: Copy OpenAPI spec
+        run: cp api/openapi.yaml docs/openapi.yaml
+        
+      - name: Create Swagger UI HTML
         run: |
-          npm install --location=global redoc-cli swagger-ui-dist
-
-      - name: Generate ReDoc HTML
-        run: |
-          redoc-cli bundle api/openapi.yaml -o docs/api.html
-
-      - name: Build Swagger UI static site
-        run: |
-          SWAGGER_DIST=$(npm root -g)/swagger-ui-dist
-          mkdir -p docs/swagger
-          cp -R "$SWAGGER_DIST"/* docs/swagger/
-          # Copy spec next to the viewer
-          cp api/openapi.yaml docs/swagger/openapi.yaml
-          # Replace default initializer with one that loads our spec
-          cat > docs/swagger/swagger-initializer.js <<'EOF'
-          window.onload = function() {
-            window.ui = SwaggerUIBundle({
-              url: "openapi.yaml",
-              dom_id: '#swagger-ui',
-              presets: [
-                SwaggerUIBundle.presets.apis,
-                SwaggerUIBundle.SwaggerUIStandalonePreset
-              ],
-              layout: "BaseLayout"
-            });
-          };
+          cat > docs/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>RecipAI API Documentation</title>
+            <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui.css" />
+            <link rel="icon" type="image/png" href="https://unpkg.com/swagger-ui-dist@5.9.0/favicon-32x32.png" sizes="32x32" />
+            <style>
+              html { box-sizing: border-box; overflow: -moz-scrollbars-vertical; overflow-y: scroll; }
+              *, *:before, *:after { box-sizing: inherit; }
+              body { margin:0; background: #fafafa; }
+              .info .title { color: #3b4151; font-size: 36px; }
+            </style>
+          </head>
+          <body>
+            <div id="swagger-ui"></div>
+            <script src="https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui-bundle.js"></script>
+            <script src="https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui-standalone-preset.js"></script>
+            <script>
+              window.onload = function() {
+                const ui = SwaggerUIBundle({
+                  url: './openapi.yaml',
+                  dom_id: '#swagger-ui',
+                  deepLinking: true,
+                  presets: [
+                    SwaggerUIBundle.presets.apis,
+                    SwaggerUIStandalonePreset
+                  ],
+                  plugins: [
+                    SwaggerUIBundle.plugins.DownloadUrl
+                  ],
+                  layout: "StandaloneLayout",
+                  validatorUrl: null,
+                  tryItOutEnabled: true,
+                  supportedSubmitMethods: ['get', 'post', 'put', 'delete', 'patch'],
+                  onComplete: function() {
+                    console.log('Swagger UI loaded');
+                  }
+                });
+              };
+            </script>
+          </body>
+          </html>
           EOF
-
+        
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: docs
-
-  deploy:
-    name: Deploy to GitHub Pages
-    needs: build-docs
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
-    steps:
-      - name: Deploy GitHub Pages site
-        id: deploy
-        uses: actions/deploy-pages@v4 
+          path: ./docs
+          
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

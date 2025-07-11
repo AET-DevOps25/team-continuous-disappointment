@@ -17,7 +17,7 @@ servers:
     description: GenAI Service (Local Development)
 
 security:
-  - bearerAuth: [] # test
+  - bearerAuth: []
 
 paths:
   # User Service Endpoints
