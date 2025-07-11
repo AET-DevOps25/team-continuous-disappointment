@@ -34,15 +34,18 @@ describe("MessageItem Component", () => {
     render(<MessageItem message={mockBotMessage} />);
 
     expect(screen.getByText("AI Assistant")).toBeInTheDocument();
-    expect(screen.getByText("I'm doing well, thank you!")).toBeInTheDocument();
-    expect(screen.getByText("How can I help you today?")).toBeInTheDocument();
+    expect(screen.getByText(/I'm doing well, thank you!/)).toBeInTheDocument();
+    expect(screen.getByText(/How can I help you today?/)).toBeInTheDocument();
     expect(screen.getByText(/ago/)).toBeInTheDocument();
   });
 
   it("handles multi-line content with proper paragraph breaks", () => {
     render(<MessageItem message={mockBotMessage} />);
 
-    const paragraphs = screen.getAllByText(/I'm doing well|How can I help/);
-    expect(paragraphs).toHaveLength(2);
+    // With react-markdown, newlines create line breaks within a single paragraph
+    const paragraph = screen.getByText(/I'm doing well, thank you!/);
+    expect(paragraph).toBeInTheDocument();
+    expect(paragraph.textContent).toContain("I'm doing well, thank you!");
+    expect(paragraph.textContent).toContain("How can I help you today?");
   });
 });

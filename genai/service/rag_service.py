@@ -1,25 +1,27 @@
 from typing import List, Dict
 
-from langchain_qdrant import QdrantVectorStore
 from langchain_core.messages import BaseMessage, HumanMessage, AIMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
+from service.qdrant_service import get_vector_store
+from service.llm_service import get_system_prompt
 
-def retrieve_similar_docs(vector_store: QdrantVectorStore, user_query: str):
+
+def retrieve_similar_docs(collection_name: str, user_query: str):
     """Retrieve similar documents based on the user query"""
+    vector_store = get_vector_store(collection_name)
     retriever = vector_store.as_retriever(search_kwargs={"k": 5})
     retrieved_docs = retriever.invoke(user_query)
     docs_content = "\n\n".join(doc.page_content for doc in retrieved_docs)
     return docs_content
 
 
-def prepare_prompt(system_prompt: str,
-                   user_query: str,
+def prepare_prompt(user_query: str,
                    docs_content: str,
                    messages: List[BaseMessage]):
     """Prepare the prompt with prompt templates to give to LLM"""
     prompt_template = ChatPromptTemplate([
-        "system", system_prompt,
+        "system", get_system_prompt(),
         MessagesPlaceholder("msgs")
     ])
 

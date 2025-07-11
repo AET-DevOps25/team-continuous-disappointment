@@ -1,6 +1,6 @@
 from pathlib import Path
 from fpdf import FPDF
-from rag.ingestion_pipeline import IngestionPipeline
+from service.ingestion_service import ingest
 from vector_database.qdrant_vdb import QdrantVDB
 
 
@@ -28,10 +28,11 @@ def test_real_ingestion_pipeline(tmp_path):
     generate_sample_pdf(pdf_path)
     filename = pdf_path.name
 
-    # Ingestion
+    # Get vector store
     vector_store = qdrant.create_and_get_vector_storage(collection_name)
-    pipeline = IngestionPipeline(vector_store=vector_store)
-    pipeline.ingest(str(pdf_path), filename)
+
+    # Ingestion
+    ingest(vector_store, str(pdf_path), filename)
 
     found = qdrant.collection_contains_file(
         qdrant.client,

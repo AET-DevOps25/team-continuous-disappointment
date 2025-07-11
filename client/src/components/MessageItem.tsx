@@ -1,6 +1,7 @@
 import React from "react";
 import { formatTimestamp } from "../utils/helpers";
 import { User, Bot } from "lucide-react";
+import Markdown from "react-markdown";
 
 interface MessageItemProps {
   message: Message;
@@ -34,12 +35,10 @@ const MessageItem: React.FC<MessageItemProps> = ({ message }) => {
               {formatTimestamp(message.timestamp)}
             </span>
           </div>
-          <div className="prose dark:prose-invert prose-sm sm:prose-base max-w-none">
-            {message.content.split("\n").map((paragraph, i) => (
-              <p key={i} className="mb-2 text-gray-800 dark:text-gray-200">
-                {paragraph}
-              </p>
-            ))}
+          <div className="prose dark:prose-invert prose-sm sm:prose-base max-w-none text-gray-800 dark:text-gray-200">
+            <Markdown>
+              {message.content}
+            </Markdown>
           </div>
         </div>
       </div>

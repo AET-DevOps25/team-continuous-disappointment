@@ -6,7 +6,10 @@ client = TestClient(app)
 
 
 @patch("rag.llm.chat_model.ChatModel.invoke")
-@patch("routes.routes.qdrant.client.collection_exists", return_value=False)
+@patch(
+    "service.qdrant_service.qdrant.client.collection_exists",
+    return_value=False
+    )
 def test_generate_endpoint_success(_mock_exists, mock_invoke):
     mock_response = MagicMock()
     mock_response.content = "This is a test response"
@@ -31,7 +34,10 @@ def test_generate_endpoint_success(_mock_exists, mock_invoke):
 
 
 @patch("rag.llm.chat_model.ChatModel.invoke")
-@patch("routes.routes.qdrant.client.collection_exists", return_value=False)
+@patch(
+    "service.qdrant_service.qdrant.client.collection_exists",
+    return_value=False
+    )
 def test_generate_endpoint_empty_messages(_mock_exists, mock_invoke):
 
     mock_response = MagicMock()

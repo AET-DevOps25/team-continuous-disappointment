@@ -25,12 +25,11 @@ def test_process_raw_messages_ignores_unknown_roles():
 
 
 def test_prepare_prompt_structure():
-    system_prompt = "You are a helpful assistant. Context: {context}"
     query = "What's a good recipe with eggs?"
     docs = "Here are some egg-based recipes."
     messages = [AIMessage(content="Hi there!")]
 
-    prompt = prepare_prompt(system_prompt, query, docs, messages)
+    prompt = prepare_prompt(query, docs, messages)
 
     assert hasattr(prompt, "to_messages")
     final_messages = prompt.to_messages()
@@ -39,12 +38,11 @@ def test_prepare_prompt_structure():
 
 
 def test_prepare_prompt_includes_docs_context():
-    system_prompt = "Use this: {context}"
     query = "Tell me something"
     docs = "Documented info"
     messages = []
 
-    prompt = prepare_prompt(system_prompt, query, docs, messages)
+    prompt = prepare_prompt(query, docs, messages)
     rendered = prompt.to_string()
     assert "Documented info" in rendered
     assert "Tell me something" in rendered

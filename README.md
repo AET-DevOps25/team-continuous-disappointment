@@ -7,7 +7,12 @@ For running it on docker please see [dockerized-deployment](#dockerized-deployme
 ## Project Description
 
 ### Application Overview
-![RecipAI](docs/images/recipai.png)
+
+#### Main Page
+![RecipAI](docs/images/recipai_main.png)
+
+#### User Preferences
+![RecipAI Preferences](docs/images/recipai_preferences.png)
 
 ### Main Functionality
 
@@ -331,7 +336,7 @@ BASE_URL="base url where openwebui is hosted"
 ```
 - However, you do not need to set all of these fields in your `.env` file. To run the GenAI module, you need at least the API_OPENAI, API_OPENWEBUI, and BASE_URL variables. You can find more information in the [.env.template](.env.template) file.
 
-- Example for Cloud LLM Models (defined in `genai/routes/routes.py`):
+- Example for Cloud LLM Models (defined in `genai/services/llm_service.py`):
 
 ```bash
 llm_cloud_anthropic = CloudLLM(
@@ -357,7 +362,7 @@ llm_cloud_anthropic = CloudLLM(
 # llm = CloudLLM() # same as llm_cloud_openai
 ```
 
-- Example for Local LLM Models (defined in `genai/routes/routes.py`):
+- Example for Local LLM Models (defined in `genai/services/llm_service.py`):
 
 ```bash
 # Make calls to local models in openwebui (model can be changed by giving a different model_name as parameter)

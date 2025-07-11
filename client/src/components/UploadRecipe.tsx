@@ -4,7 +4,7 @@ import { useAuth } from "../hooks/useAuth";
 
 const UploadRecipe: React.FC = () => {
   const [status, setStatus] = useState<
-    "idle" | "uploading" | "success" | "error"
+    "idle" | "uploading" | "success" | "already_uploaded" | "error"
   >("idle");
 
   const { user } = useAuth();
@@ -27,7 +27,15 @@ const UploadRecipe: React.FC = () => {
       });
 
       if (!response.ok) throw new Error("Upload failed");
-      setStatus("success");
+      
+      const data = await response.json();
+      const message = data.message || "";
+      
+      if (message.includes("already uploaded")) {
+        setStatus("already_uploaded");
+      } else {
+        setStatus("success");
+      }
 
       setTimeout(() => setStatus("idle"), 3000);
     } catch (err) {
@@ -42,7 +50,7 @@ const UploadRecipe: React.FC = () => {
       {status === "idle" && (
         <form>
           <label className="flex flex-col items-center justify-center px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-md cursor-pointer hover:bg-green-700 transition-colors">
-            Upload Recipe PDF
+            Upload Recipe Book
             <input type="file" accept=".pdf" hidden onChange={handleUpload} />
           </label>
         </form>
@@ -59,6 +67,13 @@ const UploadRecipe: React.FC = () => {
         <div className="flex items-center justify-center gap-2 text-sm text-green-600">
           <CheckCircle className="w-5 h-5" />
           Uploaded successfully!
+        </div>
+      )}
+
+      {status === "already_uploaded" && (
+        <div className="flex items-center justify-center gap-2 text-sm text-yellow-600">
+          <CheckCircle className="w-5 h-5" />
+          File Already Uploaded!
         </div>
       )}
 
