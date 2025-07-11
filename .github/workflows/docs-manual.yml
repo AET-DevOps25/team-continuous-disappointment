@@ -1,4 +1,4 @@
-name: Deploy API Documentation
+name: Manual Deploy API Documentation
 
 on:
   workflow_dispatch:
