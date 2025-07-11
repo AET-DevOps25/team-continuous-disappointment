@@ -275,7 +275,7 @@ jobs:
 
       - name: Deploy with Helm
         run: |
-          helm -n team-continuous-disappointment upgrade recip-ai ./recipai-chart \
+          helm -n team-continuous-disappointment upgrade recip-ai ./infra/recipai-chart \
             --set secrets.gitlabClientSecret="${{ secrets.PROD_CLIENT_SECRET }}" \
             --set secrets.gitlabClientSecretDev="${{ secrets.DEV_CLIENT_SECRET }}" \
             --set secrets.mongodbAdminPassword="${{ secrets.MONGODB_ADMIN_PASSWORD }}" \

@@ -454,13 +454,13 @@ The project includes Docker configurations for containerized deployment.
 
 ## Kubernetes Deployment
 
-The project includes Helm charts for Kubernetes deployment in the `recipai-chart` directory.
+The project includes Helm charts for Kubernetes deployment in the `infra/recipai-chart` directory.
 
 ### Deploy with Helm
 
 1. Install the Helm chart:
    ```bash
-   helm -n <your namespace> install recip-ai ./recipai-chart \
+   helm -n <your namespace> install recip-ai ./infra/recipai-chart \
             --set secrets.gitlabClientSecret="your gitlab client secret" \
             --set secrets.mongodbAdminPassword="your mongodb admin password" \
             --set secrets.apiOpenAi="your open ai api key" \
@@ -471,7 +471,7 @@ The project includes Helm charts for Kubernetes deployment in the `recipai-chart
 
 ## Deploy with Ansible
 
-1. Change the host name of the server on [inventory.ini](./ansible/inventory.ini) and [ansible-manual](./.github/workflows/ansible-manual.yml) to the server or ip address of VM.
+1. Change the host name of the server on [inventory.ini](./infra/ansible/inventory.ini) and [ansible-manual](./.github/workflows/ansible-manual.yml) to the server or ip address of VM.
 2. Update `recipai.duckdns.org` DNS record on DuckDNS to point new VM IP address
 3. The application is now deployable through github actions with the following steps
    - Run Manual Ansible Playbook Execution action install_docker.yml as input
@@ -512,7 +512,7 @@ The project includes a GitHub Actions workflow `helm-manual.yml` for:
 
 The project includes a GitHub Actions workflow `ansible-manual.yml` for:
 
-- **Running Ansible Playbook**: Manually runs any Ansible playbook defined in the `ansible/playbooks` directory against an EC2 instance securely using SSH and Ansible Vault.
+- **Running Ansible Playbook**: Manually runs any Ansible playbook defined in the `infra/ansible/playbooks` directory against an EC2 instance securely using SSH and Ansible Vault.
 
 ## API Documentation
 
@@ -579,7 +579,7 @@ RecipAI is equipped with a monitoring stack powered by Prometheus and Grafana, d
 
 ### Prometheus Configuration
 
-Prometheus is configured via a Kubernetes ConfigMap named prometheus-config at [`recipai-chart/templates/prometheus/prometheus-configmap.yml`](recipai-chart/templates/prometheus/prometheus-configmap.yml). The configuration defines scrape jobs for each service, enabling Prometheus to collect metrics every 15 seconds.
+Prometheus is configured via a Kubernetes ConfigMap named prometheus-config at [`infra/recipai-chart/templates/prometheus/prometheus-configmap.yml`](infra/recipai-chart/templates/prometheus/prometheus-configmap.yml). The configuration defines scrape jobs for each service, enabling Prometheus to collect metrics every 15 seconds.
 
 All services expose Prometheus-compatible metrics:
 
@@ -600,15 +600,15 @@ Grafana is used to visualize metrics collected by Prometheus. It is deployed via
 
 - system-dasboard.json: Infrastructure-level metrics (CPU, memory, nodes)
   - For dockerized setup: [`monitoring/grafana/dashboards/system-dashboard.json`](monitoring/grafana/dashboards/system-dashboard.json)
-  - For helm setup: [`recipai-chart/dashboards/system-dashboard.json`](recipai-chart/dashboards/system-dashboard.json)
+  - For helm setup: [`infra/recipai-chart/dashboards/system-dashboard.json`](infra/recipai-chart/dashboards/system-dashboard.json)
   - ![System Dashboard](docs/images/system-dashboard.png)
 - genai-dashboard.json: latency, error rates, and request counts
   - For dockerized setup: [`monitoring/grafana/dashboards/genai-dashboard.json`](monitoring/grafana/dashboards/genai-dashboard.json)
-  - For helm setup: [`recipai-chart/dashboards/genai-dashboard.json`](recipai-chart/dashboards/genai-dashboard.json)
+  - For helm setup: [`infra/recipai-chart/dashboards/genai-dashboard.json`](infra/recipai-chart/dashboards/genai-dashboard.json)
   - ![GenAI Dashboard](docs/images/genai-dashboard.png)
 - chat-dashboard.json: latency, error rates, and request counts
   - For dockerized setup: [`monitoring/grafana/dashboards/chat-dashboard.json`](monitoring/grafana/dashboards/chat-dashboard.json)
-  - For helm setup: [`recipai-chart/dashboards/chat-dashboard.json`](recipai-chart/dashboards/chat-dashboard.json)
+  - For helm setup: [`infra/recipai-chart/dashboards/chat-dashboard.json`](infra/recipai-chart/dashboards/chat-dashboard.json)
   - ![Chat Dashboard](docs/images/chat-dashboard.png)
 
 #### Accessing Grafana
@@ -633,7 +633,7 @@ Alerts are configured using Grafana’s Unified Alerting system. It defines our 
 
 - Contact points are defined:
   - For dockerized setup: [`monitoring/grafana/provisioning/alerting/contact-points.yaml`](monitoring/grafana/provisioning/alerting/contact-points.yaml)
-  - For helm setup: [`recipai-chart/templates/grafana/grafana-alerting.yml`](recipai-chart/templates/grafana/grafana-alerting.yml)
+  - For helm setup: [`infra/recipai-chart/templates/grafana/grafana-alerting.yml`](infra/recipai-chart/templates/grafana/grafana-alerting.yml)
 
 - Discord webhook as our contact point:
    - ![Discord Webhook Configuration](docs/images/alerts.png)
