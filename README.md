@@ -611,7 +611,16 @@ Grafana is used to visualize metrics collected by Prometheus. It is deployed via
   - For helm setup: [`infra/recipai-chart/dashboards/chat-dashboard.json`](infra/recipai-chart/dashboards/chat-dashboard.json)
   - ![Chat Dashboard](docs/images/chat-dashboard.png)
 
-#### Accessing Grafana
+### Grafana Logs
+
+RecipAI collects all service logs via Loki and Promtail for centralized logging. Promtail is configured to scrape logs from all services running in the cluster and forwards them to Loki for storage. This enables log aggregation and visualization through Grafana's built-in log viewer.
+
+Example - Logs from the GenAI Service:
+
+![Grafana Logging](docs/images/grafana_logging.png)
+
+
+### Accessing Grafana
 
 - To access Grafana locally from the cluster, we can do port-forwarding:
 
