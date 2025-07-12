@@ -465,6 +465,7 @@ The project includes Helm charts for Kubernetes deployment in the `infra/recipai
             --set secrets.mongodbAdminPassword="your mongodb admin password" \
             --set secrets.apiOpenAi="your open ai api key" \
             --set secrets.apiOpenWebUi="your open web ui api key"
+            --set secrets.discordWebhookUrl="${{ your discord webhook url }}"
    ```
 
 ## AWS Deployment
