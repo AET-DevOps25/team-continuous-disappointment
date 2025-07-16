@@ -251,6 +251,48 @@ spring:
    pip3 install -r requirements.txt
    ```
 
+## Test Instructions
+
+### Running Tests in Server
+
+1. Navigate to the `server` directory:
+   ```bash
+   cd server
+   ```
+2. Test the microservice - API Gateway:
+   ```bash
+   ./gradlew :api-gw:test
+   ```
+3. Test the microservice - User:
+   ```bash
+   ./gradlew :user:test
+   ```
+4. Test the microservice - Chat:
+   ```bash
+   ./gradlew :chat:test
+   ```
+### Running Tests in GenAI
+1. Navigate to the `genai` directory:
+   ```bash
+   cd genai
+   ```
+2. Test the microservice - GenAI:
+   ```bash
+   pytest
+   ```
+Sidenote: In order to pass all genai tests, you need to have a Qdrant instance running on your local machine,
+because one of the integration tests requires a running Qdrant instance.
+
+### Running Tests in Client
+1. Navigate to the `client` directory:
+   ```bash
+   cd client
+   ```
+2. Test the microservice - Client:
+   ```bash
+   npm run test -- --run
+   ```
+
 ## Running the Application
 
 ### Start the Databases
