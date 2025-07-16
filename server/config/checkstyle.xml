@@ -4,10 +4,7 @@
           "https://www.puppycrawl.com/dtds/configuration_1_3.dtd">
 <module name="com.puppycrawl.tools.checkstyle.Checker">
     <property name="charset" value="UTF-8"/>
-
-    <!-- Google's Checkstyle config as a base -->
     <module name="com.puppycrawl.tools.checkstyle.checks.header.HeaderCheck">
-        <!-- You can configure header checks here -->
     </module>
 
     <module name="com.puppycrawl.tools.checkstyle.TreeWalker">
