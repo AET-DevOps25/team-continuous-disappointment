@@ -2,6 +2,7 @@ import "@testing-library/jest-dom";
 import { vi } from "vitest";
 
 // Configure React to run in development mode for tests
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
 
 // Mock window.matchMedia

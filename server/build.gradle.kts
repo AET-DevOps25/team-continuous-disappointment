@@ -3,6 +3,7 @@ plugins {
     id("io.spring.dependency-management") version "1.1.4" apply false
     id("com.google.cloud.tools.jib") version "3.4.1" apply false 
     id("java")
+    id("checkstyle")
 }
 
 subprojects {
@@ -10,6 +11,7 @@ subprojects {
     apply(plugin = "org.springframework.boot")
     apply(plugin = "io.spring.dependency-management")
     apply(plugin = "com.google.cloud.tools.jib")
+    apply(plugin = "checkstyle")
 
     group = "com.continuousdisappointment"
     version = "0.0.1-SNAPSHOT"
@@ -20,6 +22,11 @@ subprojects {
 
     repositories {
         mavenCentral()
+    }
+
+    checkstyle {
+        toolVersion = "10.26.1"
+        configFile = rootProject.file("config/checkstyle.xml")
     }
 
     dependencies {

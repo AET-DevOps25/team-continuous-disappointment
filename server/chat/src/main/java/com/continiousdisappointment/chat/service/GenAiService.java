@@ -31,11 +31,12 @@ public class GenAiService {
             GenAiRequest genAiRequest = new GenAiRequest(query, messages, userId);
             HttpEntity<GenAiRequest> entity = new HttpEntity<>(genAiRequest, headers);
 
+            log.info("Calling GenAI service");
             ResponseEntity<GenAiResponse> response = restTemplate.postForEntity(
                     getGenAiServiceUrl() + "/genai/generate",
                     entity,
                     GenAiResponse.class);
-            log.info("GenAI service is called with response {} ", response.getBody().response());
+            log.info("GenAI service call successful");
             return response.getBody().response();
 
         } catch (Exception e) {

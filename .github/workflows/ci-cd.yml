@@ -63,7 +63,7 @@ jobs:
           pip install flake8
           flake8 . || exit 1
         working-directory: genai
-      
+
       - name: Run Tests
         run: |
           pytest --maxfail=1 --disable-warnings -q
@@ -96,6 +96,10 @@ jobs:
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
+        working-directory: server
+
+      - name: Lint Java code
+        run: ./gradlew check
         working-directory: server
 
       - name: Build API Gateway microservice
