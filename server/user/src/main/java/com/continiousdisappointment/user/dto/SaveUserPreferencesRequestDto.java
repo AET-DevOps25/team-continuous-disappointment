@@ -7,7 +7,7 @@ import com.continiousdisappointment.user.domain.DietaryPreference;
 public record SaveUserPreferencesRequestDto(Set<DietaryPreference> dietaryPreferences) {
 
     public SaveUserPreferencesRequestDto {
-        if (dietaryPreferences == null || dietaryPreferences.isEmpty()) {
+        if (dietaryPreferences == null) {
             throw new IllegalArgumentException("Dietary preferences cannot be null or empty");
         }
     }
