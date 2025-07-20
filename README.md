@@ -26,6 +26,22 @@ The application is designed for home cooks, culinary enthusiasts, individuals wi
 
 Generative AI is integrated meaningfully through a dedicated LLM microservice developed in Python. This service processes user inputs in natural language, generates recipes based on the provided ingredients, modifies existing recipes according to user needs, and provides meal suggestions based on the user dietary preferences. The use of GenAI enhances the user experience by offering a personalized RAG system that emphasizes user-specific recipe collections. Through the use of a conversational AI system, we provide to the users with a multi-turn chat with context preservation.
 
+### Usage Guide
+
+RecipAI provides an intuitive chat-based interface for generating recipes, meal plans, and managing dietary preferences. Here's how to use the application:
+
+#### Getting Started
+1. **Login**: Access the application at the deployed URL and sign in using your GitLab LRZ credentials
+2. **Set Preferences**: Configure your dietary restrictions and preferences (vegan, gluten-free, diabetic, etc.) in the user settings
+3. **Start Chatting**: Use the main chat interface to interact with the AI recipe assistant
+
+#### Tips for Best Results
+- Be specific about dietary restrictions, cooking time, or cuisine preferences
+- Include the number of servings when requesting recipes
+- Mention available cooking equipment or preferred cooking methods
+- Ask follow-up questions to refine or modify generated recipes
+
+
 ### Functional Scenarios
 
 1. **Ingredient-Based Recipe Generation**: A user inputs, "Suggest a quick dinner recipe with chicken and broccoli." The system uses the LLM to generate a relevant recipe, which is presented to the user through the user interface.
@@ -154,6 +170,10 @@ Generative AI is integrated meaningfully through a dedicated LLM microservice de
 | Database        | MongoDB           |
 | Vector Database | Qdrant            |
 | Auth            | GitLab LRZ SSO    |
+
+## Project Requirements Checklist
+
+We fulfilled all the project requirements for RecipAI. You can find our project requirements checklist here: [Project Requirements Checklist](requirements.md)
 
 ## Setup Instructions
 
@@ -422,7 +442,7 @@ BASE_URL="base url where openwebui is hosted"
 ```
 - However, you do not need to set all of these fields in your `.env` file. To run the GenAI module, you need at least the API_OPENAI, API_OPENWEBUI, and BASE_URL variables. You can find more information in the [.env.template](.env.template) file.
 
-- Example for Cloud LLM Models (defined in `genai/services/llm_service.py`):
+- Example for Cloud LLM Models (defined in `genai/service/llm_service.py`):
 
 ```bash
 llm_cloud_anthropic = CloudLLM(
@@ -448,7 +468,7 @@ llm_cloud_anthropic = CloudLLM(
 # llm = CloudLLM() # same as llm_cloud_openai
 ```
 
-- Example for Local LLM Models (defined in `genai/services/llm_service.py`):
+- Example for Local LLM Models (defined in `genai/service/llm_service.py`):
 
 ```bash
 # Make calls to local models in openwebui (model can be changed by giving a different model_name as parameter)
