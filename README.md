@@ -532,7 +532,7 @@ The project includes Helm charts for Kubernetes deployment in the `infra/recipai
 
 ## AWS Deployment
 
-## Deploy with Ansible
+### Deploy with Ansible
 
 1. Change the host name of the server on [inventory.ini](./infra/ansible/inventory.ini) and [ansible-manual](./.github/workflows/ansible-manual.yml) to the server or ip address of VM.
 2. Update `recipai.duckdns.org` DNS record on DuckDNS to point new VM IP address
